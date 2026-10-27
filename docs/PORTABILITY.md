@@ -40,8 +40,10 @@ comparison prices. Preserve the comparison set across runs to avoid shortlist ch
 
 The collector must verify actual flyer images/product grids, not page titles alone.
 Prioritize the official selected-store flyer and independently corroborate previews.
-The code requires multiple configured hosts for future offers, but cannot determine
-whether two websites share a feed; the collector must check real independence.
+The code requires multiple configured hosts for future offers, or a purpose-built scraper can use
+exactly the same contract. The core validates structure and consistency, not the truth
+of a price. Replacing the scheduler alone does not provide a browser, API credentials,
+or equivalent deal-analysis intelligence.
 Use the actual provider edition ID, or a documented date/region ID when unavailable.
 The delivery fingerprint ignores provider IDs, URLs and editorial wording but includes
 market, retailer, dates, prices, pack sizes and restrictions. Keep product labels stable.
@@ -133,19 +135,28 @@ This is a single-host design, not a distributed lease service.
 The current ChatGPT task is not disabled merely by this refactor. Migration requires
 a configured collector, privately configured delivery, and an explicit scheduler cutover.
 
-## 8. In-place repository rename
+## 8. Repository identity and existing clones
 
-Requested name: `grocery-flyer-watch`. An authorized operator can run:
+The in-place rename is complete. The canonical repository is
+[MikuMikuMe/grocery-flyer-watcher](https://github.com/MikuMikuMe/grocery-flyer-watcher).
+The scheduled task resolves stable repository ID `1435089073` before reading files;
+future agents should use that identity when supported, then follow the returned name.
+Do not create a replacement repository or repeat the rename.
+
+From an existing local checkout, update its remote without changing the working directory:
 
 ```sh
-gh repo rename grocery-flyer-watch --repo MikuMikuMe/kingston-metro-flyer-watch-20261026 --yes
+git remote set-url origin https://github.com/MikuMikuMe/grocery-flyer-watcher.git
+git remote -v
 ```
 
-Or use GitHub repository Settings -> Repository name -> Rename. Do not create a second
-repo to imitate a rename. Afterward update local remotes; the scheduled task resolves
-repository ID `1435089073` before reading files so it can follow the canonical name.
+The executable stays `grocery-flyer-watch` and the Python package stays
+`grocery_flyer_watch`. Service filenames and the `/opt/grocery-flyer-watch` and
+`/etc/grocery-flyer-watch` paths also remain unchanged. A fresh clone may be placed
+at the existing configured deployment path; no CLI or scheduler migration is required
+solely because the repository name changed. Private settings and state remain outside
+the public checkout as described above.
 
-References: https://cli.github.com/manual/gh_repo_rename ;
-https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository ;
+References: https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository ;
 https://docs.python.org/3/library/smtplib.html ;
 https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html .

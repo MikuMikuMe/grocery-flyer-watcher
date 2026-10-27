@@ -1,4 +1,4 @@
-# Grocery Flyer Watch
+# Grocery Flyer Watcher
 
 Location-configurable grocery flyer monitoring, deal reports and private notifications.
 The application is **not tied to Kingston, Metro, ChatGPT, or a particular AI provider**.
@@ -73,7 +73,13 @@ See [deployment and collector contract](docs/PORTABILITY.md),
 
 ## Repository identity
 
-Project name: **Grocery Flyer Watch**. Requested GitHub slug: **grocery-flyer-watch**.
-The in-place GitHub rename is pending an administration-capable interface; no replacement
-repository was created. Public repository ID `1435089073` identifies the same repository
-across a rename. Existing history, reports, and public visibility are preserved.
+Project name: **Grocery Flyer Watcher**.
+Canonical repository: [MikuMikuMe/grocery-flyer-watcher](https://github.com/MikuMikuMe/grocery-flyer-watcher).
+The in-place GitHub rename is complete. Public repository ID `1435089073` still identifies
+the same repository; existing history, reports and public visibility are preserved.
+Resolve this stable ID when a future rename changes the canonical owner/name.
+
+The installed CLI remains `grocery-flyer-watch`, the Python package remains
+`grocery_flyer_watch`, and the existing service filenames and deployment paths stay
+unchanged for compatibility. The repository name does not require renaming those interfaces.
+See the deployment guide for updating an existing clone's remote.

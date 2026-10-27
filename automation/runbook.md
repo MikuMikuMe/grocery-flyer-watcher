@@ -1,7 +1,9 @@
-# Grocery Flyer Watch — runtime-neutral operating contract
+# Grocery Flyer Watcher — runtime-neutral operating contract
 
 This public runbook applies equally to ChatGPT, another coding agent, or a VM collector.
 Private scheduler/contact configuration is not part of the public contract.
+Canonical repository: `MikuMikuMe/grocery-flyer-watcher` (stable ID `1435089073`).
+The in-place rename is complete; resolve this ID to follow any future name changes.
 
 ## Profile and discovery
 

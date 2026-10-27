@@ -1,4 +1,4 @@
-# Grocery Flyer Watch — agent handoff
+# Grocery Flyer Watcher — agent handoff
 
 Read README.md, config/watch.toml, automation/runbook.md and docs/PORTABILITY.md.
 
@@ -21,6 +21,9 @@ Read README.md, config/watch.toml, automation/runbook.md and docs/PORTABILITY.md
   and legacy validate commands. Use dry-run, not live email, for routine tests.
 - Only one scheduler should own a profile at a time. Import prior delivered
   state deliberately before migrating; never claim SMTP is exactly-once.
-- Repo display name is Grocery Flyer Watch; requested slug is grocery-flyer-watch.
-  The actual GitHub rename requires repository administration and remains pending
-  until the canonical repository metadata confirms it. Do not create a replacement.
+- Canonical repository: `MikuMikuMe/grocery-flyer-watcher`; stable repository ID:
+  `1435089073`. The in-place rename is complete. Resolve the ID before repository
+  operations when supported, and use the returned canonical owner/name. Never
+  create a replacement repository just to handle a rename.
+- Keep the existing `grocery-flyer-watch` CLI, `grocery_flyer_watch` package and
+  service/deployment paths compatible. A repository rename is not an API rename.
