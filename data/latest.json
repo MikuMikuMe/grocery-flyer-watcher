@@ -1,0 +1,86 @@
+{
+  "flyer": {
+    "id": "8192488",
+    "retailer": "Metro",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-22",
+    "ends_on": "2026-10-28",
+    "url": "https://flipp.com/en-ca/kingston-on/flyer/8192488-metro-ontario"
+  },
+  "offers": [
+    {
+      "name": "Lean ground pork, value pack",
+      "price_cad": "1.99",
+      "pricing": "per_lb",
+      "priority": 5,
+      "why": "Excellent low-cost versatile protein; freeze meal-size portions if buying in bulk."
+    },
+    {
+      "name": "Qilla / Parliament Gold / Noor Gold basmati rice, 4.54 kg",
+      "price_cad": "9.99",
+      "pricing": "package",
+      "size_g": 4540,
+      "priority": 5,
+      "why": "Strong stock-up price if you regularly cook basmati rice."
+    },
+    {
+      "name": "Divya lentils or chickpeas, 1.81 kg",
+      "price_cad": "3.99",
+      "pricing": "package",
+      "size_g": 1810,
+      "priority": 5,
+      "why": "Cheap shelf-stable protein and fibre."
+    },
+    {
+      "name": "Extra-large cauliflower",
+      "price_cad": "2.99",
+      "pricing": "each",
+      "priority": 4,
+      "why": "Good vegetable price if the heads are truly large and fresh."
+    },
+    {
+      "name": "Avocados, 5-pack",
+      "price_cad": "2.99",
+      "pricing": "package",
+      "count": 5,
+      "priority": 4,
+      "why": "Approximately sixty cents each; compare competing five-packs."
+    },
+    {
+      "name": "Pork loin chops, economy pack",
+      "price_cad": "2.99",
+      "pricing": "per_lb",
+      "priority": 4,
+      "why": "Good freezer-friendly meat sale. Inspect exact cut and bone content."
+    },
+    {
+      "name": "Pork side ribs, value pack",
+      "price_cad": "2.99",
+      "pricing": "per_lb",
+      "priority": 4,
+      "why": "Good price for slow-cooked ribs."
+    },
+    {
+      "name": "Fresh boneless skinless chicken breast, value pack",
+      "price_cad": "4.99",
+      "pricing": "per_lb",
+      "priority": 3,
+      "why": "Reasonable for boneless breast, but bone-in offers are not comparable."
+    },
+    {
+      "name": "Barilla pasta, selected 340–410 g formats",
+      "price_cad": "1.69",
+      "pricing": "package",
+      "size_g": 340,
+      "priority": 3,
+      "why": "Useful pantry food; unit price shown conservatively for smallest pack."
+    },
+    {
+      "name": "Cashmere bathroom tissue, selected 12-roll format",
+      "price_cad": "5.99",
+      "pricing": "package",
+      "priority": 3,
+      "why": "Check the exact sheets per roll before comparing with other brands."
+    }
+  ]
+}
