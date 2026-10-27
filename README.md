@@ -6,6 +6,23 @@ The supplied profiles watch **Metro and Shoppers Drug Mart in Kingston, Ontario*
 Moving cities means changing the matching profiles and source URLs.
 The current data model supports **Canadian dollars only**.
 
+## Notification policy: checks are not emails
+
+The existing six-hour schedule is a **checking cadence**, not an email subscription
+at that frequency. A deal email requires **both a verified flyer change and genuinely
+worthwhile deals found in that changed flyer**, followed by duplicate/validity checks.
+Send once per qualifying change. A changed flyer with no worthwhile bargains stays silent.
+
+Initial baselines, including first Shoppers coverage, are saved silently. No routine,
+no-change, weak-deal, setup, source-error or config-change emails are sent. Routine
+ChatGPT output is also suppressed when there is no qualifying update. Only a new
+explicit test request authorizes a separate test email. See the full
+[notification and retry rules](automation/runbook.md).
+
+These gates are applied by the connected scheduled task. Standalone collectors/agents
+must enforce the same policy before enabling SMTP; transport availability or generating
+a report does not by itself establish a verified change or worthwhile value.
+
 ## Enabled watches
 
 `config/profiles.toml` lists the enabled watches and their independent baseline/report paths:

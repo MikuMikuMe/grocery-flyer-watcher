@@ -21,16 +21,19 @@ edition or copy dates/prices solely from a search snippet or a future-dated head
 Verify the overall flyer dates AND item/event-specific dates. Flag weekend-only,
 one-day, member-only, online-only and store-specific offers. Do not recommend an
 expired weekend price merely because the rest of the flyer is still valid. State
-future dates clearly. A newly published, verified short promotion is a material update;
-rechecking an already reported event is not a reason to send it again.
+future dates clearly. A newly published, verified short promotion can be a material
+update, but qualifies for email only when worthwhile deals are found too. Rechecking
+an already reported event or reaching its start date is not a reason to email again.
 
 ## Value analysis
 
 Prioritize genuinely strong grocery, household, paper, cleaning, personal-care and
 beauty deals. Rank roughly 5-10 only when enough strong offers exist; never pad a list.
-Compare like-for-like with the Metro profile and other local competitors where verified:
-brand, weight/count, concentration, sheets/plies, cut and purchase requirements matter.
-Do not infer medical suitability from an advertised price or encourage medicine stockpiling.
+One excellent deal can qualify, but zero worthwhile deals means NO EMAIL even when
+there is a new flyer. Compare like-for-like with Metro and other local competitors
+where verified: brand, weight/count, concentration, sheets/plies, cut and purchase
+requirements matter. Do not infer medical suitability from an advertised price or
+encourage medicine stockpiling.
 
 Always distinguish:
 
@@ -53,7 +56,7 @@ structured promotion-date fields: date/eligibility verification is the collector
 Pure points events with no verified item prices may be noted as context in a verified
 deal report, but must not become invented zero-price products or fake flyer snapshots.
 
-## Independent state and first coverage
+## Independent state and silent initialization
 
 Read/write the baseline and reports named by this profile's registry entry. Never
 replace Metro's `data/latest.json` with Shoppers data. Standalone public archives are
@@ -61,10 +64,20 @@ already separated by retailer/market, and this profile has its own private state
 Check private delivery deduplication separately for each retailer and edition/event.
 
 No Shoppers flyer snapshot is fabricated during setup. At the first successful scheduled
-inspection, verify the current edition, publish its baseline and send one clearly
-labelled first-coverage digest. Do not describe it as newly published unless publication
-has actually been verified. Afterward, notify only on verified updates or pending-delivery
-retries. Adding this profile alone must not resend Metro's existing baseline.
+inspection, verify and save the current baseline SILENTLY. Do not send a first-coverage
+email or routine ChatGPT alert. Establishing a baseline does not identify a flyer change.
+The older instruction to send a first-coverage digest is superseded by this policy.
+
+After initialization, email only when BOTH a new/material flyer change is verified AND
+at least one genuinely worthwhile deal is found. Check duplicate delivery and current
+validity before sending. A new flyer with no good deals can update the public baseline,
+but is handled privately without email; do not later reclassify an unchanged flyer to
+create an alert. Retry only previously qualified, unsent digests with recorded private
+pending evidence and still-useful offers. Missing Sent history alone is not pending work.
+
+Routine checks, source failures, weak/unchanged flyers, new profile setup and config/code
+changes do not trigger email. Adding this profile or changing this policy must not resend
+Metro's existing baseline. The six-hour cadence controls checks, not email frequency.
 
 ## Source entrypoints
 
