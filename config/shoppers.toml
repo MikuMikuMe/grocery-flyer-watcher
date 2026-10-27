@@ -1,0 +1,21 @@
+# PUBLIC Shoppers Drug Mart profile. No personal contacts, postal codes or credentials.
+# Paths here are relative to this file, just like config/watch.toml.
+market = "Kingston, Ontario"
+retailer = "Shoppers Drug Mart"
+timezone = "America/Toronto"
+sources = [
+  "https://www.shoppersdrugmart.ca/flyer",
+  "https://www.shoppersdrugmart.ca/store-locator/store/607",
+  "https://flyers.smartcanucks.ca/shoppers-drug-mart-canada",
+  "https://www.weeklyflyer.com/shoppers-drug-mart",
+  "https://ca-flyers.com/stores/kingston/shoppers-drug-mart/1011-princess-st",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# The official store URL is a public Kingston reference, not a guarantee of citywide stock.
+# Collectors must select Ontario/Kingston and verify each offer's actual applicability.
+collector = []
+state_file = "../private/shoppers-drug-mart-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"
+# Safe CLI defaults above do not override a private scheduler's configured delivery.

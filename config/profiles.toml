@@ -1,0 +1,16 @@
+# Public enabled-profile registry. All paths below are relative to the repository root.
+# This is orchestration metadata, not a single-profile CLI configuration.
+version = 1
+
+[[profiles]]
+id = "metro"
+config = "config/watch.toml"
+baseline = "data/latest.json"
+report_dir = "reports"
+
+[[profiles]]
+id = "shoppers-drug-mart"
+config = "config/shoppers.toml"
+baseline = "data/shoppers-drug-mart/latest.json"
+report_dir = "reports/shoppers-drug-mart"
+policy = "docs/SHOPPERS.md"
