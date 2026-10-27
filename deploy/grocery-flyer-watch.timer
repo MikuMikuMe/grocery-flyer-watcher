@@ -1,0 +1,10 @@
+[Unit]
+Description=Check grocery flyers every six hours
+
+[Timer]
+OnBootSec=5min
+OnUnitInactiveSec=6h
+Unit=grocery-flyer-watch.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,17 @@
+[Unit]
+Description=Grocery Flyer Watch (one verified check)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=flyerwatch
+Group=flyerwatch
+WorkingDirectory=/opt/grocery-flyer-watch
+EnvironmentFile=-/etc/grocery-flyer-watch/private.env
+ExecStart=/opt/grocery-flyer-watch/.venv/bin/grocery-flyer-watch run --config /etc/grocery-flyer-watch/watch.toml
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+TimeoutStartSec=10min

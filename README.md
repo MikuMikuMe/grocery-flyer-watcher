@@ -1,44 +1,79 @@
-# Metro Kingston Flyer Watch
+# Grocery Flyer Watch
 
-Public, privacy-safe grocery-flyer change tracking and value analysis for Metro stores in Kingston, Ontario.
+Location-configurable grocery flyer monitoring, deal reports and private notifications.
+The application is **not tied to Kingston, Metro, ChatGPT, or a particular AI provider**.
+The supplied profile still watches Metro in Kingston; moving cities means changing a profile.
+The current data model supports **Canadian dollars only**.
 
-## Flyer discovery (not Flipp-only)
+## What runs independently today
 
-The private monitor checks the official [Metro Kingston Barrie Street store flyer](https://www.metro.ca/en/find-a-grocery/241) and [Metro's flyer hub](https://www.metro.ca/en/flyer) first, then searches and cross-checks other published sources, including:
+- A Python 3.11+ CLI with no third-party runtime dependencies.
+- A verified-JSON input adapter and an external-command collector adapter.
+- Region/source/date validation, unit-price reporting, persistent duplicate detection,
+  pending-delivery retries, safe dry runs, local or Git publication, and TLS SMTP.
+- A cron command, systemd service/timer templates, and an agent handoff in `AGENTS.md`.
+- The original `python -m metro_flyer_watch` commands remain compatible.
 
-- [SmartCanucks' Metro Ontario flyer archive](https://flyers.smartcanucks.ca/metro-canada)
-- [Flyerbox's Kingston Metro listing](https://www.flyerbox.ca/deals/kingston/metro/)
-- [WeeklyFlyer's Metro archive](https://www.weeklyflyer.com/metro)
-- Flipp, reebee, and other accessible Ontario flyer listings
+**Important boundary:** there is no bundled universal live flyer scraper or AI service.
+A collector must browse/parse the configured sources, verify offers, rank value and return
+JSON. ChatGPT currently fills that role; another agent or a purpose-built scraper can use
+exactly the same contract. The core validates structure and consistency, not the truth
+of a price. Replacing the scheduler alone does not provide a browser, API credentials,
+or equivalent deal-analysis intelligence.
 
-A website headline that says "next week" is **not** evidence by itself: the page may show the prior week's image, products and prices. The monitor must confirm the region, image-level validity dates, advertised prices, quantities and restrictions, and corroborate a next-week preview with reliable independent or first-party evidence.
+## Quick start
 
-## Operation
+```sh
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+grocery-flyer-watch validate data/latest.json
+grocery-flyer-watch report data/latest.json
+python -m unittest discover -s tests -v
+```
 
-- The private ChatGPT condition-watch schedule checks sources every six hours in `America/Toronto`, including future-week previews.
-- Compare newly validated flyer ID/dates/product contents to `data/latest.json`. Do not email or commit if unchanged.
-- On a verified new or materially revised flyer, calculate meaningful unit-price comparisons and highlight particularly good values against genuinely matching local alternatives.
-- Commit public-only snapshots and a dated analysis under `reports/`; publish the GitHub revision and privately send the complete digest via connected Gmail with a ChatGPT notification.
-- CI validates the code and the public snapshot. Scheduling and private email delivery **do not** run within GitHub Actions.
-- Private contact addresses and any authentication/delivery metadata are **never included** in this public repository.
+`data/latest.json` and `reports/2026-10-22.md` are historical public baselines, not a
+claim that those prices are current. The runtime rejects expired input for new alerts.
 
-## Running locally
+For a freshly verified snapshot:
 
-Requires Python 3.11+.
+```sh
+grocery-flyer-watch run --config config/watch.toml --input /path/to/verified.json --dry-run
+```
 
-- `PYTHONPATH=src python -m metro_flyer_watch validate data/latest.json`
-- `PYTHONPATH=src python -m metro_flyer_watch report data/latest.json`
-- `PYTHONPATH=src python -m metro_flyer_watch compare incoming.json data/latest.json`
-- `python -m unittest discover -s tests -v`
+For automatic collection, configure the trusted `collector` argv in your local TOML,
+then run the same command without `--input` or `--dry-run`. Defaults deliberately have
+**no collector, no email, and no Git push**; missing setup fails rather than inventing offers.
 
-## Files
+## Configuration, not a location baked into code
 
-- `data/latest.json`: current confirmed flyer snapshot and selected offers
-- `reports/`: public, dated, source-linked deal analyses
-- `src/metro_flyer_watch/`: privacy-aware snapshot validation, fingerprinting, unit prices and report rendering
-- `automation/runbook.md`: public workflow
-- `.github/workflows/ci.yml`: tests and validation
+`config/watch.toml` is the current public example/profile. Change `market`, `retailer`,
+`timezone` and the store/source URLs together when moving. Prices, report headings,
+validation and state keys use these settings. Use separate config/state files for
+multiple profiles. Official store pages come first; cross-check additional source
+families, including independent archives, not just Flipp.
 
-## Privacy & accuracy
+Delivery credentials and sender/recipient addresses are read from environment variables
+only. Keep real deployment config, state, collector caches and logs outside a public
+checkout. Public JSON has an explicit field allowlist; this is a guardrail, **not a
+proof that arbitrary free text is private-information-free**. Review public reports.
 
-Do not commit contacts, precise user location, message metadata, tokens, authentication information or personalized/tracking URLs. Check that source dates, offer size, limitations and cuts align before ranking deals. Flipp is one of several sources, not the source of truth on its own. If a supposed new flyer cannot be verified from its page images and content, do not invent a new edition.
+## Architecture
+
+`Scheduler -> Collector -> Validation / change detection -> Public archive -> Private delivery`
+
+Schedulers are interchangeable: the existing ChatGPT task, cron, systemd, or a coding
+agent. Collectors are replaceable executables using the documented JSON protocol.
+Publication and delivery have separate saved status, so a successful Git push does not
+cause a failed email to be forgotten on the next unchanged check. Current and preview
+editions can coexist; a mirror site's different edition ID does not create a duplicate.
+
+See [deployment and collector contract](docs/PORTABILITY.md),
+[agent instructions](AGENTS.md) and [operating runbook](automation/runbook.md).
+
+## Repository identity
+
+Project name: **Grocery Flyer Watch**. Requested GitHub slug: **grocery-flyer-watch**.
+The in-place GitHub rename is pending an administration-capable interface; no replacement
+repository was created. Public repository ID `1435089073` identifies the same repository
+across a rename. Existing history, reports, and public visibility are preserved.
