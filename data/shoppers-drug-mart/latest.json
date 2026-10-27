@@ -1,0 +1,75 @@
+{
+  "flyer": {
+    "id": "ontario-2026-10-24-to-29",
+    "retailer": "Shoppers Drug Mart",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-24",
+    "ends_on": "2026-10-29",
+    "url": "https://flyers.smartcanucks.ca/canada/shoppers-drug-mart-on-flyer-october-24-to-291/all"
+  },
+  "offers": [
+    {
+      "name": "No Name peanut butter, 1 kg",
+      "price_cad": "3.99",
+      "pricing": "package",
+      "size_g": 1000,
+      "priority": 5,
+      "why": "Strong shelf-stable pantry price at $3.99/kg; compare the exact brand, size and ingredients."
+    },
+    {
+      "name": "Wonder white or whole wheat bread, 675 g",
+      "price_cad": "2.49",
+      "pricing": "package",
+      "size_g": 675,
+      "priority": 4,
+      "why": "Reasonable everyday bread offer at $3.69/kg; only stock up if it can be used or frozen."
+    },
+    {
+      "name": "No Name bacon, 375 g",
+      "price_cad": "3.99",
+      "pricing": "package",
+      "size_g": 375,
+      "priority": 4,
+      "why": "About $10.64/kg; compare bacon with bacon, not raw pork cuts."
+    },
+    {
+      "name": "Armstrong cheese block, 200 g",
+      "price_cad": "2.99",
+      "pricing": "package",
+      "size_g": 200,
+      "priority": 4,
+      "why": "About $14.95/kg for a small block; compare larger blocks by weight."
+    },
+    {
+      "name": "Grade A large white eggs, 12-count",
+      "price_cad": "3.49",
+      "pricing": "package",
+      "count": 12,
+      "priority": 3,
+      "why": "About $0.29 per egg; reasonable only after comparing matching large-egg cartons nearby."
+    },
+    {
+      "name": "Colgate Cavity Protection toothpaste, selected 55 mL",
+      "price_cad": "1.29",
+      "pricing": "package",
+      "priority": 3,
+      "why": "Low checkout price for a small tube; check the actual selected format and size."
+    },
+    {
+      "name": "PC bathroom tissue, selected 9-roll pack",
+      "price_cad": "5.99",
+      "pricing": "package",
+      "count": 9,
+      "priority": 2,
+      "why": "Roughly $0.67 per roll, but only compare tissues by sheet count and ply."
+    },
+    {
+      "name": "Janes Pub Style chicken nuggets, strips or burgers, 700 g",
+      "price_cad": "7.99",
+      "pricing": "package",
+      "size_g": 700,
+      "priority": 2,
+      "why": "About $11.41/kg; conditional value for convenience food, not directly comparable with fresh chicken."
+    }
+  ]
+}
