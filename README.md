@@ -1,38 +1,44 @@
 # Metro Kingston Flyer Watch
 
-Public, privacy-safe Metro grocery-flyer change tracking and value analysis for Kingston, Ontario.
+Public, privacy-safe grocery-flyer change tracking and value analysis for Metro stores in Kingston, Ontario.
 
-**Latest source:** https://flipp.com/en-ca/kingston-on/flyer/8192488-metro-ontario
+## Flyer discovery (not Flipp-only)
 
-## How it works
+The private monitor checks the official [Metro Kingston Barrie Street store flyer](https://www.metro.ca/en/find-a-grocery/241) and [Metro's flyer hub](https://www.metro.ca/en/flyer) first, then searches and cross-checks other published sources, including:
 
-1. A **private ChatGPT condition-watch scheduled task** checks the current Metro Ontario flyer for Kingston using public Flipp/Metro pages.
-2. The task compares the published edition ID and meaningful price/size changes to `data/latest.json`. An unchanged flyer produces no email, notification or commit.
-3. On changes it analyzes strongest everyday-value buys: price per kg/piece, useful quantities and genuinely comparable deals at competing Kingston stores.
-4. It commits **public-only** changes to `data/latest.json` and dated `reports/` Markdown analyses, then privately delivers the digest via connected Gmail and a ChatGPT notification. A stable content fingerprint helps prevent duplicate alerts.
-5. GitHub Actions automatically validates snapshots and runs tests when code or data changes. **GitHub Actions does not have access to private email accounts** and does not control the private schedule.
+- [SmartCanucks' Metro Ontario flyer archive](https://flyers.smartcanucks.ca/metro-canada)
+- [Flyerbox's Kingston Metro listing](https://www.flyerbox.ca/deals/kingston/metro/)
+- [WeeklyFlyer's Metro archive](https://www.weeklyflyer.com/metro)
+- Flipp, reebee, and other accessible Ontario flyer listings
 
-The authenticated scheduled task is managed privately in ChatGPT. This repository houses shareable source logic, examples, a public audit trail and CI. A standalone GitHub-hosted notifier would need a separately configured private messaging integration.
+A website headline that says "next week" is **not** evidence by itself: the page may show the prior week's image, products and prices. The monitor must confirm the region, image-level validity dates, advertised prices, quantities and restrictions, and corroborate a next-week preview with reliable independent or first-party evidence.
 
-## Local usage
+## Operation
 
-Requires Python 3.11+; no third-party packages.
+- The private ChatGPT condition-watch schedule checks sources every six hours in `America/Toronto`, including future-week previews.
+- Compare newly validated flyer ID/dates/product contents to `data/latest.json`. Do not email or commit if unchanged.
+- On a verified new or materially revised flyer, calculate meaningful unit-price comparisons and highlight particularly good values against genuinely matching local alternatives.
+- Commit public-only snapshots and a dated analysis under `reports/`; publish the GitHub revision and privately send the complete digest via connected Gmail with a ChatGPT notification.
+- CI validates the code and the public snapshot. Scheduling and private email delivery **do not** run within GitHub Actions.
+- Private contact addresses and any authentication/delivery metadata are **never included** in this public repository.
 
-- Validate: `PYTHONPATH=src python -m metro_flyer_watch validate data/latest.json`
-- Render ranked report: `PYTHONPATH=src python -m metro_flyer_watch report data/latest.json`
-- Compare snapshots: `PYTHONPATH=src python -m metro_flyer_watch compare incoming.json data/latest.json`
-- Test: `python -m unittest discover -s tests -v`
+## Running locally
 
-## Public data and files
+Requires Python 3.11+.
 
-- `data/latest.json` — public baseline: flyer dates and ID, market, clean source URL, selected offers and unit sizes.
-- `reports/` — dated public deal shortlists.
-- `src/metro_flyer_watch/core.py` — strict schema/privacy validation, change fingerprint and unit-price conversions.
-- `automation/runbook.md` — address-free operating contract and retry rules.
-- `.github/workflows/ci.yml` — tests and snapshot validation.
+- `PYTHONPATH=src python -m metro_flyer_watch validate data/latest.json`
+- `PYTHONPATH=src python -m metro_flyer_watch report data/latest.json`
+- `PYTHONPATH=src python -m metro_flyer_watch compare incoming.json data/latest.json`
+- `python -m unittest discover -s tests -v`
 
-## Privacy and deal integrity
+## Files
 
-**PUBLIC REPOSITORY:** never include personal contacts, precise home location, OAuth material, API keys, tokens, sent-mail IDs, user-specific query strings or other credentials. The snapshot validator rejects unknown fields, email addresses, obvious secrets and tracking queries. Delivery settings are kept only in private connected services.
+- `data/latest.json`: current confirmed flyer snapshot and selected offers
+- `reports/`: public, dated, source-linked deal analyses
+- `src/metro_flyer_watch/`: privacy-aware snapshot validation, fingerprinting, unit prices and report rendering
+- `automation/runbook.md`: public workflow
+- `.github/workflows/ci.yml`: tests and validation
 
-Price comparisons must use matching cuts, weights and other conditions. Check the flyer date, loyalty/quantity limits and stock. Do not call a deal 'cheapest' without comparable local evidence. Some flyer prices are image-only, and public sources can change or be inaccessible; no offer should be fabricated.
+## Privacy & accuracy
+
+Do not commit contacts, precise user location, message metadata, tokens, authentication information or personalized/tracking URLs. Check that source dates, offer size, limitations and cuts align before ranking deals. Flipp is one of several sources, not the source of truth on its own. If a supposed new flyer cannot be verified from its page images and content, do not invent a new edition.
