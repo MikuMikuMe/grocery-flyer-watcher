@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grocery-flyer-watch"
+version = "0.2.0"
+description = "Location-configurable, scheduler-independent grocery flyer monitoring"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+grocery-flyer-watch = "grocery_flyer_watch.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

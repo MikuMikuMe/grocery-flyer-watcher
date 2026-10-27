@@ -1,0 +1,19 @@
+# PUBLIC example/current profile. No contacts, personal postal codes or credentials.
+# Copy to private/watch.local.toml for VM settings; paths are relative to this file.
+market = "Kingston, Ontario"
+retailer = "Metro"
+timezone = "America/Toronto"
+sources = [
+  "https://www.metro.ca/en/find-a-grocery/241",
+  "https://www.metro.ca/en/flyer",
+  "https://flyers.smartcanucks.ca/metro-canada",
+  "https://www.flyerbox.ca/deals/kingston/metro/",
+  "https://www.weeklyflyer.com/metro",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# Trusted executable argv. Empty deliberately: no universal web scraper is bundled.
+collector = []
+state_file = "../private/state.json"
+output_dir = "../public"
+publication = "local" # local | git; git requires private state outside the checkout
+notification = "none" # none | smtp; SMTP secrets come exclusively from environment
