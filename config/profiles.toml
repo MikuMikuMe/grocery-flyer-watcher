@@ -14,3 +14,10 @@ config = "config/shoppers.toml"
 baseline = "data/shoppers-drug-mart/latest.json"
 report_dir = "reports/shoppers-drug-mart"
 policy = "docs/SHOPPERS.md"
+
+[[profiles]]
+id = "rexall"
+config = "config/rexall.toml"
+baseline = "data/rexall/latest.json"
+report_dir = "reports/rexall"
+policy = "docs/REXALL.md"

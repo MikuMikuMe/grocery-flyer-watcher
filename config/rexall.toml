@@ -1,0 +1,23 @@
+# PUBLIC Rexall profile. No personal contacts, postal codes or credentials.
+# Paths here are relative to this file, just like the other single-profile TOMLs.
+market = "Kingston, Ontario"
+retailer = "Rexall"
+timezone = "America/Toronto"
+sources = [
+  "https://www.rexall.ca/eflyer",
+  "https://www.rexall.ca/storelocator/store/1529",
+  "https://www.rexall.ca/pharmacy-promotions",
+  "https://flyers.smartcanucks.ca/rexall-canada",
+  "https://deals.smartcanucks.ca/rexall-canada",
+  "https://www.flyers-on-line.com/rexall",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# Store 1529 is a public Kingston reference, not a personal or exclusive preferred store.
+# Source URLs are discovery entrypoints, not proof of a current or upcoming offer.
+# SmartCanucks subdomains are one source family, not independent corroboration.
+collector = []
+state_file = "../private/rexall-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"
+# Safe CLI defaults do not override a private scheduler's conditional delivery settings.

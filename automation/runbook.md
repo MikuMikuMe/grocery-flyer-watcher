@@ -29,7 +29,7 @@ A fresh explicit user request is required for a separate TEST email.
 ## Profiles and discovery
 
 1. Read `config/profiles.toml`, then EVERY listed profile and optional policy. The registry
-   currently enables Metro and Shoppers Drug Mart in Kingston, Ontario. Derive market,
+   currently enables Metro, Shoppers Drug Mart and Rexall in Kingston, Ontario. Derive market,
    retailer, timezone and sources from each profile, not hard-coded city/store assumptions.
    Profile paths in the registry are repository-root-relative. See `docs/MULTI_PROFILE.md`.
 2. Process profiles independently. Unchanged offers, no good deals, a source outage or a
@@ -50,19 +50,21 @@ A fresh explicit user request is required for a separate TEST email.
    Aim for 5-10 only when supported by evidence; one excellent deal can qualify, and
    zero good deals means NO EMAIL. Separate must-buy, conditional and weak promotions.
    Include clean sources, applicable conditions and exact start/expiry dates.
-6. Apply `docs/SHOPPERS.md` to Shoppers: check household, groceries, personal-care and
-   beauty value; distinguish checkout price from PC Optimum rewards/redemption; verify
-   membership, spend thresholds, exclusions, multi-buys and short promotional windows.
-   Do not assume personal offers, points balances, eligibility or stacking.
+6. Apply `docs/SHOPPERS.md` to Shoppers and `docs/REXALL.md` to Rexall. Check household,
+   groceries, personal-care and beauty value; distinguish cash prices from each retailer's
+   rewards/redemption. Verify current terms, membership, spend thresholds, exclusions,
+   multi-buys and short promotional windows. Do not assume personal offers, points balances,
+   age/occupation eligibility or stacking, or transfer one retailer's reward rules to another.
 7. Compare against the matching retailer/market/period and public history. A different
    mirror-site edition ID or editorial wording alone is not a new deal. Keep current
    and preview editions distinct. Preserve source-backed offer labels across runs.
 8. Use the registry's baseline and report destinations. Metro retains `data/latest.json`
    and its historical reports; Shoppers uses `data/shoppers-drug-mart/latest.json` and
-   `reports/shoppers-drug-mart/`. Never overwrite one retailer with another. Standalone
-   runs use scoped `public/` archives; inspect those too when checking or migrating.
+   `reports/shoppers-drug-mart/`; Rexall uses `data/rexall/latest.json` and `reports/rexall/`.
+   Never overwrite one retailer with another. Standalone runs use scoped `public/`
+   archives; inspect those too when checking or migrating.
 9. If no reliable baseline exists, verify and save an initial baseline SILENTLY. This
-   applies to Shoppers and every future new profile: no first-coverage email or routine
+   applies to every new profile, including Rexall: no first-coverage email or routine
    ChatGPT alert. Baseline creation is not evidence of a change. Existing baselines
    remain handled; missing Sent history, an algorithm change or a rename is not a
    reason to resend them. If a verified change has no worthwhile deals, record the
@@ -84,11 +86,11 @@ A fresh explicit user request is required for a separate TEST email.
     or weak-deal baseline into pending mail. Pending work must survive a public commit,
     but an already-handled edition must not produce repeat email or routine chat output.
 12. Prefer separate retailer-labelled digests with stable retailer/market/period/content
-    identifiers, excluding mirror IDs and editorial changes. A Metro message must never
-    count as evidence that a Shoppers digest was sent. Test emails do not count as real
-    flyer delivery. Immediately before sending, check both required gates, publication,
-    offer validity and private Sent history. Confirm transport outcomes; acceptance is
-    not proof of inbox receipt. No email is sent merely because six hours elapsed.
+    identifiers, excluding mirror IDs and editorial changes. A message for one retailer
+    must never count as evidence that another retailer's digest was sent. Test emails do
+    not count as real flyer delivery. Immediately before sending, check both required gates,
+    publication, offer validity and private Sent history. Confirm transport outcomes;
+    acceptance is not proof of inbox receipt. No email is sent merely because six hours elapsed.
 13. ChatGPT uses its private connected Gmail account and private recipient configuration.
     A VM uses separately configured SMTP/other delivery. Never assume ChatGPT OAuth
     transfers to a VM, and never copy private task prompts into the public repository.
