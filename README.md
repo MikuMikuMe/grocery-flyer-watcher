@@ -1,62 +1,79 @@
 # Grocery Flyer Watcher
 
-Location-configurable grocery flyer monitoring, deal reports and private notifications.
-The application is **not tied to Kingston, Metro, ChatGPT, or a particular AI provider**.
-The supplied profiles watch **Metro, Shoppers Drug Mart, Rexall and Staples in Kingston, Ontario**.
-Moving cities means changing the matching profiles and source URLs.
-The current data model supports **Canadian dollars only**.
+Location-configurable retailer flyer and deal monitoring with public reports and private
+notifications. The application is **not tied to Kingston, Metro, ChatGPT or an AI provider**.
+The supplied profiles watch **Metro, Shoppers Drug Mart, Rexall and Staples in Kingston,
+Ontario**. Moving cities means changing matching profiles and source URLs. The current
+price model supports **Canadian dollars only**.
 
 ## Notification policy: checks are not emails
 
-The existing six-hour schedule is a **checking cadence**, not an email subscription
-at that frequency. A deal email requires **both a verified flyer change and genuinely
-worthwhile deals found in that changed flyer**, followed by duplicate/validity checks.
-Send once per qualifying change per authorized recipient. A changed flyer with no
-worthwhile bargains stays silent.
+The existing six-hour schedule is a checking cadence, not an email frequency. Email
+requires BOTH a verified advertised-offer change relative to an established baseline
+AND genuinely worthwhile deals, followed by validity and recipient-specific duplicate
+checks. Send once per qualifying change per authorized recipient. No good deals means
+no email even when a flyer changes. For Staples, the named Deals/Clearance Centre sources
+also qualify under this rule; a product need not appear in a flyer.
 
-Initial baselines for every new retailer, including Staples, are saved silently. No routine,
-no-change, weak-deal, setup, source-error or config-change emails are sent. Routine
-ChatGPT output is also suppressed when there is no qualifying update. Only a new
-explicit test request authorizes a separate test email. See the full
-[notification and retry rules](automation/runbook.md).
+Initialize new retailer/source baselines silently. Do not email for routine checks,
+unchanged or weak deals, source errors, setup or configuration changes. Routine ChatGPT
+output is also suppressed without a qualifying update. Separate test emails require a
+fresh explicit request. See [notification and retry rules](automation/runbook.md).
 
-These gates are applied by the connected scheduled task. Standalone collectors/agents
-must enforce the same policy before enabling SMTP; transport availability or generating
-a report does not by itself establish a verified change or worthwhile value.
+These gates are applied by the connected task. Standalone collectors/agents must apply
+the same rules before enabling SMTP. A report or working transport is not evidence of
+a qualifying change. Source/configuration changes preserve a task's enabled/paused state.
 
 ## Enabled watches
 
-`config/profiles.toml` lists the enabled watches and their independent baseline/report paths:
+`config/profiles.toml` lists enabled retailer profiles and independent baseline paths:
 
-| Retailer | Profile | Public baseline |
+| Retailer | Profile | Dated-flyer baseline |
 | --- | --- | --- |
 | Metro | `config/watch.toml` | `data/latest.json` |
 | Shoppers Drug Mart | `config/shoppers.toml` | `data/shoppers-drug-mart/latest.json` |
 | Rexall | `config/rexall.toml` | `data/rexall/latest.json` |
 | Staples | `config/staples.toml` | `data/staples/latest.json` |
 
-Each new retailer's baseline is created only after its first verified flyer inspection;
-setup does not invent advertised prices. See [Shoppers analysis rules](docs/SHOPPERS.md),
-[Rexall analysis rules](docs/REXALL.md) and [Staples analysis rules](docs/STAPLES.md)
-for product matching, cash-versus-rewards comparisons, item-specific validity dates,
-eligibility and purchase limits.
-See [multiple-profile operation](docs/MULTI_PROFILE.md) for independent state and VM examples.
+### Staples: all categories, flyers plus deals and clearance
+
+Always inspect the official flyer hub AND these collections:
+
+- [Deals Centre](https://www.staples.ca/collections/staples-deals-centre)
+- [Clearance Centre](https://www.staples.ca/collections/staples-clearance-centre-7922)
+
+**No category allowlist.** Chairs, cleaning supplies, candies, snacks, household goods,
+electronics and other categories are all eligible. Examples are not filters. Follow
+accessible pagination and rank verified value rather than restricting departments.
+
+Apply the privately configured home store before checking pickup or branch-specific
+prices/stock. Do not assume a site's default store or national inventory matches it.
+Online-only shipping offers can still qualify with verified costs and applicability.
+Personal store preferences stay private; public retail facts may be cited as evidence.
+
+New collection sources initialize silently. Deduplicate identical offers across sources,
+and do not treat reordering, partial coverage or newly noticed old products as new deals.
+Undated collection observations use separate public Markdown ledgers under
+`reports/staples/collections/`; never invent a flyer expiry to fit them into dated JSON.
+The existing CLI does not automatically consume those ledgers: the connected task or a
+replacement collector/orchestrator implements this policy. See [Staples rules](docs/STAPLES.md).
+
+See also [Shoppers rules](docs/SHOPPERS.md), [Rexall rules](docs/REXALL.md), and
+[multiple-profile operation](docs/MULTI_PROFILE.md). Setup never fabricates prices.
 
 ## What runs independently today
 
 - A Python 3.11+ CLI with no third-party runtime dependencies.
-- A verified-JSON input adapter and an external-command collector adapter.
-- Region/source/date validation, unit-price reporting, persistent duplicate detection,
-  pending-delivery retries, safe dry runs, local or Git publication, and TLS SMTP.
-- Cron instructions, systemd templates, and an agent handoff in `AGENTS.md`.
-- The original `python -m metro_flyer_watch` commands remain compatible.
+- Verified dated-flyer JSON and external-command collector adapters.
+- Region/source/date validation, unit-price reports, persistent duplicate detection,
+  pending-delivery retries, dry runs, local/Git publication and TLS SMTP transport.
+- Cron instructions, systemd templates and an agent handoff in `AGENTS.md`.
+- Compatible original `python -m metro_flyer_watch` commands.
 
-**Important boundary:** there is no bundled universal live flyer scraper or AI service.
-A collector must browse/parse the configured sources, verify offers, rank value and return
-JSON. ChatGPT currently fills that role; another agent or a purpose-built scraper can use
-exactly the same contract. The core validates structure and consistency, not the truth
-of a price. Replacing the scheduler alone does not provide a browser, API credentials,
-or equivalent deal-analysis intelligence.
+**Boundary:** no universal live flyer/collection scraper or AI service is bundled.
+A collector must inspect sources, verify items and assess value. The core validates
+structure/consistency, not the truth of a price. A new scheduler does not supply a
+browser, credentials, undated-collection adapter or equivalent deal-analysis intelligence.
 
 ## Quick start
 
@@ -69,10 +86,8 @@ grocery-flyer-watch report data/latest.json
 python -m unittest discover -s tests -v
 ```
 
-`data/latest.json` and `reports/2026-10-22.md` are historical Metro baselines, not a
-claim that those prices are current. The runtime rejects expired input for new alerts.
-
-For freshly verified snapshots, use the matching retailer profile:
+Historical files are not a claim that saved prices are current. The runner rejects
+expired flyers for new delivery. Use the matching profile for freshly verified dated JSON:
 
 ```sh
 grocery-flyer-watch run --config config/watch.toml --input /path/to/metro.json --dry-run
@@ -81,48 +96,40 @@ grocery-flyer-watch run --config config/rexall.toml --input /path/to/rexall.json
 grocery-flyer-watch run --config config/staples.toml --input /path/to/staples.json --dry-run
 ```
 
-For automatic collection, configure the trusted `collector` argv in each local TOML,
-then run without `--input` or `--dry-run`. Defaults deliberately have **no collector,
-no email, and no Git push**; missing setup fails rather than inventing offers.
-The existing CLI accepts one profile at a time; agents enumerate the registry and VM
-operators can use the sequential wrapper in `docs/MULTI_PROFILE.md`.
+Configure a trusted `collector` argv in each private TOML before running without `--input`.
+Defaults deliberately contain no collector, no email and no Git push. Missing setup fails
+rather than inventing offers. The CLI accepts one profile at a time; the registry is for
+orchestration. See the sequential VM example in `docs/MULTI_PROFILE.md`.
 
-## Configuration, not a location baked into code
+## Configuration and privacy
 
-Change `market`, `retailer`, `timezone` and matching store/source URLs together when moving.
-Report headings, validation and state keys use those settings. Each profile has separate
-private state; public archive paths also include retailer/market scope. An unchanged or
-failed check for one retailer must not prevent checking the others.
-Official store pages come first; cross-check independent sources, not just Flipp.
+Change market, retailer, timezone and matching sources together when moving. Each profile
+has separate private state and scoped public archives. One unchanged/failed profile must
+not suppress the others. Prefer official store sources and cross-check beyond Flipp.
 
-Delivery credentials and sender/recipient addresses are read from environment variables
-only by the standalone SMTP adapter. Keep real deployment config, state, collector caches
-and logs outside a public checkout. Public JSON has an explicit field allowlist; this is
-a guardrail, **not a proof that arbitrary free text is private-information-free**.
-Review public reports. The private scheduled task's connected Gmail settings stay private.
+Standalone SMTP reads addresses and credentials from environment variables. Keep actual
+settings, personal home-store preferences, private state, caches and delivery logs outside
+a public checkout. Public schema/privacy checks are guardrails, not proof arbitrary text
+is safe. Review exact public paths. Connected Gmail settings remain private.
 
 ## Architecture
 
-`Scheduler -> Profile registry -> Collector per profile -> Validation / change detection -> Public archive -> Private delivery`
+`Scheduler -> Profile registry -> Source collector -> Validation / change detection -> Public archive -> Private delivery`
 
-Schedulers are interchangeable: the existing ChatGPT task, cron, systemd, or a coding
-agent. Collectors are replaceable executables using the documented JSON protocol.
-Publication and delivery have separate saved status, so a successful Git push does not
-cause a failed email to be forgotten on the next unchanged check. Current and preview
-editions can coexist; a mirror site's different edition ID does not create a duplicate.
+Schedulers are interchangeable: ChatGPT, cron, systemd or another agent. Publication and
+delivery have separate state so a failed email is not forgotten after a successful public
+commit. Current/preview editions and collection observations remain distinct; identical
+material offers across sources must not produce duplicate messages.
 
-See [deployment and collector contract](docs/PORTABILITY.md),
-[agent instructions](AGENTS.md) and [operating runbook](automation/runbook.md).
+See [deployment and dated-JSON contract](docs/PORTABILITY.md),
+[agent instructions](AGENTS.md), [runbook](automation/runbook.md) and
+[Staples collection/store rules](docs/STAPLES.md).
 
 ## Repository identity
 
-Project name: **Grocery Flyer Watcher**.
 Canonical repository: [MikuMikuMe/grocery-flyer-watcher](https://github.com/MikuMikuMe/grocery-flyer-watcher).
-The in-place GitHub rename is complete. Public repository ID `1435089073` still identifies
-the same repository; existing history, reports and public visibility are preserved.
-Resolve this stable ID when a future rename changes the canonical owner/name.
+Stable repository ID `1435089073` survives the completed in-place rename. Resolve that ID
+for future name changes. History, reports and public visibility are preserved.
 
-The installed CLI remains `grocery-flyer-watch`, the Python package remains
-`grocery_flyer_watch`, and the existing service filenames and deployment paths stay
-unchanged for compatibility. The repository name does not require renaming those interfaces.
-See the deployment guide for updating an existing clone's remote.
+The installed CLI remains `grocery-flyer-watch`, the Python package `grocery_flyer_watch`,
+and existing service names/deployment paths remain unchanged for compatibility.

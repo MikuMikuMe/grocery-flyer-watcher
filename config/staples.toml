@@ -5,6 +5,8 @@ retailer = "Staples"
 timezone = "America/Toronto"
 sources = [
   "https://www.staples.ca/a/content/flyers",
+  "https://www.staples.ca/collections/staples-deals-centre",
+  "https://www.staples.ca/collections/staples-clearance-centre-7922",
   "https://stores.staples.ca/on/kingston/",
   "https://stores.staples.ca/on/kingston/office-supplies-ca-23.html",
   "https://stores.staples.ca/on/kingston/office-supplies-ca-133.html",
@@ -14,8 +16,11 @@ sources = [
   "https://www.flyerbox.ca/deals/kingston/staples/",
   "https://flipp.com/en-ca/kingston-on"
 ]
-# Official store references are public retail locations, not a personal/preferred store.
-# Select Kingston/Ontario; a default store on the flyer hub may be elsewhere.
+# Monitor all categories: there is no category allowlist or exclusion by department.
+# Deals Centre and Clearance Centre are monitored offer sources, not just flyer references.
+# Official store references are public retail locations. Home-store preference stays private.
+# Apply the private store selection before checking pickup or store-specific price/stock.
+# Never substitute a default Toronto store, another branch or national online inventory.
 # Staples subdomains are one source family, not independent corroboration.
 # Discovery links and archive headings do not establish valid/current advertised offers.
 collector = []
@@ -24,3 +29,4 @@ output_dir = "../public"
 publication = "local"
 notification = "none"
 # Safe CLI defaults do not override the private task's authorized conditional delivery.
+# Undated collection observations require the agent/orchestrator protocol in docs/STAPLES.md.
