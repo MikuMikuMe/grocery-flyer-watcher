@@ -1,0 +1,53 @@
+{
+  "flyer": {
+    "id": "ontario-2026-10-23-to-29",
+    "retailer": "Rexall",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-23",
+    "ends_on": "2026-10-29",
+    "url": "https://flyers.smartcanucks.ca/canada/rexall-on-flyer-october-23-to-291/all",
+    "sources": [
+      "https://flyers.smartcanucks.ca/rexall--canada",
+      "https://deals.smartcanucks.ca/rexall-canada"
+    ]
+  },
+  "offers": [
+    {
+      "name": "Nosh & Co. selected popcorn or snack bag",
+      "price_cad": "3.29",
+      "pricing": "package",
+      "priority": 2,
+      "why": "Recorded from the Ontario weekly-flyer image; size and exact variety require checking. Baseline only, not a lowest-price claim."
+    },
+    {
+      "name": "Coca-Cola or Pepsi selected multipack",
+      "price_cad": "6.49",
+      "pricing": "package",
+      "priority": 2,
+      "why": "Advertised Ontario flyer price for selected multipacks; compare unit volumes before deciding whether to buy."
+    },
+    {
+      "name": "Scotties facial tissues, selected box (two for $4)",
+      "price_cad": "2.00",
+      "pricing": "package",
+      "priority": 2,
+      "restrictions": "Advertised $2 per box requires two qualifying boxes; confirm sizes and pack limits.",
+      "why": "Conditional multibuy price; compare by sheet count and ply, not just per box."
+    },
+    {
+      "name": "Nosh & Co. selected nuts, bag",
+      "price_cad": "6.99",
+      "pricing": "package",
+      "priority": 1,
+      "why": "Recorded advertised price for selected bag; nut variety and pack size need checking before comparison."
+    },
+    {
+      "name": "Coca-Cola assorted selected bottles (two for $6)",
+      "price_cad": "3.00",
+      "pricing": "package",
+      "priority": 2,
+      "restrictions": "Advertised $3 per bottle requires buying two selected bottles; verify size and store applicability.",
+      "why": "Separate bottle offer from multipacks, with conditional multi-buy pricing."
+    }
+  ]
+}
