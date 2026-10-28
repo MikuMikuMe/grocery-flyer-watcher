@@ -10,19 +10,41 @@ price model supports **Canadian dollars only**.
 
 The existing six-hour schedule is a checking cadence, not an email frequency. Email
 requires BOTH a verified advertised-offer change relative to an established baseline
-AND genuinely worthwhile deals, followed by validity and recipient-specific duplicate
-checks. Send once per qualifying change per authorized recipient. No good deals means
-no email even when a flyer changes. For Staples, the named Deals/Clearance Centre sources
-also qualify under this rule; a product need not appear in a flyer.
+AND genuinely useful verified value, followed by validity and recipient-specific duplicate
+checks. Send once per qualifying change per authorized recipient. Practical everyday value
+and modest verified savings can qualify; no exceptional-discount threshold is imposed.
+For Staples, the named Deals/Clearance Centre sources also qualify; a product need not
+appear in a flyer. A changed source with no useful value does not qualify for email.
 
 Initialize new retailer/source baselines silently. Do not email for routine checks,
-unchanged or weak deals, source errors, setup or configuration changes. Routine ChatGPT
+unchanged or weak sources, source errors, setup or configuration changes. Routine ChatGPT
 output is also suppressed without a qualifying update. Separate test emails require a
 fresh explicit request. See [notification and retry rules](automation/runbook.md).
 
 These gates are applied by the connected task. Standalone collectors/agents must apply
 the same rules before enabling SMTP. A report or working transport is not evidence of
 a qualifying change. Source/configuration changes preserve a task's enabled/paused state.
+
+## Shopping roundups: 8-10 assessed offers per changed retailer
+
+Each qualifying changed retailer/flyer gets **8-10 distinct assessed entries**, rather
+than a one-item alert or a shared limit across all stores. Three qualifying retailers
+mean 24-30 entries per recipient across their retailer digests. Most entries should be
+useful buys, including modest savings and sensible everyday purchases.
+
+Use **Best buys**, **Worth buying** and **Not worth treating as headline bargains**
+sections. The last section counts within the same 8-10 total. Research broadly enough
+to support that coverage; never invent offers or exaggerate weak value to fill it.
+Useful continuing offers can appear in a qualifying new edition's roundup without
+being mislabelled new price reductions or creating an independent duplicate alert.
+
+Emails use compact product/pack, cash-price, comparison and essential-condition entries,
+with actual dates and a public report link. No generic closing liability disclaimer or
+private selection rationale. Actual shopping preferences stay in private runtime settings.
+See the authoritative [digest contract](docs/DIGEST.md) and
+[structure-only template](automation/digest-template.md). Formatting changes never
+resend already-handled editions. The connected task uses this contract; the template
+is not an automatically installed replacement for the legacy CLI's archival formatter.
 
 ## Enabled watches
 
@@ -46,10 +68,11 @@ Always inspect the official flyer hub AND these collections:
 electronics and other categories are all eligible. Examples are not filters. Follow
 accessible pagination and rank verified value rather than restricting departments.
 
-Apply the privately configured home store before checking pickup or branch-specific
-prices/stock. Do not assume a site's default store or national inventory matches it.
-Online-only shipping offers can still qualify with verified costs and applicability.
-Personal store preferences stay private; public retail facts may be cited as evidence.
+Apply privately configured home-store and fulfillment preferences before recommending
+a purchase channel. Do not assume the site's default store, online price or national
+inventory establishes local applicability. Online-only offers are actionable only when
+private preferences allow that channel and its conditions are verified. Personal settings
+stay private; public retail and purchase-condition facts may be cited as evidence.
 
 New collection sources initialize silently. Deduplicate identical offers across sources,
 and do not treat reordering, partial coverage or newly noticed old products as new deals.
@@ -59,7 +82,8 @@ The existing CLI does not automatically consume those ledgers: the connected tas
 replacement collector/orchestrator implements this policy. See [Staples rules](docs/STAPLES.md).
 
 See also [Shoppers rules](docs/SHOPPERS.md), [Rexall rules](docs/REXALL.md), and
-[multiple-profile operation](docs/MULTI_PROFILE.md). Setup never fabricates prices.
+[multiple-profile operation](docs/MULTI_PROFILE.md). The digest contract takes precedence
+on lineup size and presentation. Setup never fabricates prices.
 
 ## What runs independently today
 
@@ -74,6 +98,7 @@ See also [Shoppers rules](docs/SHOPPERS.md), [Rexall rules](docs/REXALL.md), and
 A collector must inspect sources, verify items and assess value. The core validates
 structure/consistency, not the truth of a price. A new scheduler does not supply a
 browser, credentials, undated-collection adapter or equivalent deal-analysis intelligence.
+The public digest contract specifies agent/orchestrator behavior, not new research code.
 
 ## Quick start
 
@@ -108,9 +133,10 @@ has separate private state and scoped public archives. One unchanged/failed prof
 not suppress the others. Prefer official store sources and cross-check beyond Flipp.
 
 Standalone SMTP reads addresses and credentials from environment variables. Keep actual
-settings, personal home-store preferences, private state, caches and delivery logs outside
-a public checkout. Public schema/privacy checks are guardrails, not proof arbitrary text
-is safe. Review exact public paths. Connected Gmail settings remain private.
+shopping/store/fulfillment preferences, private state, caches and delivery logs outside
+a public checkout. Do not print private ranking context in reports or emails. Public
+schema/privacy checks are guardrails, not proof arbitrary text is safe. Review exact
+public paths. Connected Gmail settings remain private.
 
 ## Architecture
 
@@ -122,8 +148,8 @@ commit. Current/preview editions and collection observations remain distinct; id
 material offers across sources must not produce duplicate messages.
 
 See [deployment and dated-JSON contract](docs/PORTABILITY.md),
-[agent instructions](AGENTS.md), [runbook](automation/runbook.md) and
-[Staples collection/store rules](docs/STAPLES.md).
+[agent instructions](AGENTS.md), [runbook](automation/runbook.md),
+[digest contract](docs/DIGEST.md) and [Staples rules](docs/STAPLES.md).
 
 ## Repository identity
 
