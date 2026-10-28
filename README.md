@@ -2,7 +2,7 @@
 
 Location-configurable grocery flyer monitoring, deal reports and private notifications.
 The application is **not tied to Kingston, Metro, ChatGPT, or a particular AI provider**.
-The supplied profiles watch **Metro, Shoppers Drug Mart and Rexall in Kingston, Ontario**.
+The supplied profiles watch **Metro, Shoppers Drug Mart, Rexall and Staples in Kingston, Ontario**.
 Moving cities means changing the matching profiles and source URLs.
 The current data model supports **Canadian dollars only**.
 
@@ -11,9 +11,10 @@ The current data model supports **Canadian dollars only**.
 The existing six-hour schedule is a **checking cadence**, not an email subscription
 at that frequency. A deal email requires **both a verified flyer change and genuinely
 worthwhile deals found in that changed flyer**, followed by duplicate/validity checks.
-Send once per qualifying change. A changed flyer with no worthwhile bargains stays silent.
+Send once per qualifying change per authorized recipient. A changed flyer with no
+worthwhile bargains stays silent.
 
-Initial baselines, including first Shoppers or Rexall coverage, are saved silently. No routine,
+Initial baselines for every new retailer, including Staples, are saved silently. No routine,
 no-change, weak-deal, setup, source-error or config-change emails are sent. Routine
 ChatGPT output is also suppressed when there is no qualifying update. Only a new
 explicit test request authorizes a separate test email. See the full
@@ -32,11 +33,13 @@ a report does not by itself establish a verified change or worthwhile value.
 | Metro | `config/watch.toml` | `data/latest.json` |
 | Shoppers Drug Mart | `config/shoppers.toml` | `data/shoppers-drug-mart/latest.json` |
 | Rexall | `config/rexall.toml` | `data/rexall/latest.json` |
+| Staples | `config/staples.toml` | `data/staples/latest.json` |
 
 Each new retailer's baseline is created only after its first verified flyer inspection;
-setup does not invent advertised prices. See [Shoppers analysis rules](docs/SHOPPERS.md)
-and [Rexall analysis rules](docs/REXALL.md) for cash-versus-rewards comparisons,
-item-specific validity dates, eligibility and purchase limits.
+setup does not invent advertised prices. See [Shoppers analysis rules](docs/SHOPPERS.md),
+[Rexall analysis rules](docs/REXALL.md) and [Staples analysis rules](docs/STAPLES.md)
+for product matching, cash-versus-rewards comparisons, item-specific validity dates,
+eligibility and purchase limits.
 See [multiple-profile operation](docs/MULTI_PROFILE.md) for independent state and VM examples.
 
 ## What runs independently today
@@ -75,6 +78,7 @@ For freshly verified snapshots, use the matching retailer profile:
 grocery-flyer-watch run --config config/watch.toml --input /path/to/metro.json --dry-run
 grocery-flyer-watch run --config config/shoppers.toml --input /path/to/shoppers.json --dry-run
 grocery-flyer-watch run --config config/rexall.toml --input /path/to/rexall.json --dry-run
+grocery-flyer-watch run --config config/staples.toml --input /path/to/staples.json --dry-run
 ```
 
 For automatic collection, configure the trusted `collector` argv in each local TOML,

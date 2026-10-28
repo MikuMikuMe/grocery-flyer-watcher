@@ -1,0 +1,26 @@
+# PUBLIC Staples Canada profile. No contacts, personal postal codes or credentials.
+# Paths are relative to this file, following the existing single-profile CLI contract.
+market = "Kingston, Ontario"
+retailer = "Staples"
+timezone = "America/Toronto"
+sources = [
+  "https://www.staples.ca/a/content/flyers",
+  "https://stores.staples.ca/on/kingston/",
+  "https://stores.staples.ca/on/kingston/office-supplies-ca-23.html",
+  "https://stores.staples.ca/on/kingston/office-supplies-ca-133.html",
+  "https://help.staples.ca/hc/en-us/articles/4402322974359-Deal-Promotion-Rebate-Information-and-Policies",
+  "https://flyers.smartcanucks.ca/staples-canada",
+  "https://www.flyers-on-line.com/staples",
+  "https://www.flyerbox.ca/deals/kingston/staples/",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# Official store references are public retail locations, not a personal/preferred store.
+# Select Kingston/Ontario; a default store on the flyer hub may be elsewhere.
+# Staples subdomains are one source family, not independent corroboration.
+# Discovery links and archive headings do not establish valid/current advertised offers.
+collector = []
+state_file = "../private/staples-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"
+# Safe CLI defaults do not override the private task's authorized conditional delivery.

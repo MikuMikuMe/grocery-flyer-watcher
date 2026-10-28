@@ -21,3 +21,10 @@ config = "config/rexall.toml"
 baseline = "data/rexall/latest.json"
 report_dir = "reports/rexall"
 policy = "docs/REXALL.md"
+
+[[profiles]]
+id = "staples"
+config = "config/staples.toml"
+baseline = "data/staples/latest.json"
+report_dir = "reports/staples"
+policy = "docs/STAPLES.md"

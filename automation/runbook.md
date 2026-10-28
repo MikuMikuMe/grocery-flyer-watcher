@@ -16,7 +16,7 @@ The schedule controls **source checks, not email frequency**. A deal email requi
 A new edition with no worthwhile bargains does not qualify. Do not pad a weak report
 or treat an advertised sale label as proof of value. Send once per qualifying change
 per authorized recipient, after successful publication and private recipient-specific
- duplicate checking. Recheck actual offer dates and eligibility before sending.
+duplicate checking. Recheck actual offer dates and eligibility before sending.
 These rules supersede older first-coverage instructions.
 
 NO emails for routine checks, unchanged flyers, weak flyers, first-run initialization,
@@ -30,8 +30,8 @@ A fresh explicit user request is required for a separate TEST email.
 ## Profiles and discovery
 
 1. Read `config/profiles.toml`, then EVERY listed profile and optional policy. The registry
-   currently enables Metro, Shoppers Drug Mart and Rexall in Kingston, Ontario. Derive market,
-   retailer, timezone and sources from each profile, not hard-coded city/store assumptions.
+   currently enables Metro, Shoppers Drug Mart, Rexall and Staples in Kingston, Ontario. Derive
+   market, retailer, timezone and sources from each profile, not hard-coded city/store assumptions.
    Profile paths in the registry are repository-root-relative. See `docs/MULTI_PROFILE.md`.
 2. Process profiles independently. Unchanged offers, no good deals, a source outage or a
    failed delivery must not prevent checking another profile. Keep errors private and
@@ -56,23 +56,29 @@ A fresh explicit user request is required for a separate TEST email.
    rewards/redemption. Verify current terms, membership, spend thresholds, exclusions,
    multi-buys and short promotional windows. Do not assume personal offers, points balances,
    age/occupation eligibility or stacking, or transfer one retailer's reward rules to another.
+   Apply `docs/STAPLES.md` to Staples: include office/school supplies, consumables,
+   household products, electronics and furniture when genuinely worthwhile. Match exact
+   models/SKUs, configurations, pack sizes and product condition. Verify coupons, account
+   eligibility, full cash price versus rebates/gift cards/financing, shipping and Kingston
+   pickup/store applicability. Keep weekly flyers and overlapping catalogues/events distinct.
 7. Compare against the matching retailer/market/period and public history. A different
    mirror-site edition ID or editorial wording alone is not a new deal. Keep current
    and preview editions distinct. Preserve source-backed offer labels across runs.
 8. Use the registry's baseline and report destinations. Metro retains `data/latest.json`
    and its historical reports; Shoppers uses `data/shoppers-drug-mart/latest.json` and
-   `reports/shoppers-drug-mart/`; Rexall uses `data/rexall/latest.json` and `reports/rexall/`.
-   Never overwrite one retailer with another. Standalone runs use scoped `public/`
-   archives; inspect those too when checking or migrating.
+   `reports/shoppers-drug-mart/`; Rexall uses `data/rexall/latest.json` and `reports/rexall/`;
+   Staples uses `data/staples/latest.json` and `reports/staples/`. Never overwrite one
+   retailer with another. Standalone runs use scoped `public/` archives; inspect those
+   too when checking or migrating.
 9. If no reliable baseline exists, verify and save an initial baseline SILENTLY. This
-   applies to every new profile, including Rexall: no first-coverage email or routine
+   applies to every new profile, including Staples: no first-coverage email or routine
    ChatGPT alert. Baseline creation is not evidence of a change. Existing baselines
    remain handled; missing Sent history, an algorithm change or a rename is not a
    reason to resend them. Adding a recipient does not authorize old-digest backfills;
    new recipients receive future qualifying updates only. If a verified change has no
    worthwhile deals, record the public change as appropriate and mark it handled privately
    without delivery. Do not later email it merely because unchanged offers received
-   different rankings.
+   different rankings. Do not backfill already-published catalogues as new flyer changes.
 10. Commit verified public JSON/reports and non-sensitive instruction/config changes.
     Validate and review the exact staged paths, then verify commit/push success.
     Public archive changes do not automatically authorize a notification. Unchanged
