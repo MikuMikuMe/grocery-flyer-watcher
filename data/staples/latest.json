@@ -1,0 +1,66 @@
+{
+  "flyer": {
+    "id": "canada-2026-10-23-to-29-weekly",
+    "retailer": "Staples",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-23",
+    "ends_on": "2026-10-29",
+    "url": "https://www.flyers-on-line.com/staples",
+    "sources": [
+      "https://www.staples.ca/a/content/flyers",
+      "https://flyers.smartcanucks.ca/staples-canada"
+    ]
+  },
+  "offers": [
+    {
+      "name": "Staples Essentials Task Chair, Grey",
+      "price_cad": "129.99",
+      "pricing": "each",
+      "priority": 2,
+      "why": "In October 23–29 flyer at the single-chair cash price; compare ergonomic adjustment and warranty, not advertised saving alone."
+    },
+    {
+      "name": "Staples Hyken Task Chair, Black",
+      "price_cad": "199.99",
+      "pricing": "each",
+      "priority": 3,
+      "why": "Advertised cash price; chair fit, return terms and competing exact-model prices were not independently established."
+    },
+    {
+      "name": "Staples 48-inch Electric Rectangular Adjustable Standing Desk, White",
+      "price_cad": "149.99",
+      "pricing": "each",
+      "priority": 2,
+      "why": "Advertised in furniture event; check desktop size, assembly and Kingston stock before purchase."
+    },
+    {
+      "name": "Canon PIXMA TR7120 Wireless All-in-One Printer, White",
+      "price_cad": "69.00",
+      "pricing": "each",
+      "priority": 3,
+      "why": "Advertised printer price; compare ink running costs and Canadian warranty before treating as value."
+    },
+    {
+      "name": "HP LaserJet M140w Wireless Printer",
+      "price_cad": "134.00",
+      "pricing": "each",
+      "priority": 2,
+      "why": "Advertised printer price; compare toner cost and exact model with competing retailers."
+    },
+    {
+      "name": "Acer 14-inch FHD Laptop, Intel N4500, 8 GB RAM, 128 GB storage",
+      "price_cad": "399.99",
+      "pricing": "each",
+      "priority": 1,
+      "why": "Price documented as baseline; older processor and limited storage are trade-offs, so discount is not proof of value."
+    },
+    {
+      "name": "Royale Tiger Strong Paper Towels, selected 6-double-roll pack",
+      "price_cad": "10.99",
+      "pricing": "package",
+      "count": 6,
+      "priority": 2,
+      "why": "Check exact sheet count and per-sheet price; advertised package count alone cannot establish savings."
+    }
+  ]
+}
