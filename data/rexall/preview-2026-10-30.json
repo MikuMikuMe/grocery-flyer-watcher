@@ -1,0 +1,101 @@
+{
+  "flyer": {
+    "id": "rexall-ontario-2026-10-30-to-11-05-local-preview",
+    "retailer": "Rexall",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-30",
+    "ends_on": "2026-11-05",
+    "url": "https://www.flyers.now/rexall/rexall-flyer-october-30-to-november-5-2026-3",
+    "sources": [
+      "https://www.kimbino.ca/rexall/rexall-weekly-flyer-circulaire-from-friday-oct-30-2026-6146330/",
+      "https://www.canadiansavers.ca/flyers/rexall-flyer-next-week/"
+    ]
+  },
+  "offers": [
+    {
+      "name": "Crest selected 50–100 mL toothpaste or Oral-B toothbrush",
+      "price_cad": "0.99",
+      "pricing": "each",
+      "priority": 5,
+      "restrictions": "Registered Be Well member price; October 30–November 1 only; limit 4; after limit/nonmember advertised $1.49.",
+      "why": "Strong small-format everyday-care price with explicitly stated membership limits."
+    },
+    {
+      "name": "Savvy facial tissues, selected 88–126 sheets per box",
+      "price_cad": "1.00",
+      "pricing": "each",
+      "priority": 5,
+      "restrictions": "Selected varieties; limit 6; after limit $1.29; while quantities last.",
+      "why": "About 0.79–1.14 cents per sheet, varying with actual box count."
+    },
+    {
+      "name": "Gain / Purex / Cheer / Tide Simply, selected liquid detergent 946 mL–1.47 L",
+      "price_cad": "4.44",
+      "pricing": "each",
+      "priority": 5,
+      "restrictions": "Selected variants and sizes only; check the actual bottle/format. Other listed categories at same promotional price have different quantities.",
+      "why": "Approximately $3.02–$4.69 per L for qualifying liquid-detergent formats; compare matching concentrate."
+    },
+    {
+      "name": "Sensodyne or Pronamel toothpaste, selected 75–100 mL",
+      "price_cad": "3.99",
+      "pricing": "each",
+      "priority": 4,
+      "restrictions": "Selected variants; verify exact size and eligibility.",
+      "why": "Useful sensitive-toothpaste offer; size varies, so compare identical formulation."
+    },
+    {
+      "name": "Coca-Cola 6 × 710 mL selected bottles",
+      "price_cad": "3.99",
+      "pricing": "package",
+      "count": 6,
+      "priority": 4,
+      "restrictions": "October 30–November 1 three-day special; selected products only.",
+      "why": "$0.94/L over 4.26 L; suitable if this specific pack is needed."
+    },
+    {
+      "name": "Black Diamond selected cheese bar 400 g",
+      "price_cad": "4.99",
+      "pricing": "package",
+      "size_g": 400,
+      "priority": 4,
+      "restrictions": "Registered Be Well member price; October 30–November 1 three-day special, limit 3. Nonmember/after-limit advertised $6.99. Shredded cheese variant is 320 g, not equivalent weight.",
+      "why": "$12.48/kg for 400 g bars; similar Metro member price exists, so not an exceptional saving."
+    },
+    {
+      "name": "Nosh & Co selected chips, two 130–140 g bags",
+      "price_cad": "3.00",
+      "pricing": "package",
+      "count": 2,
+      "priority": 4,
+      "restrictions": "Must buy two selected bags for $3 total; limit 6; after-limit price $2.29 per bag.",
+      "why": "$1.50/bag or roughly $10.71–$11.54/kg depending on size."
+    },
+    {
+      "name": "Cashmere bathroom tissue, 12 double rolls labelled 12=24",
+      "price_cad": "5.99",
+      "pricing": "package",
+      "priority": 3,
+      "restrictions": "Selected double-roll format; other advertised 8-triple-roll / Scotties / SpongeTowels offers are separate pack sizes; exact sheet count not verified.",
+      "why": "Practical tissue price if the listed pack matches; marketing roll equivalents are not sheet counts."
+    },
+    {
+      "name": "Grade A large white eggs, 12-count",
+      "price_cad": "3.89",
+      "pricing": "package",
+      "count": 12,
+      "priority": 2,
+      "restrictions": "October 30–November 1 three-day special; selected large white eggs.",
+      "why": "About $0.32 per egg; Shoppers advertises Grade A large white eggs at $3.49/dozen October 31–November 1."
+    },
+    {
+      "name": "Dempster's white or whole wheat bread, two 675 g loaves",
+      "price_cad": "6.00",
+      "pricing": "package",
+      "count": 2,
+      "priority": 2,
+      "restrictions": "Requires two 675 g selected loaves for the $6 multibuy price; October 30–November 1 three-day special.",
+      "why": "$3/loaf; conditional multibuy, while another brand's 675 g loaf is advertised elsewhere for less."
+    }
+  ]
+}
