@@ -1,0 +1,92 @@
+{
+  "flyer": {
+    "id": "ontario-2026-10-31-to-11-06",
+    "retailer": "Shoppers Drug Mart",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-31",
+    "ends_on": "2026-11-06",
+    "url": "https://flyers.smartcanucks.ca/canada/shoppers-drug-mart-on-flyer-october-31-to-november-62/all",
+    "sources": [
+      "https://www.canadiansavers.ca/flyers/shoppers-drug-mart-flyer-next-week/"
+    ]
+  },
+  "offers": [
+    {
+      "name": "Grade A large white eggs, 12-pack",
+      "price_cad": "3.49",
+      "pricing": "package",
+      "count": 12,
+      "priority": 5,
+      "restrictions": "2-day sale October 31–November 1 only; selected Grade A large white eggs.",
+      "why": "About $0.29 per egg; useful weekend grocery price."
+    },
+    {
+      "name": "No Name salted or unsalted butter, 454 g",
+      "price_cad": "4.99",
+      "pricing": "package",
+      "size_g": 454,
+      "priority": 5,
+      "restrictions": "2-day sale October 31–November 1 only; selected butter varieties.",
+      "why": "About $10.99/kg; useful butter offer."
+    },
+    {
+      "name": "Neilson chocolate milk, 310 mL",
+      "price_cad": "0.99",
+      "pricing": "package",
+      "priority": 4,
+      "restrictions": "2-day sale October 31–November 1 only; selected Neilson chocolate milk.",
+      "why": "About $3.19/L; low-cost single-serve drink."
+    },
+    {
+      "name": "No Name 2-ply or PC 3-ply facial tissues, 6-box pack",
+      "price_cad": "4.99",
+      "pricing": "package",
+      "count": 6,
+      "priority": 4,
+      "restrictions": "2-day sale October 31–November 1 only; compare sheets per box and ply.",
+      "why": "About $0.83 per box; per-sheet value depends on selected version."
+    },
+    {
+      "name": "Colgate Cavity Protection toothpaste, selected 55 mL tube",
+      "price_cad": "1.29",
+      "pricing": "package",
+      "priority": 4,
+      "restrictions": "2-day sale October 31–November 1 only; selected small tube.",
+      "why": "Low cash price for a small tube; compare per-mL before buying multiples."
+    },
+    {
+      "name": "Wonder white or whole wheat bread, 675 g",
+      "price_cad": "2.49",
+      "pricing": "package",
+      "size_g": 675,
+      "priority": 4,
+      "restrictions": "2-day sale October 31–November 1 only; selected loaves.",
+      "why": "About $3.69/kg; useful if fresh or promptly frozen."
+    },
+    {
+      "name": "Royale Original 2-ply 126-count or Velour 3-ply 82-count facial tissues",
+      "price_cad": "1.29",
+      "pricing": "package",
+      "priority": 4,
+      "restrictions": "October 31–November 6 weekly flyer; single selected box; compare 126 vs 82 sheets.",
+      "why": "About 1.02 cents/sheet for 126 or 1.57 cents/sheet for 82; good small-pack option."
+    },
+    {
+      "name": "No Name all-purpose reusable cloths, 10-pack",
+      "price_cad": "2.99",
+      "pricing": "package",
+      "count": 10,
+      "priority": 3,
+      "restrictions": "October 31–November 6; selected 10-pack.",
+      "why": "About $0.30 per cloth; useful if needed."
+    },
+    {
+      "name": "Campbell's condensed soup, selected 284 mL can",
+      "price_cad": "1.79",
+      "pricing": "package",
+      "priority": 1,
+      "restrictions": "October 31–November 6; selected condensed soup variety.",
+      "why": "Not a headline buy: Metro same-week selected condensed 284 mL can advertises $0.99; compare flavours."
+    }
+  ]
+}
