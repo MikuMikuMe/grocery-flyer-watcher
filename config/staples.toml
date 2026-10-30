@@ -14,6 +14,8 @@ sources = [
   "https://flyers.smartcanucks.ca/staples-canada",
   "https://www.flyers-on-line.com/staples",
   "https://www.flyerbox.ca/deals/kingston/staples/",
+  "https://www.canadiansavers.ca/flyers/staples-flyer/",
+  "https://www.adssos.net/ca/staples/",
   "https://flipp.com/en-ca/kingston-on"
 ]
 # Monitor all categories: there is no category allowlist or exclusion by department.
@@ -22,6 +24,7 @@ sources = [
 # Apply the private store selection before checking pickup or store-specific price/stock.
 # Never substitute a default Toronto store, another branch or national online inventory.
 # Staples subdomains are one source family, not independent corroboration.
+# CanadianSavers and AdsSOS are third-party national flyer archives, not local stock proof.
 # Discovery links and archive headings do not establish valid/current advertised offers.
 collector = []
 state_file = "../private/staples-state.json"

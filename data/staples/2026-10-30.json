@@ -1,0 +1,94 @@
+{
+  "flyer": {
+    "id": "ca-weekly-2026-10-30-to-11-05",
+    "retailer": "Staples",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-30",
+    "ends_on": "2026-11-05",
+    "url": "https://www.adssos.net/ca/staples/staples-weekly-flyer-from-friday-oct-30-2026-6146415/",
+    "sources": [
+      "https://www.canadiansavers.ca/flyers/staples-flyer/",
+      "https://www.staples.ca/a/content/flyers"
+    ]
+  },
+  "offers": [
+    {
+      "name": "ASUS TUF VG27AQE5A 27-inch QHD 165Hz IPS monitor",
+      "price_cad": "139.00",
+      "pricing": "each",
+      "priority": 5,
+      "why": "Exact-model flyer price well below the ASUS Canada store's listed $249; verify advertised in-store applicability and inventory for the chosen branch."
+    },
+    {
+      "name": "Expo assorted dry erase markers, selected 16-pack",
+      "price_cad": "9.99",
+      "pricing": "package",
+      "count": 16,
+      "priority": 5,
+      "restrictions": "October 30 to November 1 only; selected chisel or fine-tip assorted 16-pack varieties.",
+      "why": "About $0.62 per marker, compared with a $24.99 non-promotion listing for an exact 16-pack variety."
+    },
+    {
+      "name": "Staples Stickies yellow 3x3-inch adhesive notes, 12-pack",
+      "price_cad": "8.49",
+      "pricing": "package",
+      "count": 12,
+      "priority": 4,
+      "restrictions": "October 30 to November 1 only; verify specified yellow 12-pack.",
+      "why": "About $0.71 per pad and a substantial short-window discount if the full pack is useful."
+    },
+    {
+      "name": "Staples Tech AA alkaline batteries, 36-pack with reusable case",
+      "price_cad": "12.00",
+      "pricing": "package",
+      "count": 36,
+      "priority": 4,
+      "why": "Approximately $0.33 per alkaline cell; not rechargeable. Best for regularly used AA devices."
+    },
+    {
+      "name": "Brother Work Smart MFC-J1260W colour inkjet all-in-one",
+      "price_cad": "69.00",
+      "pricing": "each",
+      "priority": 4,
+      "why": "Low advertised upfront cash price for print, scan and copy; ongoing LC501 cartridge costs and environmental handling fees matter."
+    },
+    {
+      "name": "Bond Street kids polyester backpack, denim, item 3171589",
+      "price_cad": "10.00",
+      "pricing": "each",
+      "priority": 3,
+      "why": "Low-price compact 11x16.25x5-inch polyester bag, with padded straps and a 1-year warranty; kids/teens size."
+    },
+    {
+      "name": "Staples Copy Paper white 20lb 8.5x11 inches, 500 sheets",
+      "price_cad": "6.99",
+      "pricing": "package",
+      "count": 500,
+      "priority": 3,
+      "why": "About $0.014 per sheet, a practical consumable; separate from the previously listed FSC Multiuse Paper variant."
+    },
+    {
+      "name": "Crayola cube facial tissues, 85-count box",
+      "price_cad": "1.00",
+      "pricing": "package",
+      "count": 85,
+      "priority": 3,
+      "why": "About $0.0118 per sheet; continuing advertised offer also shown last week, not a newly reduced price."
+    },
+    {
+      "name": "Royale Velour facial tissues 3-ply, 82-sheet box, 6-pack",
+      "price_cad": "6.49",
+      "pricing": "package",
+      "count": 6,
+      "priority": 2,
+      "why": "About $1.08 per box, but selected six-box alternatives may cost less elsewhere; sheet counts and ply must match."
+    },
+    {
+      "name": "Staples Massage Chair black, model 53075-BLK",
+      "price_cad": "199.00",
+      "pricing": "each",
+      "priority": 2,
+      "why": "Massage and heat features, but fixed-height armrests and no lumbar adjustment limit ergonomic value; assembly required."
+    }
+  ]
+}
