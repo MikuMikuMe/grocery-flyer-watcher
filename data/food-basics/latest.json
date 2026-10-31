@@ -1,0 +1,88 @@
+{
+  "flyer": {
+    "id": "food-basics-ontario-2026-10-29-to-2026-11-04",
+    "retailer": "Food Basics",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-29",
+    "ends_on": "2026-11-04",
+    "url": "https://flyers.smartcanucks.ca/canada/food-basics-flyer-october-29-to-november-42/all",
+    "sources": [
+      "https://www.foodbasics.ca/flyer",
+      "https://flyers.smartcanucks.ca/food-basics-canada"
+    ]
+  },
+  "offers": [
+    {
+      "name": "Red mangoes, each",
+      "price_cad": "1.00",
+      "pricing": "each",
+      "priority": 4,
+      "why": "Advertised on the Ontario flyer front page as one dollar each."
+    },
+    {
+      "name": "Pomegranates, selected, 2 for $3",
+      "price_cad": "3.00",
+      "pricing": "package",
+      "count": 2,
+      "priority": 3,
+      "why": "Equivalent to $1.50 per fruit when buying two.",
+      "restrictions": "Buy 2 for advertised bundle price; individual price not verified."
+    },
+    {
+      "name": "Broccoli crowns, selected",
+      "price_cad": "2.00",
+      "pricing": "each",
+      "priority": 3,
+      "why": "Everyday vegetable option; exact crown weight varies."
+    },
+    {
+      "name": "Lean ground beef and pork blend, family pack",
+      "price_cad": "3.00",
+      "pricing": "per_lb",
+      "priority": 3,
+      "why": "Advertised $3 per pound for the mixed-meat family pack, not pure ground beef."
+    },
+    {
+      "name": "Rachel's extra-lean ground chicken, selected package",
+      "price_cad": "3.00",
+      "pricing": "package",
+      "priority": 2,
+      "why": "Advertised cash package price; package net weight was not clear enough for a unit-price comparison."
+    },
+    {
+      "name": "Beatrice chocolate milk, 750 mL",
+      "price_cad": "1.00",
+      "pricing": "package",
+      "priority": 4,
+      "why": "A $1 checkout price for the printed 750 mL format; $1.33 per litre."
+    },
+    {
+      "name": "Campbell's condensed soup, selected can",
+      "price_cad": "1.00",
+      "pricing": "each",
+      "priority": 3,
+      "why": "One-dollar selected-can pantry promotion; exact can variety and size require matching."
+    },
+    {
+      "name": "Selection English muffins, selected package",
+      "price_cad": "1.00",
+      "pricing": "package",
+      "priority": 3,
+      "why": "Useful bakery purchase at $1 for printed selected formats; pack count not confirmed."
+    },
+    {
+      "name": "Doritos or Lay's potato chips, selected bag",
+      "price_cad": "2.00",
+      "pricing": "package",
+      "priority": 2,
+      "why": "Advertised $2 selected pack, but weight differs by flavour and format."
+    },
+    {
+      "name": "Selected carrots, yellow onions or russet potatoes, advertised package",
+      "price_cad": "1.00",
+      "pricing": "package",
+      "priority": 3,
+      "why": "Selected produce packages at $1; weights differ and must not be treated as equal-unit bargains."
+    }
+  ]
+}
