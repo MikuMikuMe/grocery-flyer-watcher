@@ -1,0 +1,87 @@
+{
+  "flyer": {
+    "id": "walmart-ontario-2026-10-29-to-2026-11-04",
+    "retailer": "Walmart",
+    "market": "Kingston, Ontario",
+    "starts_on": "2026-10-29",
+    "ends_on": "2026-11-04",
+    "url": "https://flyers.smartcanucks.ca/canada/walmart-on-flyer-october-29-to-november-42/all",
+    "sources": [
+      "https://www.walmart.ca/en/flyer",
+      "https://flyers.smartcanucks.ca/walmart-canada"
+    ]
+  },
+  "offers": [
+    {
+      "name": "Maple Leaf fresh whole chickens, selected",
+      "price_cad": "2.48",
+      "pricing": "per_lb",
+      "priority": 4,
+      "why": "Advertised whole-bird price, not directly equivalent to boneless breast; about $5.47/kg."
+    },
+    {
+      "name": "Red or green cabbage, selected",
+      "price_cad": "0.98",
+      "pricing": "per_lb",
+      "priority": 4,
+      "why": "Low whole-cabbage price, about $2.16/kg; price is by weight."
+    },
+    {
+      "name": "Bulk seedless oranges, selected",
+      "price_cad": "1.97",
+      "pricing": "per_lb",
+      "priority": 3,
+      "why": "Approximately $4.34/kg; compare with bagged oranges on net weight."
+    },
+    {
+      "name": "Campbell's condensed soup, selected can",
+      "price_cad": "0.97",
+      "pricing": "each",
+      "priority": 4,
+      "why": "Low selected-can cash price, $0.03 less than the Food Basics Ontario advertised $1 selected can; match variety and size."
+    },
+    {
+      "name": "Gay Lea butter, selected 454 g",
+      "price_cad": "4.97",
+      "pricing": "package",
+      "size_g": 454,
+      "priority": 3,
+      "why": "Approximately $10.95/kg for the selected 454 g butter brick."
+    },
+    {
+      "name": "Dr. Oetker Ristorante or Casa di Mama frozen pizza, selected format",
+      "price_cad": "3.98",
+      "pricing": "package",
+      "priority": 3,
+      "why": "Useful frozen convenience price; exact style and package weight vary."
+    },
+    {
+      "name": "Selected SunChips or Smartfood popcorn bag",
+      "price_cad": "3.47",
+      "pricing": "package",
+      "priority": 2,
+      "why": "An advertised snack price; bag sizes vary, so do not treat as the cheapest per gram."
+    },
+    {
+      "name": "Taylor Farms chopped salad kit, selected",
+      "price_cad": "4.44",
+      "pricing": "package",
+      "priority": 2,
+      "why": "Convenience produce item; compare expiry and net weight."
+    },
+    {
+      "name": "Your Fresh Market medium ground beef, value pack",
+      "price_cad": "6.34",
+      "pricing": "per_lb",
+      "priority": 1,
+      "why": "About $13.98/kg; less compelling than the lower-priced blended ground beef-and-pork advertised elsewhere."
+    },
+    {
+      "name": "Royale bathroom tissue, selected advertised package",
+      "price_cad": "12.97",
+      "pricing": "package",
+      "priority": 1,
+      "why": "Compare actual rolls, sheet count and ply rather than package equivalence labels."
+    }
+  ]
+}
