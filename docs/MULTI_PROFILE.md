@@ -1,70 +1,67 @@
 # Multiple retailers without changing runtimes
 
 `config/profiles.toml` is the public registry of enabled watches. It currently lists
-Metro, Shoppers Drug Mart, Rexall and Staples in Kingston, Ontario. Each entry points to an ordinary
-single-profile CLI TOML plus its public baseline/report destination and optional policy.
-Registry paths are relative to the repository root; paths INSIDE each profile TOML are
-relative to that TOML, following the existing CLI contract.
+Metro, Shoppers Drug Mart, Rexall, Staples, Food Basics, Walmart and Costco in Kingston,
+Ontario. Each entry points to an ordinary single-profile CLI TOML plus its public
+baseline/report destination and optional policy. Registry paths are repository-root-relative;
+paths INSIDE each profile TOML are relative to that TOML, following the existing CLI contract.
 
 ## ChatGPT or another coding agent
 
 Read the registry on every run and process every entry independently. Read the entry's
 profile and policy, verify sources, compare the matching baseline/edition archives,
-and publish verified changes. Privately deliver a digest only after the runbook's BOTH
-conditions pass: a verified change relative to an established baseline and genuinely
-worthwhile deals. Initialize new profiles silently; do not email merely because a
-profile, report or archived snapshot exists.
-No update or a failure for one profile must not short-circuit any other profile's check.
-Shared reports are unnecessary: retailer-labelled digests simplify deduplication.
-Do not publish private delivery state, addresses or credentials to the registry.
+and publish verified changes. Privately deliver a digest only after BOTH runbook
+conditions pass: a verified change against an established baseline and useful value.
+Follow docs/DIGEST.md for 8-10 assessed entries PER qualifying retailer, not one shared
+budget across all retailers. Initialize new profiles silently; a profile/report/archived
+snapshot existing does not alone authorize email. One unavailable or unchanged retailer
+must not short-circuit the others. Keep all private preferences and delivery state private.
 
-Metro keeps its legacy baseline `data/latest.json`. Shoppers uses
-`data/shoppers-drug-mart/latest.json` and `reports/shoppers-drug-mart/`.
-Rexall uses `data/rexall/latest.json` and `reports/rexall/` with `docs/REXALL.md`.
-Staples uses `data/staples/latest.json` and `reports/staples/` with `docs/STAPLES.md`.
-Create each baseline only after actual source verification. Missing data initially means
-not yet verified, not a zero-price offer and not permission to reuse another retailer's
-data. Current and future editions also remain distinct in history. For Staples, preserve
-weekly, event and catalogue histories separately so overlapping editions are not confused
-with new offers. Existing already-published booklets are initialized silently.
+Metro retains data/latest.json and reports/. Other profiles use data/<profile-id>/latest.json
+and reports/<profile-id>/ as specified in the registry. New independent profiles must not
+adopt individual competitor quotes from other retailer reports as a complete baseline.
+Never overwrite one retailer with another. Preserve current, preview and overlapping
+edition histories. Existing already-published booklets are initialized silently.
 
-## Existing standalone CLI
+Staples' flyer and two undated collection ledgers remain separate as specified in STAPLES.md.
+Costco may advertise only a discount, not a full warehouse purchase price. Follow COSTCO.md:
+keep such verified evidence in reports/costco/warehouse-savings.md and do NOT invent a
+price_cad or weekly dates. A missing dated JSON does not erase established ledger history.
+The observation ledgers are agent/orchestrator formats, not inputs accepted by the CLI.
 
-No new API or ChatGPT dependency is required. Invoke the existing CLI separately for
-each profile, each with its own configured collector and private state:
+## Standalone deployment
+
+The existing CLI takes one profile; do NOT pass config/profiles.toml to --config. Use
+one privately configured collector/state per retailer and dry-run before live delivery:
 
 ```sh
-grocery-flyer-watch run --config /private/metro.toml --dry-run
-grocery-flyer-watch run --config /private/shoppers.toml --dry-run
-grocery-flyer-watch run --config /private/rexall.toml --dry-run
-grocery-flyer-watch run --config /private/staples.toml --dry-run
+grocery-flyer-watch run --config /private/food-basics.toml --dry-run
+grocery-flyer-watch run --config /private/walmart.toml --dry-run
+grocery-flyer-watch run --config /private/costco.toml --dry-run
 ```
 
-Before enabling live delivery, configure the collector and private delivery, silently
-seed each initial baseline, and enforce the same change/value gate in the orchestrator.
-The low-level SMTP adapter does not evaluate deal quality. A single cron/systemd wrapper
-can run all profiles sequentially. Do not join them with `&&`, because one failure must
-not suppress the others:
+The new profiles have the same interface as Metro, Shoppers, Rexall and Staples. A
+scheduler/agent enumerates the registry; a VM can run this sequential wrapper after
+configuring collection, private delivery, silent baseline seeding and change/value gates:
 
 ```sh
 #!/bin/sh
 status=0
-/opt/grocery-flyer-watch/.venv/bin/grocery-flyer-watch run --config /etc/grocery-flyer-watch/metro.toml || status=1
-/opt/grocery-flyer-watch/.venv/bin/grocery-flyer-watch run --config /etc/grocery-flyer-watch/shoppers.toml || status=1
-/opt/grocery-flyer-watch/.venv/bin/grocery-flyer-watch run --config /etc/grocery-flyer-watch/rexall.toml || status=1
-/opt/grocery-flyer-watch/.venv/bin/grocery-flyer-watch run --config /etc/grocery-flyer-watch/staples.toml || status=1
+for profile in metro shoppers rexall staples food-basics walmart costco; do
+  /opt/grocery-flyer-watch/.venv/bin/grocery-flyer-watch run \
+    --config "/etc/grocery-flyer-watch/${profile}.toml" || status=1
+done
 exit "$status"
 ```
 
-This is a deployment example, not an installed scheduler or a bundled live scraper.
-The existing CLI takes one profile; do NOT pass the registry to its `--config` flag.
-An agent can enumerate the registry, or a VM operator can use the wrapper above.
-When using Git publication, run profiles sequentially against the shared checkout,
-and keep all state files outside the entire checkout as described in PORTABILITY.md.
-The core's archive paths and event keys already include retailer/market scoping.
+These are private deployment filenames; metro.toml is a private copy of config/watch.toml.
+Do not chain retailers with &&: one failure must not skip the others. Use separate private
+state files and sequential Git publication for a shared checkout. Keep every state file
+outside the entire public checkout when enabling Git publication, as in PORTABILITY.md.
 
-Keep only one active delivery scheduler for each profile. Follow the existing migration
-procedure before replacing the ChatGPT task; do not seed a new retailer from another
-retailer's snapshot. Public profile defaults remain no collector/no email/no Git push.
-Private recipient-specific duplicate/retry handling is still required by the runbook;
-a transport adapter alone does not provide that orchestration.
+This is an example, not an installed scheduler or universal scraper. Default public profiles
+still have no live collector, no email and no Git push. The transport does not evaluate
+value, local eligibility or per-recipient duplicate/retry rules: the orchestrator must.
+Do not start another active delivery scheduler or import another retailer's baseline.
+Adding a retailer changes neither existing cadence nor enabled/paused state. A migration
+requires explicit cutover and deliberate handled-state import, never old-digest backfill.

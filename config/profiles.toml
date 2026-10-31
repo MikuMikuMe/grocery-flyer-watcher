@@ -28,3 +28,24 @@ config = "config/staples.toml"
 baseline = "data/staples/latest.json"
 report_dir = "reports/staples"
 policy = "docs/STAPLES.md"
+
+[[profiles]]
+id = "food-basics"
+config = "config/food-basics.toml"
+baseline = "data/food-basics/latest.json"
+report_dir = "reports/food-basics"
+policy = "docs/FOOD_BASICS.md"
+
+[[profiles]]
+id = "walmart"
+config = "config/walmart.toml"
+baseline = "data/walmart/latest.json"
+report_dir = "reports/walmart"
+policy = "docs/WALMART.md"
+
+[[profiles]]
+id = "costco"
+config = "config/costco.toml"
+baseline = "data/costco/latest.json"
+report_dir = "reports/costco"
+policy = "docs/COSTCO.md"

@@ -2,9 +2,9 @@
 
 Location-configurable retailer flyer and deal monitoring with public reports and private
 notifications. The application is **not tied to Kingston, Metro, ChatGPT or an AI provider**.
-The supplied profiles watch **Metro, Shoppers Drug Mart, Rexall and Staples in Kingston,
-Ontario**. Moving cities means changing matching profiles and source URLs. The current
-price model supports **Canadian dollars only**.
+The supplied profiles watch **Metro, Shoppers Drug Mart, Rexall, Staples, Food Basics,
+Walmart and Costco in Kingston, Ontario**. Moving cities means changing matching profiles
+and source URLs. The current price model supports **Canadian dollars only**.
 
 ## Notification policy: checks are not emails
 
@@ -14,7 +14,8 @@ AND genuinely useful verified value, followed by validity and recipient-specific
 checks. Send once per qualifying change per authorized recipient. Practical everyday value
 and modest verified savings can qualify; no exceptional-discount threshold is imposed.
 For Staples, the named Deals/Clearance Centre sources also qualify; a product need not
-appear in a flyer. A changed source with no useful value does not qualify for email.
+appear in a flyer. Costco's Ontario regular-warehouse savings/booklets are its flyer-equivalent
+sources. A changed source with no useful value does not qualify for email.
 
 Initialize new retailer/source baselines silently. Do not email for routine checks,
 unchanged or weak sources, source errors, setup or configuration changes. Routine ChatGPT
@@ -56,6 +57,19 @@ is not an automatically installed replacement for the legacy CLI's archival form
 | Shoppers Drug Mart | `config/shoppers.toml` | `data/shoppers-drug-mart/latest.json` |
 | Rexall | `config/rexall.toml` | `data/rexall/latest.json` |
 | Staples | `config/staples.toml` | `data/staples/latest.json` |
+| Food Basics | `config/food-basics.toml` | `data/food-basics/latest.json` |
+| Walmart | `config/walmart.toml` | `data/walmart/latest.json` |
+| Costco | `config/costco.toml` | `data/costco/latest.json` |
+
+Food Basics and Walmart are independently monitored, not merely comparison sources.
+Existing price comparisons in other reports are not baselines for newly enabled profiles.
+Walmart source checks distinguish Ontario store offers from online/Marketplace prices.
+Costco checks distinguish warehouse prices from online/Same-Day prices, verify membership
+conditions and compare bulk unit prices with full cash outlay. A coupon's 'SAVE' amount
+is not a purchase price. When full warehouse pricing is unverified, keep accurately labelled
+source observations separately rather than fabricating a dated cash-price snapshot.
+See [Food Basics rules](docs/FOOD_BASICS.md), [Walmart rules](docs/WALMART.md) and
+[Costco rules](docs/COSTCO.md). Setup never creates fake or immediately emailed baselines.
 
 ### Staples: all categories, flyers plus deals and clearance
 
@@ -119,6 +133,9 @@ grocery-flyer-watch run --config config/watch.toml --input /path/to/metro.json -
 grocery-flyer-watch run --config config/shoppers.toml --input /path/to/shoppers.json --dry-run
 grocery-flyer-watch run --config config/rexall.toml --input /path/to/rexall.json --dry-run
 grocery-flyer-watch run --config config/staples.toml --input /path/to/staples.json --dry-run
+grocery-flyer-watch run --config config/food-basics.toml --input /path/to/food-basics.json --dry-run
+grocery-flyer-watch run --config config/walmart.toml --input /path/to/walmart.json --dry-run
+grocery-flyer-watch run --config config/costco.toml --input /path/to/costco.json --dry-run
 ```
 
 Configure a trusted `collector` argv in each private TOML before running without `--input`.

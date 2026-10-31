@@ -1,0 +1,19 @@
+# Public Costco Canada warehouse profile. No membership/account status is stored here.
+market = "Kingston, Ontario"
+retailer = "Costco"
+timezone = "America/Toronto"
+sources = [
+  "https://www.costco.ca/f/-/in-the-warehouse",
+  "https://www.costco.ca/o/-/coupons",
+  "https://www.costco.ca/w/-/on/kingston/533",
+  "https://www.costco.ca/f/-/membership-conditions-regulations",
+  "https://flyers.smartcanucks.ca/costco-canada",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# Select Ontario regular-warehouse savings. Online/Same-Day/Business Centre are distinct.
+# Coupon savings amounts are NOT checkout prices; see docs/COSTCO.md before snapshots.
+collector = []
+state_file = "../private/costco-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"

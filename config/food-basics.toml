@@ -1,0 +1,19 @@
+# Public market profile. Store links are retail source references, not personal preferences.
+market = "Kingston, Ontario"
+retailer = "Food Basics"
+timezone = "America/Toronto"
+sources = [
+  "https://www.foodbasics.ca/flyer",
+  "https://www.foodbasics.ca/en/find-a-grocery/100949",
+  "https://www.foodbasics.ca/en/find-a-grocery",
+  "https://flyers.smartcanucks.ca/food-basics-canada",
+  "https://www.flyerbox.ca/deals/kingston/food-basics/",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# Discover and verify the selected Kingston edition; URLs alone do not verify offers.
+# Paths below are relative to this TOML. Runtime credentials and preferences stay private.
+collector = []
+state_file = "../private/food-basics-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"

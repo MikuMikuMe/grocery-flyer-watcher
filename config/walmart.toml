@@ -1,0 +1,19 @@
+# Public Walmart Canada profile. Store 3043 is a Kingston retail source reference.
+market = "Kingston, Ontario"
+retailer = "Walmart"
+timezone = "America/Toronto"
+sources = [
+  "https://www.walmart.ca/en/flyer",
+  "https://www.walmart.ca/en/store/3043",
+  "https://www.walmart.ca/en/shop/weekly-flyer-features/6000196190101",
+  "https://flyers.smartcanucks.ca/walmart-canada",
+  "https://ca-flyers.com/stores/kingston/walmart/1130-midland-ave",
+  "https://flipp.com/en-ca/kingston-on"
+]
+# Select/verify Kingston; generic online/Marketplace inventory is not local store stock.
+# Flyer features corroborate advertised items; this is not an unrestricted price scraper.
+collector = []
+state_file = "../private/walmart-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"
