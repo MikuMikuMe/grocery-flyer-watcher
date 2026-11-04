@@ -29,6 +29,52 @@ included in its roundup. Do not claim they are newly reduced, and do not use the
 price as an independent alert trigger. This is a roundup of a qualifying edition, not a
 requirement that every listed item pass an independent change detector.
 
+## Coverage before selection: mandatory review
+
+Do not build a shopping roundup solely by copying the previous report, searching a few
+remembered products, or finding one attractive alert-trigger item. A saved shortlist is
+not the whole flyer, and an unchanged edition date is not proof that its offers were
+comprehensively checked.
+
+Before choosing the 8-10 entries:
+
+1. Identify the correct dated regional/store edition and its available pages. Inspect
+   the front page, back page and each accessible department page or complete equivalent
+   product grid. Keep page/source references and a record of inaccessible pages in the
+   private run evidence. Alternate archives can number identical images differently:
+   retain the actual image URL/identity rather than trusting a page number alone.
+2. Build a candidate pool before ranking. In grocery flyers explicitly inspect the
+   butcher section for beef, poultry, pork and other advertised meats, and also review
+   seafood, produce, dairy, pantry, frozen and household pages when present. These are
+   coverage checks, not compulsory purchase categories or fixed quotas. For non-grocery
+   retailers continue reviewing all advertised departments without an allowlist.
+3. Assess prominent front-page offers and meaningful unit-price savings before using
+   weak or incompletely specified products to fill the final slots. A high package
+   total is not a reason to omit meat: inspect the cut, weight, grade where stated and
+   per-kg/lb price. Record a factual inclusion/exclusion assessment for leading candidates
+   privately; do not invent a reason after discovering an omission.
+4. Preserve exactly supported product attributes. Skinless does not establish boneless;
+   a beef/pork blend is not pure beef; steak cuts, grades, package prices and per-pound
+   prices cannot be interchanged. Do not infer missing attributes from appearance or
+   from a nearby product. State an item-specific unknown or omit an unsupported comparison.
+5. Perform a second omission check against the front and department pages after drafting.
+   Stronger verified candidates should displace weaker filler. Eight or ten entries is
+   a presentation limit, not proof of adequate discovery. An explicit department need
+   not receive a slot if its offers do not merit one, but it must not be silently skipped.
+
+If access prevents a section from being inspected, do not claim full-flyer coverage or
+that every offer is unchanged. Preserve the verified subset and the exact coverage gap.
+An in-store markdown absent from the flyer is distinct from a missed advertised offer;
+use a shelf-label photo or equally specific evidence to evaluate it, not an assumption.
+
+For new digests, reconcile the selected product identity, cash price, pack/cut, eligibility
+and dates across the report, any machine snapshot describing that selection, and the email
+before sending. Compare the same edition and clearly separate selected-offer snapshots
+from full candidate inventories. Existing partial historical snapshots must not be treated
+as exhaustive coverage. Do not rewrite an already-handled event or send an alert merely
+to synchronize an editorially expanded shortlist. These are collector/agent review rules,
+not a claim that the existing CLI automatically extracts or audits every flyer page.
+
 ## Selection and counting
 
 Use these sections as appropriate:
