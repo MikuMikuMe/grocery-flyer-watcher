@@ -12,12 +12,12 @@
   },
   "offers": [
     {
-      "name": "Fresh boneless skinless chicken breast",
+      "name": "Fresh skinless chicken breast (bone content not specified)",
       "price_cad": "4.49",
       "pricing": "per_lb",
-      "priority": 5,
-      "restrictions": "Ontario flyer October 29–November 4, 2026. Not active before October 29. Store participation, stock and pack selection not independently confirmed for Kingston; verify at purchase.",
-      "why": "$9.90/kg. The matching Food Basics Ontario October 29–November 4 flyer advertises fresh boneless skinless chicken breast family pack at $6.00/lb ($13.23/kg); Metro saves $1.51/lb versus that advertised comparable."
+      "priority": 2,
+      "restrictions": "Ontario flyer October 29–November 4, 2026. Bone content, selected Kingston store participation, stock and packaging not independently confirmed; do not assume boneless or equivalent cuts.",
+      "why": "Advertised at $4.49/lb ($9.90/kg) in the Ontario October 29–November 4 flyer. The printed description says skinless, not boneless; a matching-cut comparison with Food Basics' boneless chicken is not established. A prior boneless designation and claimed $1.51/lb equivalent-cut saving were withdrawn as an editorial accuracy correction, not a retailer price change."
     }
   ]
 }
