@@ -166,16 +166,22 @@ class PortableTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             load_config(path)
 
-    def test_smtp_uses_tls_and_stable_message_id(self):
-        env = {"FLYER_SMTP_HOST": "smtp.example.invalid", "FLYER_SMTP_MODE": "ssl",
-               "FLYER_MAIL_FROM": "sender" + chr(64) + "example.invalid", "FLYER_MAIL_TO": "recipient" + chr(64) + "example.invalid"}
-        with patch.dict(os.environ, env, clear=True):
-            with patch("grocery_flyer_watch.runner.smtplib.SMTP_SSL") as smtp:
-                smtp.return_value.__enter__.return_value.send_message.return_value = {}
+    def test_legacy_smtp_refuses_unaudited_input(self):
+        # TLS/recipient tests now exercise the guarded reviewed_delivery transport.
+        from grocery_flyer_watch.review import ReviewError
+        with patch("grocery_flyer_watch.runner.smtplib.SMTP_SSL") as smtp:
+            with self.assertRaisesRegex(ReviewError, "unaudited_smtp_disabled"):
                 send_smtp(self.s, event_key(self.s))
-                message = smtp.return_value.__enter__.return_value.send_message.call_args.args[0]
-                self.assertIn(event_key(self.s), message["Message-ID"])
-                self.assertIsNotNone(smtp.call_args.kwargs["context"])
+            smtp.assert_not_called()
+
+    def test_legacy_cli_smtp_blocks_before_any_publication_or_state_write(self):
+        from grocery_flyer_watch.review import ReviewError
+        publisher = Mock()
+        with self.assertRaisesRegex(ReviewError, "unaudited_smtp_disabled"):
+            run(self.c, self.input, publisher=publisher)
+        publisher.assert_not_called()
+        self.assertFalse(self.c["state_file"].exists())
+        self.assertFalse(self.c["output_dir"].exists())
 
     def test_git_publication_pushes_only_public_artifacts(self):
         repo, remote = self.root / "checkout", self.root / "remote.git"
