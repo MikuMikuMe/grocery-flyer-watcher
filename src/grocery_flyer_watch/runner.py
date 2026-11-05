@@ -169,34 +169,22 @@ def publish(c, snapshot, key):
 
 
 def send_smtp(snapshot, key):
-    """Secrets are read only here; never included in archive, logs or collector input."""
-    e = os.environ
-    host = e["FLYER_SMTP_HOST"]
-    mode = e.get("FLYER_SMTP_MODE", "ssl")
-    if mode not in {"ssl", "starttls"}:
-        raise ValueError("SMTP must use TLS")
-    port = int(e.get("FLYER_SMTP_PORT", "465" if mode == "ssl" else "587"))
-    message = EmailMessage()
-    message["From"] = e["FLYER_MAIL_FROM"]
-    message["To"] = e["FLYER_MAIL_TO"]
-    f = snapshot["flyer"]
-    message["Subject"] = f"Grocery Flyer Watch | {f['retailer']} | {f['starts_on']} | {key[:16]}"
-    message["Message-ID"] = "<flyer-" + key + "@grocery-flyer-watch.invalid>"
-    message.set_content(render_report(snapshot))
-    context = ssl.create_default_context()
-    client = smtplib.SMTP_SSL(host, port, timeout=30, context=context) if mode == "ssl" else smtplib.SMTP(host, port, timeout=30)
-    with client as smtp:
-        if mode == "starttls":
-            smtp.ehlo()
-            smtp.starttls(context=context)
-            smtp.ehlo()
-        if e.get("FLYER_SMTP_USER"):
-            smtp.login(e["FLYER_SMTP_USER"], e["FLYER_SMTP_PASSWORD"])
-        if smtp.send_message(message):
-            raise RuntimeError("Some recipients were refused")
+    """Removed unsafe legacy transport: raw snapshots are not permission to send.
+
+    Use reviewed_delivery.send / `grocery-flyer-watch quality send` instead.
+    Kept as a fail-closed symbol for old integrations; it opens no SMTP connection.
+    """
+    from .review import ReviewError
+    raise ReviewError("unaudited_smtp_disabled_use_quality_send")
 
 
 def run(c, input_path=None, dry_run=False, publisher=publish, notifier=send_smtp):
+    # The real legacy CLI cannot publish/queue/send an unreviewed SMTP digest.
+    # Explicit callback injection remains a test/archive integration seam, not an
+    # approved production delivery adapter. Live callers must use quality send.
+    if not dry_run and c.get("notification") == "smtp" and notifier is send_smtp:
+        from .review import ReviewError
+        raise ReviewError("unaudited_smtp_disabled_use_quality_send")
     failure = None
     try:
         snapshots = collect(c, input_path)

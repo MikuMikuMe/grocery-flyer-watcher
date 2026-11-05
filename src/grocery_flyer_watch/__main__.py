@@ -7,8 +7,12 @@ from .runner import load_config, run, seed
 
 
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "quality":
+        from .quality_cli import main as quality_main
+        return quality_main(sys.argv[2:])
     parser = argparse.ArgumentParser(prog="grocery-flyer-watch")
     sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("quality", help="Audited build, publication verification and guarded delivery")
     for name in ("validate", "report"):
         sub.add_parser(name).add_argument("snapshot")
     compare = sub.add_parser("compare")
