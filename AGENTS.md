@@ -6,6 +6,25 @@ docs/PORTABILITY.md and relevant retailer policies. LIVE_DELIVERY_GATE.md supers
 older offline-only transport instructions. Every NEW qualifying digest across EVERY
 retailer must use the live quality gate. A green unit test is not a live source review.
 
+## Startup recovery before declaring a blocker
+
+Read docs/RUNTIME_RECOVERY.md. When the production command is missing, use the verified
+`automation/runtime_bootstrap.py` helper and actual pinned connector-fetched source bytes
+to restore it and retry the original quality operation. Do not require a global executable,
+pip downloads or command-line Git when the connected GitHub reader/writer is usable.
+Inspect current callable schemas for BOTH GitHub and GitHub_Auto_Project_Connector before
+claiming publication is unavailable. `commit_repository_files` is the atomic multi-file
+writer; native create/update actions are alternatives when their actual schemas are exposed.
+An empty filtered search is not proof of a missing action. Use one unfiltered relevant-app
+listing after an inconclusive search, and distinguish callable actions from permissions,
+authentication, network errors and actual provider outcomes. Never repeat a stale read-only
+claim from a prior run or request reconnection without a demonstrated authorization error.
+Use runtime_preflight.py for current action observations and read-only private-state checks.
+Private state must still be restored from a real durable backend; startup recovery never
+creates pretend history, disables quality validation or authorizes a test/backfill email.
+The scheduler-specific startup fragment is automation/runtime-recovery-task-override.md;
+apply it only to the existing task through an authorized update, preserving private settings.
+
 - Build page/grid coverage and a candidate inventory BEFORE choosing the top 8-10. Revisit
   original sources in a second omission pass, not merely the draft. Prominent/strong
   excluded candidates need real recorded reasons. Never manufacture source-read evidence.
