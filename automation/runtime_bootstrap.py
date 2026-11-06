@@ -20,6 +20,8 @@ import tempfile
 MODULES = frozenset('src/grocery_flyer_watch/' + name + '.py' for name in (
     '__init__', '__main__', 'core', 'review', 'runner', 'quality_cli',
     'quality_gate', 'reviewed_delivery'))
+OPTIONAL_MODULES = frozenset({'src/grocery_flyer_watch/repository_delivery.py',
+                              'src/grocery_flyer_watch/runtime_preflight.py'})
 
 class RecoveryError(ValueError):
     pass
@@ -48,7 +50,7 @@ def prepare(root: Path, manifest: dict, cache: Path | None = None) -> dict:
          'invalid_repository_id')
     fail(isinstance(manifest['commit'], str) and re.fullmatch('[0-9a-f]{40}', manifest['commit']),
          'pinned_commit_required')
-    fail(isinstance(manifest['git_blobs'], dict) and set(manifest['git_blobs']) == MODULES,
+    fail(isinstance(manifest['git_blobs'], dict) and MODULES <= set(manifest['git_blobs']) <= MODULES | OPTIONAL_MODULES,
          'incomplete_runtime_manifest')
     fail(not root.is_symlink(), 'runtime_symlink_not_allowed')
     root = root.absolute()
@@ -78,7 +80,7 @@ def prepare(root: Path, manifest: dict, cache: Path | None = None) -> dict:
         except FileExistsError:
             fail(blob_id(target.read_bytes()) == blob_id(raw), 'runtime_changed_during_repair')
     return {'status':'runtime_ready','commit':manifest['commit'],
-            'verified_modules':len(MODULES),'restored_modules':len(repairs),
+            'verified_modules':len(manifest['git_blobs']),'restored_modules':len(repairs),
             'delivery_authorized':False}
 
 def main(argv: list[str] | None = None) -> int:
@@ -94,19 +96,19 @@ def main(argv: list[str] | None = None) -> int:
         env=dict(os.environ, PYTHONPATH=str(a.root.resolve()/'src'))
         # This is a harmless executable probe, not an email test or a live flyer check.
         probe=subprocess.run([sys.executable,'-m','grocery_flyer_watch','quality','--help'],
-            cwd=a.root, env=env, capture_output=True, timeout=20, check=False)
-        fail(probe.returncode == 0, 'runtime_probe_failed')
-        args=a.command[1:] if a.command[:1] == ['--'] else a.command
-        if not args:
-            print(json.dumps(status))
-            return 0
-        # All pre-send validation remains inside the unchanged production CLI.
-        return subprocess.run([sys.executable,'-m','grocery_flyer_watch',*args],
-            cwd=a.root, env=env, check=False).returncode
+                             env=env, capture_output=True, text=True, timeout=20)
+        fail(probe.returncode == 0, 'runtime_import_probe_failed')
+        print(json.dumps(status), flush=True)
+        command=a.command[1:] if a.command[:1]==['--'] else a.command
+        if command:
+            fail(command[0]=='quality', 'quality_command_required')
+            return subprocess.run([sys.executable,'-m','grocery_flyer_watch',*command],
+                                  env=env, check=False).returncode
+        return 0
     except Exception as exc:
-        code=str(exc) if isinstance(exc,RecoveryError) else type(exc).__name__
-        print(json.dumps({'status':'runtime_blocked','code':code,'delivery_authorized':False}),file=sys.stderr)
+        print(json.dumps({'status':'blocked','code':str(exc) if isinstance(exc,RecoveryError)
+                          else type(exc).__name__,'delivery_authorized':False}),file=sys.stderr)
         return 2
 
-if __name__ == '__main__':
+if __name__=='__main__':
     raise SystemExit(main())

@@ -112,13 +112,16 @@ def journal_health(path: Path | None, *, persistence: dict | None = None) -> dic
     return {'status':'history_present_durability_attested','action':'continue_scope_and_recipient_checks'}
 
 def diagnose(data: dict, journal: Path | None = None, persistence: dict | None = None,
-             *, now: datetime | None = None) -> dict:
+             *, now: datetime | None = None, state_backend: str = 'sqlite') -> dict:
+    require(state_backend in {'sqlite', 'github-gmail'}, 'unknown_state_backend')
     ops=capabilities(data,now=now)
-    state=journal_health(journal,persistence=persistence)
+    state=(journal_health(journal,persistence=persistence) if state_backend == 'sqlite' else
+           {'status':'repository_and_gmail_history_required_per_event',
+            'action':'read_real_repo_assessments_and_private_sent_history_before_delivery'})
     missing=[k for k in ('gmail_search','gmail_read','gmail_send','github_read','github_publish')
              if ops[k]['status']!='exposed_not_execution_tested']
     blockers=[('action_not_exposed:' if ops[k]['status']=='not_exposed' else 'action_discovery_incomplete:')+k for k in missing]
-    if state['status']!='history_present_durability_attested':
+    if state_backend == 'sqlite' and state['status']!='history_present_durability_attested':
         blockers.append(state['status'])
     return {'status':'operational_prerequisites_present' if not blockers else 'operationally_blocked',
             'operations':ops,'private_state':state,'blockers':blockers,
@@ -129,11 +132,12 @@ def main(argv: list[str] | None = None) -> int:
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('capabilities',type=Path)
     p.add_argument('--journal',type=Path)
+    p.add_argument('--state-backend',choices=['sqlite','github-gmail'],default='sqlite')
     p.add_argument('--persistence-proof',type=Path)
     a=p.parse_args(argv)
     try:
         proof=json.loads(a.persistence_proof.read_text()) if a.persistence_proof else None
-        result=diagnose(json.loads(a.capabilities.read_text()),a.journal,proof)
+        result=diagnose(json.loads(a.capabilities.read_text()),a.journal,proof,state_backend=a.state_backend)
         print(json.dumps(result,indent=2))
         return 0 if result['status']=='operational_prerequisites_present' else 2
     except Exception as exc:
