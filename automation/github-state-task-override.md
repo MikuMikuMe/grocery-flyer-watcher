@@ -1,5 +1,18 @@
 # GitHub/Gmail history adapter — existing connected task only
 
+Read docs/SOURCE_EVIDENCE.md as well as the storage policy on every run. Official sources
+are preferred, not mandatory: actual correctly dated/region-matched third-party flyer
+images and grids can supply the evidence. If official access fails, use accessible matching
+pages immediately. A failed duplicate host is not an unread logical flyer page. Do not
+require official product pages, checkout prices or live stock confirmation for ordinary
+regionally applicable in-store flyer prices. Verify actual market scope and critical terms;
+known conflicting variants or branch/warehouse/pickup claims still need matching evidence.
+The second omission pass is a real revisit by the executing agent, not a required second
+human/model or official host. Follow that policy's item-specific exception and complete-one-
+retailer-at-a-time workflow. Do not report unfinished source research as an unavoidable
+external blocker or a validator failure when no content check ran. Execute the existing
+check/build/publication/authorization flow once the supported evidence is assembled.
+
 Use docs/GITHUB_STATE.md for state storage and delivery authorization. It takes precedence
 for the connected task over the older mandatory private SQLite journal, `quality authorize
 --journal` and `quality ack` instructions. Preserve the current schedule, enabled/paused

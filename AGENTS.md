@@ -1,8 +1,31 @@
 # Grocery Flyer Watcher — agent handoff
 
 Read README.md, config/profiles.toml and every enabled profile/policy, automation/runbook.md,
-docs/DIGEST.md, docs/GITHUB_STATE.md, docs/LIVE_DELIVERY_GATE.md, docs/QUALITY_GATE.md,
-docs/RUNTIME_RECOVERY.md, docs/MULTI_PROFILE.md and docs/PORTABILITY.md.
+docs/DIGEST.md, docs/SOURCE_EVIDENCE.md, docs/GITHUB_STATE.md, docs/LIVE_DELIVERY_GATE.md,
+docs/QUALITY_GATE.md, docs/RUNTIME_RECOVERY.md, docs/MULTI_PROFILE.md and docs/PORTABILITY.md.
+
+## Source acceptance: finish the review using accessible advertisements
+
+Follow docs/SOURCE_EVIDENCE.md on every run. Official-first does NOT mean official-only.
+Actual dated regional/local flyer images or complete grids on appropriate third-party
+archives are valid evidence. A blocked official viewer is not a veto when matching content
+is readable elsewhere. Do not require an official product page or two independent pages for
+every item. Printed edition-wide conditions can support multiple items when applicable.
+
+Separate advertised market/channel applicability from live stock. `local_scope_verified`
+does not require checkout, account login, a successful official selector, shelf inventory
+or a receipt. It requires real market/eligibility evidence, including reliable third-party
+local mappings or clearly established region-wide coverage. Resolve known local variants;
+do not choose the lowest price or turn an item's ambiguity into a whole-retailer failure.
+Branch-specific clearance, asserted pickup stock and warehouse prices still need their
+specific channel/location evidence. Never represent an online price as a local shelf offer.
+
+Inventory logical flyer contents, not every failed mirror. A correctly matched page read
+elsewhere is reviewed, not a blocked page. Revisit the source for the omission check; another
+human/model/official host is not required. Complete changed profiles sequentially rather
+than returning the same preliminary candidates every run. Actually run the quality command,
+fix precise failures and continue to authorized publication/delivery. Unfinished research is
+not a demonstrated source outage or validator rejection. No existing safety gate is removed.
 
 ## Connected-task state: use the existing GitHub repository and Gmail
 
