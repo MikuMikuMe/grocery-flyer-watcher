@@ -28,7 +28,7 @@ jobs:
           from pathlib import Path
           prefix = os.environ['IMAGE_PREFIX']
           count = int(os.environ['PAGE_COUNT'])
-          if not re.fullmatch(r'https://flyers\\.smartcanucks\\.ca/uploads/pages/[0-9]+/[a-zA-Z0-9_-]{1,180}', prefix):
+          if not re.fullmatch(r'https://flyers\.smartcanucks\.ca/uploads/pages/[0-9]+/[a-zA-Z0-9_-]{1,180}', prefix):
               raise SystemExit('unsupported_public_image_prefix')
           if not 1 <= count <= 64:
               raise SystemExit('page_count_out_of_range')
@@ -44,7 +44,7 @@ jobs:
                           if r.geturl()!=url: raise ValueError('redirect_not_permitted')
                           payload=r.read(5_000_001)
                           if len(payload)>5_000_000: raise ValueError('page_too_large')
-                          if not payload.startswith(b'\\xff\\xd8\\xff'): raise ValueError('non_jpeg_response')
+                          if not payload.startswith(b'\xff\xd8\xff'): raise ValueError('non_jpeg_response')
                       break
                   except (OSError,urllib.error.URLError) as exc:
                       print(f'PAGE {page} attempt {attempt+1}: {type(exc).__name__}')
@@ -58,7 +58,7 @@ jobs:
               pages.append({'page':page,'url':url,'status':'fetched','sha256':digest,'bytes':len(payload)})
               print(f'PAGE {page}/{count}: sha256 {digest}; {len(payload)} bytes')
           result={'version':1,'source_prefix':prefix,'pages':pages,'fetched_pages':sum(x['status']=='fetched' for x in pages),'edition_sha256':edition_hash.hexdigest() if all(x['status']=='fetched' for x in pages) else None,'complete':all(x['status']=='fetched' for x in pages)}
-          Path('source-fingerprint.json').write_text(json.dumps(result,indent=2)+'\\n')
+          Path('source-fingerprint.json').write_text(json.dumps(result,indent=2)+'\n')
           print('RESULT '+json.dumps(result,separators=(',',':')))
           if not result['complete']:raise SystemExit('incomplete_public_source_evidence')
           PY
