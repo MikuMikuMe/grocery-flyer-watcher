@@ -1,0 +1,71 @@
+name: Public flyer source fingerprints (manual only)
+on:
+  workflow_dispatch:
+    inputs:
+      image_prefix:
+        description: 'Public flyer image URL prefix (the filename without -1.jpg)'
+        required: true
+        type: string
+      page_count:
+        description: 'Number of numbered JPEG flyer pages (1-64)'
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  fingerprint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      IMAGE_PREFIX: ${{ inputs.image_prefix }}
+      PAGE_COUNT: ${{ inputs.page_count }}
+    steps:
+      - name: Fetch actual public images and hash bytes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, re, time, urllib.error, urllib.request
+          from pathlib import Path
+          prefix = os.environ['IMAGE_PREFIX']
+          count = int(os.environ['PAGE_COUNT'])
+          if not re.fullmatch(r'https://flyers\\.smartcanucks\\.ca/uploads/pages/[0-9]+/[a-zA-Z0-9_-]{1,180}', prefix):
+              raise SystemExit('unsupported_public_image_prefix')
+          if not 1 <= count <= 64:
+              raise SystemExit('page_count_out_of_range')
+          pages = []
+          edition_hash = hashlib.sha256()
+          for page in range(1, count+1):
+              url = f'{prefix}-{page}.jpg'
+              payload = None
+              for attempt in range(3):
+                  try:
+                      req = urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 GroceryFlyerWatcher/1.0'})
+                      with urllib.request.urlopen(req,timeout=20) as r:
+                          if r.geturl()!=url: raise ValueError('redirect_not_permitted')
+                          payload=r.read(5_000_001)
+                          if len(payload)>5_000_000: raise ValueError('page_too_large')
+                          if not payload.startswith(b'\\xff\\xd8\\xff'): raise ValueError('non_jpeg_response')
+                      break
+                  except (OSError,urllib.error.URLError) as exc:
+                      print(f'PAGE {page} attempt {attempt+1}: {type(exc).__name__}')
+                      if attempt<2:time.sleep(attempt+1)
+              if payload is None:
+                  pages.append({'page':page,'url':url,'status':'unavailable'})
+                  continue
+              digest=hashlib.sha256(payload).hexdigest()
+              edition_hash.update(page.to_bytes(4,'big'))
+              edition_hash.update(payload)
+              pages.append({'page':page,'url':url,'status':'fetched','sha256':digest,'bytes':len(payload)})
+              print(f'PAGE {page}/{count}: sha256 {digest}; {len(payload)} bytes')
+          result={'version':1,'source_prefix':prefix,'pages':pages,'fetched_pages':sum(x['status']=='fetched' for x in pages),'edition_sha256':edition_hash.hexdigest() if all(x['status']=='fetched' for x in pages) else None,'complete':all(x['status']=='fetched' for x in pages)}
+          Path('source-fingerprint.json').write_text(json.dumps(result,indent=2)+'\\n')
+          print('RESULT '+json.dumps(result,separators=(',',':')))
+          if not result['complete']:raise SystemExit('incomplete_public_source_evidence')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: public-source-fingerprints
+          path: source-fingerprint.json
+          if-no-files-found: ignore
+          retention-days: 7
