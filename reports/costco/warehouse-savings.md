@@ -35,3 +35,17 @@ The exact Costco item numbers, formats, discounts and printed end dates in these
 - [Ontario-inclusive regular warehouse flyer October 26–November 8](https://flyers.smartcanucks.ca/canada/costco-west-on-atlantic-canada-warehouse-offers-october-26-to-november-8/single), separate from Business Centre, Quebec, Same-Day and online-only promotions.
 
 **Monitoring decision:** Save this initial verified promotional period silently; **no email, no product price_cad and no unverified unit-price/value comparisons.** Discounts are NOT checkout prices. Warehouse membership conditions apply; individual eligibility, member status, Kingston availability and full local checkout cash prices have not been established. This ledger provides edition and offer history for future comparisons. A later first verification of full purchase prices is not automatically a newly changed promotion. Do not create `data/costco/latest.json` until actual eligible warehouse cash prices are verified.
+
+
+## Additional Kingston photo observations — November 6, 2026
+
+An independent [Costco East Nov 6–8 weekend photo report](https://cocoeast.ca/costco-weekend-sales-nov-6th-8th-2026-ontario-atlantic-canada/) explicitly identifies its observation location as **Kingston, ON** and was published November 6, 2026. The linked shelf photographs show the actual SKU, register price, instant saving and item-level expiry on the placards. This is an additional **partial source observation**, not a complete weekend catalogue review or a delivery-qualified assessment. Actual purchased quantities, individual membership eligibility and continuing stock were not checked.
+
+| Item / SKU and advertised package | Kingston photographed register cash price | Advertised instant saving | Placard expiration | Primary visual evidence |
+|---|---:|---:|---|---|
+| Lolë men's lounge pants two-pack, #1776453, selected S–XXL | **$19.99 per 2-pack**, $10 per pair rounded | $5 off regular $24.99 | **Nov 8, 2026** | [Kingston shelf label and 2-pack photo](https://east.cocowest1.ca/2026/11/LOLE_LOUNGE_PANTS_2PK__MENS_SIZES_SXXL_20261106_175505.jpg) |
+| PureGuardian 90-hour ultrasonic humidifier, #1738732 | **$44.99 each** | $15 off regular $59.99 | **Nov 8, 2026** | [Kingston shelf label and product photo](https://east.cocowest1.ca/2026/11/PUREGUARDIAN_90_HOUR_ULTRASONIC_HUMIDIFIER_20261106_175506.jpg) |
+| Dawn Platinum Powerwash dish spray, #2417309, 3 × 635 mL (1.905 L) | **$12.99 per 3-pack**, about $6.82/L | $3.50 off regular $16.49 | **Nov 15, 2026** | [Kingston shelf label and pack photo](https://east.cocowest1.ca/2026/11/DAWN_PLATINUM_POWERWASH_DISH_SPRAY_3_X_635_ML_20261106_175536.jpg) |
+| Godiva assorted chocolates, #1480774, 320 g | **$16.99 per box**, about $53.09/kg | $6 off regular $22.99 | **Nov 8, 2026** | [Kingston shelf label and box photo](https://east.cocowest1.ca/2026/11/GODIVA_ASSORTED_CHOCOLATE_BOX_320_G_20261106_175553.jpg) |
+
+This observation does not prove a new discount against every earlier comparable warehouse event. A subsequent watcher must compare matching SKUs and actual advertised terms with established history, inspect the other relevant departments/offer pages, conduct the distinct omission pass, confirm useful purchase value, and satisfy the executable publication and per-recipient mail gates before any email. Do not treat these newly encountered shelf labels, this report date or a mere restock as independent alert triggers.
