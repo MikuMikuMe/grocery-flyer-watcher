@@ -1,0 +1,15 @@
+{
+  "assessed_at": "2026-11-07T08:33:43.317338+00:00",
+  "baseline_source_sha256": "e581f761186a0ff96c1abf6c2f4060c9d82cb2bde0364a681a7ecf6276ece0b2",
+  "change_kind": "new_edition",
+  "decision": "qualified",
+  "ends_on": "2026-11-11",
+  "event_id": "d5dc5fe335a1ebab008caa9c4ae7b1dd9f31d9b8c664968286401f4e4e20d28f",
+  "format": "public-flyer-assessment-v1",
+  "market": "Kingston, Ontario",
+  "retailer": "Metro",
+  "selection_sha256": "40769e3499bd1945014c85608afed16b2dd7ce80a3f839347af6238bd2eadcd2",
+  "source_scope": "weekly-flyer",
+  "source_sha256": "828562a7eef541e10e82b25ea9e80fe217bf0a4446f7c42a352baa904f6723d6",
+  "starts_on": "2026-11-05"
+}
