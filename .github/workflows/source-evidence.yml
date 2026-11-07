@@ -10,6 +10,11 @@ on:
         description: 'Number of numbered JPEG flyer pages (1-64)'
         required: true
         type: string
+      include_images:
+        description: 'Include original public pages in a one-day inspection artifact; no repository image writes'
+        required: false
+        default: false
+        type: boolean
 permissions:
   contents: read
 jobs:
@@ -19,6 +24,7 @@ jobs:
     env:
       IMAGE_PREFIX: ${{ inputs.image_prefix }}
       PAGE_COUNT: ${{ inputs.page_count }}
+      INCLUDE_IMAGES: ${{ inputs.include_images }}
     steps:
       - name: Fetch actual public images and hash bytes
         shell: bash
@@ -32,6 +38,9 @@ jobs:
               raise SystemExit('unsupported_public_image_prefix')
           if not 1 <= count <= 64:
               raise SystemExit('page_count_out_of_range')
+          include_images = os.environ.get('INCLUDE_IMAGES', '').lower() == 'true'
+          if include_images:
+              Path('source-images').mkdir()
           pages = []
           edition_hash = hashlib.sha256()
           for page in range(1, count+1):
@@ -55,6 +64,8 @@ jobs:
               digest=hashlib.sha256(payload).hexdigest()
               edition_hash.update(page.to_bytes(4,'big'))
               edition_hash.update(payload)
+              if include_images:
+                  Path('source-images', f'{page:02d}.jpg').write_bytes(payload)
               pages.append({'page':page,'url':url,'status':'fetched','sha256':digest,'bytes':len(payload)})
               print(f'PAGE {page}/{count}: sha256 {digest}; {len(payload)} bytes')
           result={'version':1,'source_prefix':prefix,'pages':pages,'fetched_pages':sum(x['status']=='fetched' for x in pages),'edition_sha256':edition_hash.hexdigest() if all(x['status']=='fetched' for x in pages) else None,'complete':all(x['status']=='fetched' for x in pages)}
@@ -69,3 +80,14 @@ jobs:
           path: source-fingerprint.json
           if-no-files-found: ignore
           retention-days: 7
+      - name: Retain bounded public image copies for actual visual inspection
+        uses: actions/upload-artifact@v4
+        if: always() && inputs.include_images
+        with:
+          name: public-source-review-images
+          path: |
+            source-fingerprint.json
+            source-images/*.jpg
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
