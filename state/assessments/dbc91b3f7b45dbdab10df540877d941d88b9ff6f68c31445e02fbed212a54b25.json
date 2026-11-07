@@ -1,0 +1,15 @@
+{
+  "assessed_at": "2026-11-07T08:56:10.994923+00:00",
+  "baseline_source_sha256": "74204ab3a3094b59e0380e8c85c28f4663bdb51b233bed56047c86c45f12d1e2",
+  "change_kind": "new_edition",
+  "decision": "qualified",
+  "ends_on": "2026-11-11",
+  "event_id": "dbc91b3f7b45dbdab10df540877d941d88b9ff6f68c31445e02fbed212a54b25",
+  "format": "public-flyer-assessment-v1",
+  "market": "Kingston, Ontario",
+  "retailer": "Food Basics",
+  "selection_sha256": "98bf31d8f986cace5f12eacd26923930c9db7e125fc9f6f4ea0546fb57415795",
+  "source_scope": "weekly-flyer",
+  "source_sha256": "669b7972c8ccd6db0029767c35f507483a62ba46954bd5bf7dc1191005fc3b37",
+  "starts_on": "2026-11-05"
+}
