@@ -84,6 +84,14 @@ under the existing source policy. For interrupted publication, inspect the actua
 before retrying; for ambiguous sending, inspect provider/Sent evidence and prior attempt history.
 An empty search alone does not resolve ambiguity. Continue independent profiles safely.
 
+## Continuation diagnostics
+
+See docs/CONTINUATION.md. A checkpoint, saved page cursor or scheduled
+follow-up never proves a live source inspection, public GitHub mutation or
+successful Gmail send. Missing terminal events remain incomplete/unknown;
+actual provider outcomes and private uncertain attempts need reconciliation.
+Checkpoint records and diagnostic logs are PRIVATE, never GitHub artifacts.
+
 ## Offline regression checks
 
 ```sh

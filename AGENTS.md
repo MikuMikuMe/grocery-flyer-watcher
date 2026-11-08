@@ -27,6 +27,16 @@ than returning the same preliminary candidates every run. Actually run the quali
 fix precise failures and continue to authorized publication/delivery. Unfinished research is
 not a demonstrated source outage or validator rejection. No existing safety gate is removed.
 
+## Safe continuation in the existing task
+
+Read docs/CONTINUATION.md. Persist PRIVATE completed-stage and page cursors in
+the existing task prompt when its native update action is available; reread
+the task before treating the checkpoint as durable. Recheck stale source
+evidence and all publication/recipient gates. Persist an uncertain write-ahead
+attempt BEFORE any actual Gmail send and reconcile provider/Sent evidence
+before retrying. Do not publish checkpoint/delivery data or create another
+scheduler; retain the established cadence and enabled/paused state.
+
 ## Connected-task state: use the existing GitHub repository and Gmail
 
 **docs/GITHUB_STATE.md is authoritative for the connected GitHub/Gmail task.** It supersedes

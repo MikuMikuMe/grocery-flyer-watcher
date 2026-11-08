@@ -130,6 +130,16 @@ attempts stay blocked for that recipient only and must not suppress independent 
 No public delivery logs or unsafe automatic resends. If required native private history is
 actually unavailable, report that specific ambiguity, not a generic missing-database blocker.
 
+## Resuming unfinished work
+
+The existing PRIVATE task prompt/run context may carry a bounded continuation
+checkpoint containing a source page cursor, last completed stage and next safe
+action. See docs/CONTINUATION.md. This is not a second database or a public
+delivery log. Never commit actual checkpoint records or recipient metadata.
+Source proofs, pinned publication and Gmail Sent must all be revalidated as
+required before any send. Persist an uncertain write-ahead marker privately
+before calling Gmail, and treat missing provider results as ambiguous.
+
 ## Startup and portability
 
 Use `runtime_preflight --state-backend github-gmail` for this connected task. It still checks
