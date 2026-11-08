@@ -176,3 +176,10 @@ for future name changes. History, reports and public visibility are preserved.
 
 The installed CLI remains `grocery-flyer-watch`, the Python package `grocery_flyer_watch`,
 and existing service names/deployment paths remain unchanged for compatibility.
+
+## Operational diagnostics
+
+Opt-in `FLYER_DIAGNOSTICS=1` adds private structured stage/error logs across the pipeline
+without changing validation or retry policy. See [diagnostics and failure interpretation](docs/DIAGNOSTICS.md).
+Logs never prove provider delivery and must not be published. Offline regression tests cover
+safe logging, interruptions, pipeline failures and existing no-duplicate delivery behavior.

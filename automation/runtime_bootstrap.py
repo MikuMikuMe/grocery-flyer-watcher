@@ -19,7 +19,7 @@ import tempfile
 
 MODULES = frozenset('src/grocery_flyer_watch/' + name + '.py' for name in (
     '__init__', '__main__', 'core', 'review', 'runner', 'quality_cli',
-    'quality_gate', 'reviewed_delivery'))
+    'quality_gate', 'reviewed_delivery', 'diagnostics'))
 OPTIONAL_MODULES = frozenset({'src/grocery_flyer_watch/repository_delivery.py',
                               'src/grocery_flyer_watch/runtime_preflight.py'})
 

@@ -6,6 +6,8 @@ The PRIVATE bundle is never a public artifact. Use artifacts() for the allowlist
 """
 from __future__ import annotations
 
+from .diagnostics import traced
+
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
@@ -35,6 +37,7 @@ def digest(value: Any) -> str:
     return hashlib.sha256(canonical(value)).hexdigest()
 
 
+@traced('input.read')
 def read_json(path: str | Path) -> dict:
     """Reject oversized files, duplicate keys, non-finite numbers and non-object roots."""
     p = Path(path)
@@ -157,6 +160,7 @@ class Approved:
     binding: str
 
 
+@traced('quality.check')
 def check(bundle: dict, profile: dict, *, now: datetime | None = None) -> Approved:
     now = now or datetime.now(timezone.utc)
     review.require(now.tzinfo is not None, "timezone_required")
@@ -392,6 +396,7 @@ def shopping_body(selection: dict) -> str:
     return '\n'.join(lines).rstrip() + '\n'
 
 
+@traced('artifacts.generate')
 def artifacts(approved: Approved) -> dict[str, bytes]:
     selection = approved.selection
     sources = sorted({x["source_url"] for x in selection["items"]} |
@@ -402,6 +407,7 @@ def artifacts(approved: Approved) -> dict[str, bytes]:
             "report.md": report.encode()}
 
 
+@traced('artifacts.verify')
 def verify_artifacts(approved: Approved, directory: str | Path) -> None:
     for name, content in artifacts(approved).items():
         p = Path(directory) / name
@@ -409,6 +415,7 @@ def verify_artifacts(approved: Approved, directory: str | Path) -> None:
                        "public_artifact_differs_from_reviewed_selection")
 
 
+@traced('artifacts.write')
 def write_artifacts(approved: Approved, directory: str | Path) -> None:
     root = Path(directory)
     root.mkdir(parents=True, exist_ok=False)
