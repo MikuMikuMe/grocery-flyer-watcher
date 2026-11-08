@@ -137,7 +137,7 @@ actual action schemas, but the lack of a SQLite file is NOT an operational block
 output does not claim per-event history was already read or that any mail was delivered.
 Recover missing executable files from pinned GitHub bytes. The bootstrap manifest can include
 repository_delivery.py and runtime_preflight.py as verified optional modules; it preserves the
-original eight-module interface. Load current source files rather than an old runtime ZIP.
+core module interface, now including diagnostics.py for safe stage diagnostics. Load current source files rather than an old runtime ZIP.
 
 The existing SMTP `quality send --send` and its SQLite journal are unchanged and available
 for VM operators. The public dated-flyer CLI/schema and all source profiles remain compatible.

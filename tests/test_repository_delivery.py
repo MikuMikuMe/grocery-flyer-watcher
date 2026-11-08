@@ -171,7 +171,7 @@ class RepositoryDeliveryTests(unittest.TestCase):
                 f=cache/rel;f.parent.mkdir(parents=True,exist_ok=True);f.write_bytes(b'# synthetic\n')
                 manifest['git_blobs'][rel]=boot.blob_id(f.read_bytes())
             result=boot.prepare(root/'runtime',manifest,cache)
-            self.assertEqual(result['verified_modules'],10)
+            self.assertEqual(result['verified_modules'],len(boot.MODULES | boot.OPTIONAL_MODULES))
 
     def test_cli_build_does_not_send_and_will_not_overwrite_event(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -6,6 +6,8 @@ failed and ambiguous attempts; ambiguous sends are never automatically retried.
 """
 from __future__ import annotations
 
+from .diagnostics import traced, emit
+
 from contextlib import contextmanager, suppress
 from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
@@ -36,6 +38,7 @@ def recipient_address(value: str) -> str:
     return local + '@' + domain.lower()
 
 
+@traced('private_path.validate')
 def private_path(path: str | Path) -> Path:
     p = Path(path).expanduser().absolute()
     review.require(not p.is_symlink(), "private_state_symlink")
@@ -116,6 +119,7 @@ class Journal:
             self.db.execute('INSERT OR IGNORE INTO handled_editions VALUES (?)',
                             (edition_key(retailer, market, source_scope, starts_on, ends_on),))
 
+    @traced('state.reserve')
     def reserve(self, approved: Approved, recipient: str, body: str, publication: str,
                 now: datetime) -> str | None:
         recipient = recipient_address(recipient)
@@ -159,6 +163,7 @@ class Journal:
                             (approved.event_id, recipient, 'reserved', ticket, now.isoformat()))
             return ticket
 
+    @traced('state.finish')
     def finish(self, event: str, recipient: str, ticket: str, status: str, receipt: str = '') -> None:
         review.require(status in {'sent', 'failed', 'uncertain'}, "invalid_delivery_outcome")
         recipient = recipient_address(recipient)
@@ -176,6 +181,7 @@ class Journal:
                 for fp in triggers:
                     self.db.execute('INSERT OR IGNORE INTO delivered_offers VALUES (?,?)', (recipient, fp))
 
+    @traced('state.reconcile')
     def reconcile(self, event: str, recipient: str, *, sent: bool, evidence_ref: str,
                   checked_at: str, now: datetime) -> None:
         """Explicit operator/connector lookup, not an automatic timeout retry."""
@@ -198,6 +204,7 @@ class Journal:
                     self.db.execute('INSERT OR IGNORE INTO delivered_offers VALUES (?,?)', (recipient, fp))
 
 
+@traced('publication.urls')
 def publication_urls(receipt: dict, approved: Approved) -> tuple[str, dict[str, str]]:
     review.keys(receipt, {'repository', 'commit', 'directory'}, "publication_receipt_schema")
     repo, commit, directory = (receipt[k] for k in ('repository', 'commit', 'directory'))
@@ -216,6 +223,7 @@ def publication_urls(receipt: dict, approved: Approved) -> tuple[str, dict[str, 
             {name: f'{base}/{name}' for name in artifacts(approved)})
 
 
+@traced('publication.fetch')
 def fetch_public(url: str) -> bytes:
     """Bounded public GET only; no cookies, account tokens or private request bodies."""
     request = Request(url, headers={'User-Agent': 'Grocery-Flyer-Watcher/quality-gate'})
@@ -231,6 +239,7 @@ def fetch_public(url: str) -> bytes:
         raise review.ReviewError('publication_not_verified') from None
 
 
+@traced('publication.verify')
 def verify_publication(approved: Approved, receipt: dict,
                        fetcher: Callable[[str], bytes] = fetch_public) -> str:
     report_url, urls = publication_urls(receipt, approved)
@@ -239,6 +248,7 @@ def verify_publication(approved: Approved, receipt: dict,
     return report_url
 
 
+@traced('delivery.preflight')
 def preflight(bundle: dict, profile: dict, receipt: dict, *, body: str | None = None,
               now: datetime | None = None, fetcher: Callable[[str], bytes] = fetch_public) -> tuple[Approved, str, str]:
     approved = check(bundle, profile, now=now)
@@ -260,6 +270,7 @@ class AmbiguousDelivery(RuntimeError):
     """Acceptance is unknown. Reconcile private Sent/provider evidence before retrying."""
 
 
+@traced('delivery.transport')
 def _smtp_transport(recipient: str, subject: str, body: str, event_id: str,
                     env: Mapping[str, str]) -> str:
     """Private implementation; public send() performs the gate immediately before this."""
@@ -308,6 +319,7 @@ def _smtp_transport(recipient: str, subject: str, body: str, event_id: str,
                 client.close()
 
 
+@traced('delivery.send')
 def send(bundle: dict, profile: dict, receipt: dict, journal: Journal, recipients: list[str], *,
          env: Mapping[str, str] | None = None, now: datetime | None = None,
          fetcher: Callable[[str], bytes] = fetch_public,
@@ -333,6 +345,7 @@ def send(bundle: dict, profile: dict, receipt: dict, journal: Journal, recipient
             clock = now or datetime.now(timezone.utc)
             ticket = journal.reserve(approved, recipient, body, report_url, clock)
             if ticket is None:
+                emit('delivery.outcome', 'skipped', code='already_handled')
                 outcomes.append('already_handled')
                 continue
             # Do not send expired/stale items if the clock crossed a boundary after reservation.
@@ -341,24 +354,29 @@ def send(bundle: dict, profile: dict, receipt: dict, journal: Journal, recipient
             transport_started = True
             proof = transport(recipient, subject, body, approved.event_id, env if env is not None else os.environ)
             journal.finish(approved.event_id, recipient, ticket, 'sent', proof)
+            emit('delivery.outcome', 'accepted', code='transport_accepted')
             outcomes.append('sent')
-        except KnownDeliveryFailure:
+        except KnownDeliveryFailure as exc:
+            emit('delivery.outcome', 'failed', exc=exc)
             if ticket and approved:
                 try:
                     journal.finish(approved.event_id, recipient, ticket, 'failed')
                 except Exception:
                     # Keep the reservation unresolved rather than risking a duplicate.
+                    emit('delivery.outcome', 'uncertain', code='state_ack_failed')
                     outcomes.append('uncertain')
                     continue
             outcomes.append('failed')
-        except review.ReviewError:
+        except review.ReviewError as exc:
+            emit('delivery.outcome', 'uncertain' if transport_started else 'blocked', exc=exc)
             if ticket and approved:
                 # Once transport began, an acknowledgement/state failure is ambiguous.
                 with suppress(Exception):
                     journal.finish(approved.event_id, recipient, ticket,
                                    'uncertain' if transport_started else 'failed')
             outcomes.append('uncertain' if transport_started else 'blocked')
-        except Exception:
+        except Exception as exc:
+            emit('delivery.outcome', 'uncertain' if ticket else 'blocked', exc=exc)
             if ticket and approved:
                 # Includes a crash/error after provider acceptance but before local commit.
                 with suppress(Exception):
@@ -367,6 +385,7 @@ def send(bundle: dict, profile: dict, receipt: dict, journal: Journal, recipient
     return outcomes
 
 
+@traced('delivery.authorize')
 def authorize_external(bundle: dict, profile: dict, publication: dict, journal: Journal,
                        recipient: str, sent_lookup: dict, body: str, *, now: datetime | None = None,
                        fetcher: Callable[[str], bytes] = fetch_public) -> dict:
@@ -401,6 +420,7 @@ def authorize_external(bundle: dict, profile: dict, publication: dict, journal: 
             'subject': f"{approved.selection['retailer']} | {approved.selection['period_label']} | {approved.event_id[:16]}"}
 
 
+@traced('profiles.run')
 def run_profiles(profiles: list[dict], worker: Callable[[dict], str]) -> dict[str, str]:
     """A per-profile failure never short-circuits another enabled retailer.
 
@@ -412,6 +432,7 @@ def run_profiles(profiles: list[dict], worker: Callable[[dict], str]) -> dict[st
         pid = profile['id']
         review.require(pid not in results, "duplicate_profile")
         if profile.get('enabled', True) is False:
+            emit('profile', 'skipped', code='profile_disabled')
             results[pid] = 'disabled'
             continue
         try:
@@ -419,11 +440,13 @@ def run_profiles(profiles: list[dict], worker: Callable[[dict], str]) -> dict[st
             review.require(result in {'sent', 'unchanged', 'initial_baseline', 'insufficient_evidence',
                                       'pending_delivery', 'no_useful_value', 'not_checked'}, "unknown_run_outcome")
             results[pid] = result
-        except Exception:
+        except Exception as exc:
+            emit('profile', 'failed', exc=exc)
             results[pid] = 'insufficient_evidence'
     return results
 
 
+@traced('publication.bridge')
 def connector_publication_fetcher(directory: str | Path, proof: dict, receipt: dict, *,
                                   now: datetime | None = None) -> Callable[[str], bytes]:
     """Offline bridge for a runtime whose GitHub CONNECTOR, not Python, has network access.

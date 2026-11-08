@@ -7,6 +7,8 @@ Never publish a lookup, recipient roster, authorization or private review bundle
 """
 from __future__ import annotations
 
+from .diagnostics import traced, emit, safe_code
+
 import argparse
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -29,6 +31,7 @@ def _fresh(value: str, now: datetime, code: str) -> None:
     review.require(timedelta(0) <= now - timestamp(value) <= timedelta(minutes=10), code)
 
 
+@traced('assessment.generate')
 def assessment(bundle: dict, profile: dict, *, assessed_at: str | None = None,
                now: datetime | None = None) -> dict:
     """Public offer-review decision, not a delivery log. Generate only after real review."""
@@ -52,6 +55,7 @@ def assessment_bytes(record: dict) -> bytes:
     return (json.dumps(record, sort_keys=True, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode()
 
 
+@traced('repository.authorize')
 def authorize(bundle: dict, profile: dict, publication: dict, record: dict,
               record_proof: dict, lookup: dict, context: dict, body: str, *,
               now: datetime | None = None, fetcher=fetch_public) -> dict:
@@ -114,6 +118,7 @@ def authorize(bundle: dict, profile: dict, publication: dict, record: dict,
             'body_sha256': hashlib.sha256(outgoing.encode()).hexdigest()}
 
 
+@traced('repository.cli')
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     sub = p.add_subparsers(dest='command', required=True)
@@ -156,7 +161,8 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result))
         return 0
     except Exception as exc:
-        code = str(exc) if isinstance(exc, review.ReviewError) else type(exc).__name__
+        emit('repository.cli', "blocked", exc=exc)
+        code = safe_code(exc)
         print(json.dumps({'status': 'blocked', 'code': code}), file=sys.stderr)
         return 2
 

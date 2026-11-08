@@ -1,4 +1,6 @@
 """One-shot runtime. Collectors supply verified snapshots; schedulers just call run."""
+
+from .diagnostics import traced
 import hashlib
 import json
 import os
@@ -16,6 +18,7 @@ from urllib.parse import urlsplit
 from .core import fingerprint, public_text, public_url, render_report, validate_snapshot
 
 
+@traced('config.load')
 def load_config(path):
     path = Path(path).resolve()
     with path.open("rb") as stream:
@@ -46,6 +49,7 @@ def load_config(path):
     return c
 
 
+@traced('collector.read')
 def collect(c, input_path=None):
     if input_path:
         raw = Path(input_path).read_text(encoding="utf-8")
@@ -73,6 +77,7 @@ def collect(c, input_path=None):
     return [validate_snapshot(s) for s in data["snapshots"]]
 
 
+@traced('snapshot.scope')
 def check_scope(c, snapshot, today=None):
     validate_snapshot(snapshot)
     f = snapshot["flyer"]
@@ -98,6 +103,7 @@ def event_key(snapshot):
     return fingerprint(canonical)
 
 
+@traced('state.write')
 def atomic_json(path, data):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -129,6 +135,7 @@ def state_lock(path):
         lock.rmdir()
 
 
+@traced('state.read')
 def read_state(path):
     if not path.exists():
         return {"version": 1, "events": {}}
@@ -138,6 +145,7 @@ def read_state(path):
     return state
 
 
+@traced('publication.write')
 def publish(c, snapshot, key):
     root = c["output_dir"].resolve()
     scope = hashlib.sha256((snapshot["flyer"]["retailer"] + "|" + snapshot["flyer"]["market"]).encode()).hexdigest()[:12]
@@ -178,6 +186,7 @@ def send_smtp(snapshot, key):
     raise ReviewError("unaudited_smtp_disabled_use_quality_send")
 
 
+@traced('run')
 def run(c, input_path=None, dry_run=False, publisher=publish, notifier=send_smtp):
     # The real legacy CLI cannot publish/queue/send an unreviewed SMTP digest.
     # Explicit callback injection remains a test/archive integration seam, not an
@@ -226,6 +235,7 @@ def run(c, input_path=None, dry_run=False, publisher=publish, notifier=send_smtp
         return reports
 
 
+@traced('state.seed')
 def seed(c, snapshot):
     """Explicit migration of an already published/delivered baseline; never send mail."""
     validate_snapshot(snapshot)

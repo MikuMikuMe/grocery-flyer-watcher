@@ -60,7 +60,7 @@ class RecoveryTests(unittest.TestCase):
 
     def test_missing_runtime_repairs_from_verified_cache(self):
         dest=self.root/'runtime'
-        self.assertEqual(bootstrap.prepare(dest,self.manifest,self.cache)['restored_modules'],8)
+        self.assertEqual(bootstrap.prepare(dest,self.manifest,self.cache)['restored_modules'],len(bootstrap.MODULES))
         self.assertTrue(all((dest/x).is_file() for x in bootstrap.MODULES))
 
     def test_repeat_recovery_is_idempotent(self):

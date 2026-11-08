@@ -52,7 +52,7 @@ python automation/runtime_bootstrap.py \
 ```
 
 The manifest identifies the actual repository and immutable commit and contains the
-Git blob identities for all eight production modules. Obtain it from an actual pinned
+Git blob identities for all nine production modules (including diagnostics.py). Obtain it from an actual pinned
 GitHub read, not a guessed successful revision. The cache contains matching source bytes
 obtained through the connector or an already authenticated archive. The helper validates
 all bytes, restores only missing modules, and refuses to overwrite unexpected changes.

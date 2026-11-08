@@ -6,6 +6,8 @@ review, authorization and recipient state belongs OUTSIDE the public checkout.
 """
 from __future__ import annotations
 
+from .diagnostics import traced, emit, safe_code
+
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -29,6 +31,7 @@ def private_write(path: str | Path, content: str) -> None:
         stream.write(content)
 
 
+@traced('quality.cli')
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog='grocery-flyer-watch quality', description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
@@ -150,8 +153,9 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result))
         return 0
     except Exception as exc:
+        emit('quality.cli', "blocked", exc=exc)
         # Do not echo recipient values, credentials, SMTP text, private paths or raw plans.
-        code = str(exc) if isinstance(exc, review.ReviewError) else type(exc).__name__
+        code = safe_code(exc)
         print(json.dumps({'status': 'blocked', 'code': code}), file=sys.stderr)
         return 2
 

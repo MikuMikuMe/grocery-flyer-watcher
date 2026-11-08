@@ -1,4 +1,6 @@
 """Portable, CAD-denominated public flyer data; no network or account dependency."""
+
+from .diagnostics import traced
 import hashlib
 import json
 import re
@@ -41,6 +43,7 @@ def public_url(value):
     return value
 
 
+@traced('snapshot.validate')
 def validate_snapshot(snapshot):
     if not isinstance(snapshot, dict) or set(snapshot) != {"flyer", "offers"}:
         raise ValueError("Expected only flyer and offers")
@@ -92,6 +95,7 @@ def validate_snapshot(snapshot):
     return snapshot
 
 
+@traced('snapshot.read')
 def read_snapshot(path):
     return validate_snapshot(json.loads(Path(path).read_text(encoding="utf-8")))
 
@@ -112,6 +116,7 @@ def fingerprint(snapshot):
     return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+@traced('snapshot.compare')
 def changed(previous, current):
     return fingerprint(previous) != fingerprint(current)
 
@@ -131,6 +136,7 @@ def unit_price(o):
     return f"${p:.2f} per package"
 
 
+@traced('report.render')
 def render_report(snapshot):
     validate_snapshot(snapshot)
     f = snapshot["flyer"]

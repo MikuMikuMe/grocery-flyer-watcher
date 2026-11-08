@@ -1,4 +1,6 @@
 """CLI contract for humans, cron, systemd and coding agents."""
+from .diagnostics import traced, emit, safe_code, safe_error_type
+
 import argparse
 import json
 import sys
@@ -6,6 +8,7 @@ from .core import changed, read_snapshot, render_report
 from .runner import load_config, run, seed
 
 
+@traced('cli')
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == "quality":
         from .quality_cli import main as quality_main
@@ -43,8 +46,9 @@ def main():
                 print("CHANGED" if changed(read_snapshot(args.previous), snapshot) else "UNCHANGED")
         return 0
     except Exception as exc:
+        emit('cli', "blocked", exc=exc)
         # External errors can contain private recipients, credentials, or command output.
-        print(json.dumps({"status": "failed", "error_type": type(exc).__name__,
+        print(json.dumps({"status": "failed", "error_type": safe_error_type(exc), "code": safe_code(exc),
                           "hint": "Check config, source verification, private state and adapter access; details suppressed."}), file=sys.stderr)
         return 2
 

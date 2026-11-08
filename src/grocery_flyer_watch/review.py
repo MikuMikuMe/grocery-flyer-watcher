@@ -6,6 +6,8 @@ Keep the review plan private. Only the projected selection and report are public
 """
 from __future__ import annotations
 
+from .diagnostics import traced, emit, safe_code
+
 import argparse
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
@@ -145,6 +147,7 @@ def comparison_text(candidate: dict) -> str:
     return f"Compared with {comp['retailer']} at {price_label(comp)}."
 
 
+@traced('review.validate')
 def validate(plan: dict, today: date | None = None) -> None:
     keys(plan, REQUIRED, "review_schema")
     require(type(plan["version"]) is int and plan["version"] == 1, "review_version")
@@ -291,6 +294,7 @@ def validate(plan: dict, today: date | None = None) -> None:
             "empty_omission_audit")
 
 
+@traced('review.project')
 def project(plan: dict, today: date | None = None) -> dict:
     """Single public selection; never export coverage logs, reasons or private history."""
     validate(plan, today)
@@ -319,6 +323,7 @@ def escape(value: str) -> str:
     return re.sub(r"([\\`*_{}\[\]<>|])", r"\\\1", value)
 
 
+@traced('review.render')
 def render(selection: dict, report_url: str) -> str:
     url(report_url)
     lines = [f"# {escape(selection['retailer'])} | {escape(selection['period_label'])}", ""]
@@ -351,10 +356,12 @@ def render(selection: dict, report_url: str) -> str:
     return "\n".join(lines)
 
 
+@traced('body.verify')
 def check_body(plan: dict, body: str, report_url: str, today: date | None = None) -> None:
     require(body == render(project(plan, today), report_url), "body_differs_from_reviewed_selection")
 
 
+@traced('review.cli')
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("plan", type=Path)
@@ -379,7 +386,8 @@ def main(argv: list[str] | None = None) -> int:
                           "items": len(selection["items"]), "full_coverage": not bool(selection["coverage_note"])}))
         return 0
     except Exception as exc:
-        code = str(exc) if isinstance(exc, ReviewError) else type(exc).__name__
+        emit('review.cli', "blocked", exc=exc)
+        code = safe_code(exc)
         print(json.dumps({"status": "blocked", "code": code}), file=sys.stderr)
         return 2
 

@@ -5,6 +5,8 @@ provider mutation are different facts. This module must never claim one proves a
 It does not invent tool availability, contact a provider or weaken the delivery gate.
 """
 from __future__ import annotations
+
+from .diagnostics import traced, emit, safe_code
 import argparse
 from datetime import datetime, timedelta, timezone
 import json
@@ -49,6 +51,7 @@ def parse_time(value: str) -> datetime:
     require(stamp.tzinfo is not None, 'observation_timezone_required')
     return stamp
 
+@traced('runtime.capabilities')
 def capabilities(data: dict, *, now: datetime | None = None) -> dict:
     now=now or datetime.now(timezone.utc)
     require(isinstance(data,dict) and set(data)=={'format','observed_at','discovery'}, 'capability_schema')
@@ -79,6 +82,7 @@ def capabilities(data: dict, *, now: datetime | None = None) -> dict:
     # No unsupported inference about OAuth scopes, write approval or provider outcome.
     return result
 
+@traced('runtime.state')
 def journal_health(path: Path | None, *, persistence: dict | None = None) -> dict:
     if path is None:
         return {'status':'journal_not_configured','action':'restore_existing_authorized_private_store'}
@@ -111,6 +115,7 @@ def journal_health(path: Path | None, *, persistence: dict | None = None) -> dic
         return {'status':'durability_unverified','action':'verify_restore_and_checkpoint_in_existing_private_store'}
     return {'status':'history_present_durability_attested','action':'continue_scope_and_recipient_checks'}
 
+@traced('runtime.preflight')
 def diagnose(data: dict, journal: Path | None = None, persistence: dict | None = None,
              *, now: datetime | None = None, state_backend: str = 'sqlite') -> dict:
     require(state_backend in {'sqlite', 'github-gmail'}, 'unknown_state_backend')
@@ -128,6 +133,7 @@ def diagnose(data: dict, journal: Path | None = None, persistence: dict | None =
             'continue_independent_source_checks':True,'delivery_authorized':False,
             'provider_authentication':'not_inferred','provider_mutation_result':'not_attempted'}
 
+@traced('runtime.cli')
 def main(argv: list[str] | None = None) -> int:
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('capabilities',type=Path)
@@ -141,8 +147,8 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result,indent=2))
         return 0 if result['status']=='operational_prerequisites_present' else 2
     except Exception as exc:
-        print(json.dumps({'status':'operationally_blocked','code':str(exc) if isinstance(exc,PreflightError)
-                          else type(exc).__name__,'delivery_authorized':False}),file=sys.stderr)
+        emit('runtime.cli', "blocked", exc=exc)
+        print(json.dumps({'status':'operationally_blocked','code':safe_code(exc),'delivery_authorized':False}),file=sys.stderr)
         return 2
 
 if __name__=='__main__':
