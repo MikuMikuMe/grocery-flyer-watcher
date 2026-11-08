@@ -64,6 +64,62 @@ to the old sender, rewrite factual claims to satisfy validation, or manufacture 
 If code fetch fails, try the already-authorized connector once; if the action is absent,
 classify that limitation exactly rather than retrying an impossible invocation.
 
+### When GitHub reads succeed but the Python cache is empty
+
+The \`cache_module_missing\` code means a file was not actually present under
+the requested \`--cache\` directory. A GitHub connector response is **not**
+automatically a Python filesystem file. Do not infer a missing GitHub source
+file, repeat the same empty-cache invocation or invent a file-read receipt.
+
+The bootstrap also supports \`--cache-stdin\` as an alternative to \`--cache\`.
+Fetch the **current pinned commit** through the actual callable GitHub connector.
+For every path in the manifest's \`git_blobs\`, request \`fetch_file\` at that
+exact commit with \`encoding=base64\`. Retain the actual connector response
+and compare each returned Git blob SHA against the manifest. Transfer the
+returned base64 content (including GitHub base64 line breaks) in one private
+JSON object shaped as follows; \`modules\` must cover all missing paths:
+
+~~~json
+{
+  "format": "pinned-connector-module-cache-v1",
+  "repository_id": 1435089073,
+  "commit": "<the actual full 40-character pinned commit SHA>",
+  "modules": {
+    "src/grocery_flyer_watch/__init__.py": "<actual connector base64 content>",
+    "src/grocery_flyer_watch/__main__.py": "<actual connector base64 content>"
+  }
+}
+~~~
+
+These two module entries illustrate the structure only: include **every**
+missing module in the actual manifest, including diagnostics and optional
+modules where pinned. The JSON must be created from actual GitHub responses;
+never insert placeholder source bytes into a production run. A host-side copy
+or a direct stdin pipe is required; merely fetching files into a tool result
+does **not** populate the Python process. If that transfer is unavailable,
+classify the bridge as blocked rather than claiming restoration succeeded.
+
+After transferring the real private bundle, invoke:
+
+~~~sh
+python automation/runtime_bootstrap.py \
+  --root /private/runtime \
+  --manifest /private/pinned-runtime-manifest.json \
+  --cache-stdin \
+  -- quality check /private/actual-bundle.json --config /private/retailer.toml \
+  < /private/real-connector-module-bundle.json
+~~~
+
+An operator able to pipe connector responses directly can avoid the
+intermediate JSON file. The stdin input is capped at 8 MiB, must match the
+manifest's repository ID and commit, may include only manifest module paths,
+and every decoded byte sequence still has to pass the original Git-blob hash
+check **before any repair file is written**. Existing runtime edits remain
+protected. The alternate transport neither changes source/quality policy nor
+authorizes publication or sending. Keep runtime inputs and diagnostic logs
+private, outside the public checkout. Do not place connector bundles in
+GitHub, CI artifacts, Gmail or scheduled task prompts.
+
 ## 3. Private state is not a disposable cache
 
 The preflight's optional `--journal` reads an existing SQLite journal without creating or
