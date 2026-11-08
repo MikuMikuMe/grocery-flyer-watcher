@@ -66,18 +66,18 @@ classify that limitation exactly rather than retrying an impossible invocation.
 
 ### When GitHub reads succeed but the Python cache is empty
 
-The \`cache_module_missing\` code means a file was not actually present under
-the requested \`--cache\` directory. A GitHub connector response is **not**
+The `cache_module_missing` code means a file was not actually present under
+the requested `--cache` directory. A GitHub connector response is **not**
 automatically a Python filesystem file. Do not infer a missing GitHub source
 file, repeat the same empty-cache invocation or invent a file-read receipt.
 
-The bootstrap also supports \`--cache-stdin\` as an alternative to \`--cache\`.
+The bootstrap also supports `--cache-stdin` as an alternative to `--cache`.
 Fetch the **current pinned commit** through the actual callable GitHub connector.
-For every path in the manifest's \`git_blobs\`, request \`fetch_file\` at that
-exact commit with \`encoding=base64\`. Retain the actual connector response
+For every path in the manifest's `git_blobs`, request `fetch_file` at that
+exact commit with `encoding=base64`. Retain the actual connector response
 and compare each returned Git blob SHA against the manifest. Transfer the
 returned base64 content (including GitHub base64 line breaks) in one private
-JSON object shaped as follows; \`modules\` must cover all missing paths:
+JSON object shaped as follows; `modules` must cover all missing paths:
 
 ~~~json
 {
