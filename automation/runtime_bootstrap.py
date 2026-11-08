@@ -8,6 +8,8 @@ unless the caller explicitly asks the existing quality CLI to perform an authori
 """
 from __future__ import annotations
 import argparse
+import base64
+import binascii
 import hashlib
 import json
 import os
@@ -15,7 +17,6 @@ from pathlib import Path, PurePosixPath
 import re
 import subprocess
 import sys
-import tempfile
 
 MODULES = frozenset('src/grocery_flyer_watch/' + name + '.py' for name in (
     '__init__', '__main__', 'core', 'review', 'runner', 'quality_cli',
@@ -23,6 +24,8 @@ MODULES = frozenset('src/grocery_flyer_watch/' + name + '.py' for name in (
 OPTIONAL_MODULES = frozenset({'src/grocery_flyer_watch/repository_delivery.py',
                               'src/grocery_flyer_watch/runtime_preflight.py',
                               'src/grocery_flyer_watch/continuation.py'})
+
+MAX_CONNECTOR_BUNDLE_BYTES = 8 * 1024 * 1024
 
 class RecoveryError(ValueError):
     pass
@@ -43,7 +46,39 @@ def safe_file(root: Path, relative: str) -> Path:
     fail(target.resolve().is_relative_to(root.resolve()), 'unsafe_runtime_path')
     return target
 
-def prepare(root: Path, manifest: dict, cache: Path | None = None) -> dict:
+def decode_connector_bundle(raw: bytes, manifest: dict) -> dict[str, bytes]:
+    """Decode GitHub connector base64 source without a populated file cache.
+
+    Pinned Git blob checks in prepare() remain mandatory. This adapter only
+    transports source bytes; it does not independently prove connector origin.
+    """
+    fail(len(raw) <= MAX_CONNECTOR_BUNDLE_BYTES, 'connector_bundle_too_large')
+    try:
+        bundle = json.loads(raw)
+    except (UnicodeDecodeError, ValueError):
+        raise RecoveryError('invalid_connector_bundle') from None
+    fail(isinstance(bundle, dict) and set(bundle) ==
+         {'format', 'repository_id', 'commit', 'modules'}, 'invalid_connector_bundle')
+    fail(bundle['format'] == 'pinned-connector-module-cache-v1' and
+         type(bundle['repository_id']) is int and
+         bundle['repository_id'] == manifest['repository_id'] and
+         bundle['commit'] == manifest['commit'], 'connector_bundle_pin_mismatch')
+    modules = bundle['modules']
+    fail(isinstance(modules, dict) and set(modules) <= set(manifest['git_blobs']),
+         'connector_bundle_unexpected_module')
+    result = {}
+    for rel, encoded in modules.items():
+        fail(isinstance(encoded, str), 'invalid_connector_bundle')
+        try:
+            # GitHub's Contents API may insert line breaks into base64.
+            result[rel] = base64.b64decode(
+                encoded.replace('\n', '').replace('\r', ''), validate=True)
+        except (ValueError, binascii.Error):
+            raise RecoveryError('invalid_connector_base64') from None
+    return result
+
+def prepare(root: Path, manifest: dict, cache: Path | None = None,
+            connector_modules: dict[str, bytes] | None = None) -> dict:
     fail(sys.version_info >= (3, 11), 'python_3_11_required')
     fail(isinstance(manifest, dict) and set(manifest) == {'repository_id','commit','git_blobs'},
          'invalid_runtime_manifest')
@@ -64,10 +99,14 @@ def prepare(root: Path, manifest: dict, cache: Path | None = None) -> dict:
             fail(target.is_file() and blob_id(target.read_bytes()) == expected,
                  'runtime_integrity_mismatch')
         else:
-            fail(cache is not None, 'runtime_module_missing_use_connector_cache')
-            source = safe_file(cache.absolute(), rel)
-            fail(source.is_file(), 'cache_module_missing')
-            raw = source.read_bytes()
+            if connector_modules is not None:
+                fail(rel in connector_modules, 'connector_module_missing')
+                raw = connector_modules[rel]
+            else:
+                fail(cache is not None, 'runtime_module_missing_use_connector_cache')
+                source = safe_file(cache.absolute(), rel)
+                fail(source.is_file(), 'cache_module_missing')
+                raw = source.read_bytes()
             fail(blob_id(raw) == expected, 'cache_integrity_mismatch')
             repairs.append((target, raw))
     for target, raw in repairs:
@@ -88,12 +127,18 @@ def main(argv: list[str] | None = None) -> int:
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', required=True, type=Path)
     parser.add_argument('--manifest', required=True, type=Path)
-    parser.add_argument('--cache', type=Path, help='Already connector-fetched source files; never credentials')
+    cache_group=parser.add_mutually_exclusive_group()
+    cache_group.add_argument('--cache', type=Path, help='Already connector-fetched source files; never credentials')
+    cache_group.add_argument('--cache-stdin', action='store_true',
+                             help='Read pinned connector-fetched base64 GitHub modules as JSON from stdin')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     a=parser.parse_args(argv)
     try:
         manifest=json.loads(a.manifest.read_text(encoding='utf-8'))
-        status=prepare(a.root, manifest, a.cache)
+        connector_modules=(decode_connector_bundle(
+            sys.stdin.buffer.read(MAX_CONNECTOR_BUNDLE_BYTES + 1), manifest)
+            if a.cache_stdin else None)
+        status=prepare(a.root, manifest, a.cache, connector_modules)
         env=dict(os.environ, PYTHONPATH=str(a.root.resolve()/'src'))
         # This is a harmless executable probe, not an email test or a live flyer check.
         probe=subprocess.run([sys.executable,'-m','grocery_flyer_watch','quality','--help'],
