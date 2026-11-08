@@ -6,12 +6,21 @@ The current profile is Kingston, Ontario; changing cities requires matching sour
 
 ## Sources and dates
 
-Start with the official flyer hub and a Kingston store selection. The configured
-store-locator reference is a public retail location, not a personal location. Search
-for Shoppers Drug Mart + configured city/region + current/next week and exact dates.
-Cross-check the Ontario edition on independent archives; do not substitute Atlantic,
-Western Canada or Quebec/Pharmaprix flyers. Flipp is one source, never the sole source.
-The links in config are discovery entrypoints, not proof of a current offer.
+Use a legible, correctly dated Shoppers flyer that applies to Kingston. The flyer may
+come from the official site or a reputable third-party archive such as SmartCanucks,
+Flyers Online, Flipp/reebee or WeeklyFlyer. Official-site success is not a prerequisite.
+Try the official entrypoint when useful, but continue with a matching accessible archive
+instead of repeatedly attempting a blocked viewer or store selector. The configured
+store-locator reference is a public retail location, not a personal location.
+
+Establish Kingston applicability through a reliable local edition mapping or an Ontario
+edition covering Kingston, retaining printed store exclusions and resolving any known
+regional price conflicts. Do not substitute Atlantic, Western Canada or Quebec/Pharmaprix
+flyers. Corroborate edition identity and doubtful facts as needed; do not impose two
+independent sources per item or require an official product page to repeat each price.
+Regional advertised applicability does not claim shelf stock, and does not require a
+receipt, checkout or live inventory lookup. Follow docs/SOURCE_EVIDENCE.md. Search
+snippets, archive headings and the configured links alone are not actual flyer evidence.
 
 If an official page is dynamically rendered or blocks access, record the limitation
 privately and use corroborated, actual flyer images/product details from other sources.
@@ -87,3 +96,4 @@ Metro's existing baseline. The six-hour cadence controls checks, not email frequ
 - Additional archive: https://www.weeklyflyer.com/shoppers-drug-mart
 - Local listing: https://ca-flyers.com/stores/kingston/shoppers-drug-mart/1011-princess-st
 - Local flyer discovery: https://flipp.com/en-ca/kingston-on
+

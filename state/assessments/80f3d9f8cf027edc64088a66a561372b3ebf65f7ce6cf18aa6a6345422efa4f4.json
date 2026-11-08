@@ -1,0 +1,15 @@
+{
+  "assessed_at": "2026-11-08T03:59:07.501633+00:00",
+  "baseline_source_sha256": "f4fd2596069b330f56d3c08058c106fa250d29cc36b1049979076ef15cad87cb",
+  "change_kind": "new_edition",
+  "decision": "qualified",
+  "ends_on": "2026-11-12",
+  "event_id": "80f3d9f8cf027edc64088a66a561372b3ebf65f7ce6cf18aa6a6345422efa4f4",
+  "format": "public-flyer-assessment-v1",
+  "market": "Kingston, Ontario",
+  "retailer": "Shoppers Drug Mart",
+  "selection_sha256": "0c6b4096bf7ca43028f5b3059579a07da6ccf8532eb92d5a07e3244852eebde9",
+  "source_scope": "weekly-flyer",
+  "source_sha256": "84b7d0bbef491f9e685ae90c9a921e78b3aa1eef8965450f0332e3d7a1050674",
+  "starts_on": "2026-11-07"
+}

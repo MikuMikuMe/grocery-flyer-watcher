@@ -1,0 +1,201 @@
+{
+  "format": "reviewed-selection-v1",
+  "retailer": "Shoppers Drug Mart",
+  "market": "Kingston, Ontario",
+  "campaign_key": "shoppers-ontario-2026-11-07-to-2026-11-12",
+  "period_label": "2026-11-07 to 2026-11-12",
+  "items": [
+    {
+      "id": "p1-eggs",
+      "promotion_id": "shoppers-20261107-p1-eggs",
+      "source_name": "Grade \"A\" large white eggs",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-1.jpg",
+      "price_cad": "3.49",
+      "pricing": "package",
+      "pack": "1 Dozen",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-08",
+      "terms": [
+        "Limit 2. After limit 3.79.",
+        "Available at Select Stores Only."
+      ],
+      "section": "Best buys",
+      "assessment": "A strong everyday staple at the weekend price.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p1-bacon",
+      "promotion_id": "shoppers-20261107-p1-bacon",
+      "source_name": "No Name bacon",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-1.jpg",
+      "price_cad": "3.00",
+      "pricing": "package",
+      "pack": "375g",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-08",
+      "terms": [
+        "Limit 4. After limit $4. Rest of Week $4.",
+        "Available at Select Stores Only."
+      ],
+      "section": "Best buys",
+      "assessment": "Good value for a small bacon pack.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p1-peanut",
+      "promotion_id": "shoppers-20261107-p1-peanut",
+      "source_name": "No Name peanut butter",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-1.jpg",
+      "price_cad": "3.99",
+      "pricing": "package",
+      "pack": "1kg",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-08",
+      "terms": [
+        "Selected Types.",
+        "Limit 4. After limit 4.99. Rest of Week 4.99."
+      ],
+      "section": "Best buys",
+      "assessment": "A useful pantry buy at the weekend price.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p1-colgate",
+      "promotion_id": "shoppers-20261107-p1-colgate",
+      "source_name": "Colgate Cavity Protection toothpaste",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-1.jpg",
+      "price_cad": "1.29",
+      "pricing": "package",
+      "pack": "95mL",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-08",
+      "terms": [
+        "Selected Types.",
+        "Limit 4. After limit 1.79."
+      ],
+      "section": "Best buys",
+      "assessment": "Strong value for basic toothpaste.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p2-butter",
+      "promotion_id": "shoppers-20261107-p2-butter",
+      "source_name": "No Name butter",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-2.jpg",
+      "price_cad": "4.77",
+      "pricing": "package",
+      "pack": "454g",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-12",
+      "terms": [
+        "Selected Types.",
+        "Limit 4. After limit 5.09.",
+        "Available at Select Stores Only."
+      ],
+      "section": "Worth buying",
+      "assessment": "A practical baking and cooking buy.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p1-bread",
+      "promotion_id": "shoppers-20261107-p1-bread",
+      "source_name": "Wonder white or whole wheat bread",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-1.jpg",
+      "price_cad": "2.49",
+      "pricing": "package",
+      "pack": "675g",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-08",
+      "terms": [
+        "Selected Types.",
+        "Limit 4. After limit 3.29."
+      ],
+      "section": "Worth buying",
+      "assessment": "Good everyday bread value.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p1-sugar",
+      "promotion_id": "shoppers-20261107-p1-sugar",
+      "source_name": "Lantic granulated sugar",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-1.jpg",
+      "price_cad": "2.99",
+      "pricing": "package",
+      "pack": "2kg",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-08",
+      "terms": [
+        "Limit 4. After limit 3.49. Rest of Week 3.49."
+      ],
+      "section": "Worth buying",
+      "assessment": "A sensible baking staple at the weekend price.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p3-tissues",
+      "promotion_id": "shoppers-20261107-p3-tissues",
+      "source_name": "No Name 2-ply facial tissues",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-3.jpg",
+      "price_cad": "1.09",
+      "pricing": "package",
+      "pack": "126’s",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-12",
+      "terms": [
+        "Limit 6. After limit 1.19."
+      ],
+      "section": "Worth buying",
+      "assessment": "A modestly priced single box for everyday use.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p8-bagels",
+      "promotion_id": "shoppers-20261107-p8-bagels",
+      "source_name": "Country Harvest bagels",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-8.jpg",
+      "price_cad": "2.50",
+      "pricing": "package",
+      "pack": "6’s",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-12",
+      "terms": [
+        "Selected Types.",
+        "Limit 6. After limit 3.50.",
+        "Products & pricing are available at Select Fresh Food or Food Store Locations."
+      ],
+      "section": "Worth buying",
+      "assessment": "A useful breakfast buy.",
+      "comparison": "",
+      "comparison_source": null
+    },
+    {
+      "id": "p3-papertowel",
+      "promotion_id": "shoppers-20261107-p3-papertowel",
+      "source_name": "No Name double rolls paper towels",
+      "source_url": "https://flyers.smartcanucks.ca/uploads/pages/305149/shoppers-drug-mart-on-flyer-november-7-to-121-3.jpg",
+      "price_cad": "3.99",
+      "pricing": "package",
+      "pack": "6 Roll",
+      "starts_on": "2026-11-07",
+      "ends_on": "2026-11-12",
+      "terms": [
+        "Selected Types."
+      ],
+      "section": "Not worth treating as headline bargains",
+      "assessment": "A low package price, but compare sheet counts before calling it a bargain.",
+      "comparison": "",
+      "comparison_source": null
+    }
+  ],
+  "coverage_note": "",
+  "shortfall_note": "",
+  "selection_sha256": "0c6b4096bf7ca43028f5b3059579a07da6ccf8532eb92d5a07e3244852eebde9"
+}
