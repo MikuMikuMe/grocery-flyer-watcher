@@ -8,8 +8,7 @@ sources = [
   "https://www.metro.ca/en/flyer",
   "https://flyers.smartcanucks.ca/metro-canada",
   "https://www.flyerbox.ca/deals/kingston/metro/",
-  "https://www.weeklyflyer.com/metro",
-  "https://flipp.com/en-ca/kingston-on"
+  "https://www.canadiansavers.ca/flyers/metro-flyer/"
 ]
 # Trusted executable argv. Empty deliberately: no universal web scraper is bundled.
 collector = []

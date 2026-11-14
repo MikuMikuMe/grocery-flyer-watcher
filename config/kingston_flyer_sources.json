@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "market": "Kingston, Ontario, Canada",
+  "last_source_review": "2026-11-14",
+  "policy": "Use ordered stable sources before exploratory web search. Local store pages establish store identity and sometimes weekly dates, not every item price. Select actual printed Kingston/eligible Ontario edition, and corroborate original ad pages; when stale/blocked/ambiguous switch to next fixed source promptly. Keep date/region/terms per item, archive conflicting variants instead of guessing.",
+  "retailers": [
+    {
+      "id": "metro",
+      "store_anchors": [
+        {
+          "store": "Barrie St. #241",
+          "address": "310 Barrie St, Kingston, ON",
+          "url": "https://www.metro.ca/en/find-a-grocery/241"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_flyer",
+          "url": "https://www.metro.ca/en/flyer",
+          "caution": "Defaults can display a non-Kingston store; select #241."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/metro-canada",
+          "caution": "Choose Metro (ON) weekly, not QC or holiday/pharmacy-only."
+        },
+        {
+          "role": "kingston_archive",
+          "url": "https://www.flyerbox.ca/deals/kingston/metro/",
+          "caution": "Local landing page may show a different page count or date convention; compare actual ad before item-level use."
+        },
+        {
+          "role": "other_original_flyer_archive",
+          "url": "https://www.canadiansavers.ca/flyers/metro-flyer/",
+          "caution": "Ontario grids may have different region variants."
+        }
+      ]
+    },
+    {
+      "id": "food-basics",
+      "store_anchors": [
+        {
+          "store": "Barrack St. #100949",
+          "address": "33 Barrack St, Kingston, ON",
+          "url": "https://www.foodbasics.ca/find-a-grocery/100949"
+        },
+        {
+          "store": "Gardiners Rd. #100992",
+          "address": "770 Gardiners Rd, Kingston, ON",
+          "url": "https://www.foodbasics.ca/en/find-a-grocery/100992"
+        },
+        {
+          "store": "Hwy 15 #100830",
+          "address": "1200 Highway 15, Kingston, ON",
+          "url": "https://www.foodbasics.ca/en/find-a-grocery/100830"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_flyer",
+          "url": "https://www.foodbasics.ca/flyer",
+          "caution": "May 403 to automated reads; do not repeat requests endlessly."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/food-basics-canada",
+          "caution": "Check actual Ontario pages and store-specific conditions."
+        },
+        {
+          "role": "current_archive",
+          "url": "https://www.flyerbox.ca/food-basics/",
+          "caution": "Current dated weekly landing; require original flyer and verify Ontario applicability."
+        },
+        {
+          "role": "kingston_archive",
+          "url": "https://www.flyerbox.ca/deals/kingston/food-basics/",
+          "caution": "Observed stale cache; dates require fresh verification."
+        }
+      ]
+    },
+    {
+      "id": "walmart",
+      "store_anchors": [
+        {
+          "store": "Walmart Supercentre #3043",
+          "address": "1130 Midland Ave, Kingston, ON",
+          "url": "https://www.walmart.ca/en/store/3043-kingston-on"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_store_flyer",
+          "url": "https://www.walmart.ca/en/store/3043-kingston-on",
+          "caution": "Follow View flyer with store #3043 selected; online price is not automatically in-store price."
+        },
+        {
+          "role": "official_flyer",
+          "url": "https://www.walmart.ca/en/flyer",
+          "caution": "Select Kingston #3043; do not mix online-only event."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://www.weeklyflyer.com/walmart",
+          "caution": "Select Ontario weekly (not Quebec, Atlantic, multi-week catalogue or online-only event)."
+        },
+        {
+          "role": "other_original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/walmart-canada",
+          "caution": "Choose Walmart (ON) weekly, not early Black Friday online."
+        }
+      ]
+    },
+    {
+      "id": "loblaws",
+      "store_anchors": [
+        {
+          "store": "Princess St. #1040",
+          "address": "1100 Princess St, Kingston, ON",
+          "url": "https://www.loblaws.ca/en/store-locator/details/1040"
+        },
+        {
+          "store": "Midland Ave. #1083",
+          "address": "1048 Midland Ave, Kingston, ON",
+          "url": "https://www.loblaws.ca/en/store-locator/details/1083"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_flyer",
+          "url": "https://www.loblaws.ca/flyer",
+          "caution": "Often dynamic or blocked; identify Kingston store before relying on prices."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/loblaws-canada",
+          "caution": "Select Loblaws (ON), not Loblaws City Market (ON/West) or other Loblaw banner."
+        },
+        {
+          "role": "kingston_archive",
+          "url": "https://www.flyerbox.ca/deals/kingston/loblaws/",
+          "caution": "Black Friday dates can differ by one day from weekly edition; inspect printed dates."
+        },
+        {
+          "role": "local_store_archives",
+          "url": "https://www.flyers-on-line.com/directory/loblaws/ON/kingston-1100-princess-street",
+          "caution": "Backup only: verify freshness and source pages."
+        }
+      ]
+    },
+    {
+      "id": "shoppers-drug-mart",
+      "store_anchors": [
+        {
+          "store": "Downtown Kingston #607",
+          "address": "Kingston, ON",
+          "url": "https://www.shoppersdrugmart.ca/en/stores/607-shoppers-drug-mart-downtown-kingston/"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_flyer",
+          "url": "https://www.shoppersdrugmart.ca/flyer",
+          "caution": "Dynamic rendering can show spinner; select Ontario/Kingston."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/shoppers-drug-mart-canada",
+          "caution": "Select ON flyer; date windows often Sat–Thu; distinguish member/PC Optimum offers."
+        },
+        {
+          "role": "other_original_flyer_archive",
+          "url": "https://www.weeklyflyer.com/shoppers-drug-mart",
+          "caution": "Ontario edition only."
+        }
+      ]
+    },
+    {
+      "id": "rexall",
+      "store_anchors": [
+        {
+          "store": "Princess St. #1529",
+          "address": "1036 Princess St, Kingston, ON",
+          "url": "https://www.rexall.ca/storelocator/store/1529/"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_flyer",
+          "url": "https://www.rexall.ca/eflyer/",
+          "caution": "Search Kingston or select store #1529 before relying on flyer."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/rexall--canada",
+          "caution": "Important: valid SmartCanucks path has double hyphen, and edition must be Rexall (ON)."
+        },
+        {
+          "role": "other_original_flyer_archive",
+          "url": "https://www.canadiansavers.ca/flyers/rexall-flyer-next-week/",
+          "caution": "Next-week title is not proof of an active period; check printed dates."
+        },
+        {
+          "role": "kingston_archive",
+          "url": "https://www.flyerbox.ca/deals/kingston/rexall/",
+          "caution": "May be stale; only readable in-date ad is evidence."
+        }
+      ]
+    },
+    {
+      "id": "staples",
+      "store_anchors": [
+        {
+          "store": "Kingston Core #23",
+          "address": "105 Queen St, Kingston, ON",
+          "url": "https://stores.staples.ca/on/kingston/office-supplies-ca-23.html"
+        },
+        {
+          "store": "Gardiners Rd. #133",
+          "address": "616 Gardiners Rd, Kingston, ON",
+          "url": "https://stores.staples.ca/on/kingston/office-supplies-ca-133.html"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_flyer",
+          "url": "https://www.staples.ca/a/content/flyers",
+          "caution": "Enter Kingston postal region and select actual store #23 or #133."
+        },
+        {
+          "role": "official_deals",
+          "url": "https://www.staples.ca/collections/staples-deals-centre",
+          "caution": "National/online offer may not be available in-store; distinguish channels."
+        },
+        {
+          "role": "official_clearance",
+          "url": "https://www.staples.ca/collections/staples-clearance-centre-7922",
+          "caution": "Clearance price/stock may be branch-specific."
+        },
+        {
+          "role": "original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/staples-canada",
+          "caution": "Separate current weekly flyer from long-duration business catalogues."
+        }
+      ]
+    },
+    {
+      "id": "costco",
+      "store_anchors": [
+        {
+          "store": "Kingston Warehouse #533",
+          "address": "1015 Centennial Dr, Kingston, ON",
+          "url": "https://www.costco.ca/w/-/on/kingston/533"
+        }
+      ],
+      "sources": [
+        {
+          "role": "official_warehouse_savings",
+          "url": "https://www.costco.ca/o/-/coupons",
+          "caution": "SAVE $ is a discount, NOT verified cash checkout price; select Ontario warehouse if available."
+        },
+        {
+          "role": "official_warehouse_hub",
+          "url": "https://www.costco.ca/f/-/in-the-warehouse",
+          "caution": "Navigate Warehouse Savings, exclude online-only and Business Centre promotions."
+        },
+        {
+          "role": "official_store_anchor",
+          "url": "https://www.costco.ca/w/-/on/kingston/533",
+          "caution": "Store identity/hours only, not proof of item-level regular warehouse price."
+        }
+      ]
+    }
+  ]
+}

@@ -4,19 +4,12 @@ market = "Kingston, Ontario"
 retailer = "Staples"
 timezone = "America/Toronto"
 sources = [
+  "https://stores.staples.ca/on/kingston/office-supplies-ca-23.html",
+  "https://stores.staples.ca/on/kingston/office-supplies-ca-133.html",
   "https://www.staples.ca/a/content/flyers",
   "https://www.staples.ca/collections/staples-deals-centre",
   "https://www.staples.ca/collections/staples-clearance-centre-7922",
-  "https://stores.staples.ca/on/kingston/",
-  "https://stores.staples.ca/on/kingston/office-supplies-ca-23.html",
-  "https://stores.staples.ca/on/kingston/office-supplies-ca-133.html",
-  "https://help.staples.ca/hc/en-us/articles/4402322974359-Deal-Promotion-Rebate-Information-and-Policies",
-  "https://flyers.smartcanucks.ca/staples-canada",
-  "https://www.flyers-on-line.com/staples",
-  "https://www.flyerbox.ca/deals/kingston/staples/",
-  "https://www.canadiansavers.ca/flyers/staples-flyer/",
-  "https://www.adssos.net/ca/staples/",
-  "https://flipp.com/en-ca/kingston-on"
+  "https://flyers.smartcanucks.ca/staples-canada"
 ]
 # Monitor all categories: there is no category allowlist or exclusion by department.
 # Deals Centre and Clearance Centre are monitored offer sources, not just flyer references.

@@ -3,12 +3,10 @@ market = "Kingston, Ontario"
 retailer = "Walmart"
 timezone = "America/Toronto"
 sources = [
+  "https://www.walmart.ca/en/store/3043-kingston-on",
   "https://www.walmart.ca/en/flyer",
-  "https://www.walmart.ca/en/store/3043",
-  "https://www.walmart.ca/en/shop/weekly-flyer-features/6000196190101",
-  "https://flyers.smartcanucks.ca/walmart-canada",
-  "https://ca-flyers.com/stores/kingston/walmart/1130-midland-ave",
-  "https://flipp.com/en-ca/kingston-on"
+  "https://www.weeklyflyer.com/walmart",
+  "https://flyers.smartcanucks.ca/walmart-canada"
 ]
 # Select/verify Kingston; generic online/Marketplace inventory is not local store stock.
 # Flyer features corroborate advertised items; this is not an unrestricted price scraper.

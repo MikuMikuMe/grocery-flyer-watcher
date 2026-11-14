@@ -4,16 +4,11 @@ market = "Kingston, Ontario"
 retailer = "Rexall"
 timezone = "America/Toronto"
 sources = [
-  "https://www.rexall.ca/eflyer",
-  "https://www.rexall.ca/storelocator/store/1529",
-  "https://www.rexall.ca/pharmacy-promotions",
-  "https://flyers.smartcanucks.ca/rexall-canada",
-  "https://deals.smartcanucks.ca/rexall-canada",
-  "https://www.flyers-on-line.com/rexall",
-  "https://www.kimbino.ca/city/kingston/rexall/",
+  "https://www.rexall.ca/storelocator/store/1529/",
+  "https://www.rexall.ca/eflyer/",
+  "https://flyers.smartcanucks.ca/rexall--canada",
   "https://www.canadiansavers.ca/flyers/rexall-flyer-next-week/",
-  "https://www.flyers.now/ca/on/kingston/flyers",
-  "https://flipp.com/en-ca/kingston-on"
+  "https://www.flyerbox.ca/deals/kingston/rexall/"
 ]
 # Public Ontario/Kingston discovery references; they do not prove any offer applies
 # to an individual location. Kimbino and Flyerbox share a source family.

@@ -3,11 +3,12 @@ market = "Kingston, Ontario"
 retailer = "Loblaws"
 timezone = "America/Toronto"
 sources = [
+  "https://www.loblaws.ca/en/store-locator/details/1040",
+  "https://www.loblaws.ca/en/store-locator/details/1083",
   "https://www.loblaws.ca/flyer",
   "https://flyers.smartcanucks.ca/loblaws-canada",
-  "https://www.canadiansavers.ca/flyers/loblaws-flyer/",
   "https://www.flyerbox.ca/deals/kingston/loblaws/",
-  "https://ca-flyers.com/loblaws-flyers/loblaws-flyer"
+  "https://www.flyers-on-line.com/directory/loblaws/ON/kingston-1100-princess-street"
 ]
 # Discover the Kingston edition and exact store eligibility before selecting deals.
 collector = []

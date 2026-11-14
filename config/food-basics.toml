@@ -3,12 +3,13 @@ market = "Kingston, Ontario"
 retailer = "Food Basics"
 timezone = "America/Toronto"
 sources = [
+  "https://www.foodbasics.ca/find-a-grocery/100949",
+  "https://www.foodbasics.ca/en/find-a-grocery/100992",
+  "https://www.foodbasics.ca/en/find-a-grocery/100830",
   "https://www.foodbasics.ca/flyer",
-  "https://www.foodbasics.ca/en/find-a-grocery/100949",
-  "https://www.foodbasics.ca/en/find-a-grocery",
   "https://flyers.smartcanucks.ca/food-basics-canada",
-  "https://www.flyerbox.ca/deals/kingston/food-basics/",
-  "https://flipp.com/en-ca/kingston-on"
+  "https://www.flyerbox.ca/food-basics/",
+  "https://www.flyerbox.ca/deals/kingston/food-basics/"
 ]
 # Discover and verify the selected Kingston edition; URLs alone do not verify offers.
 # Paths below are relative to this TOML. Runtime credentials and preferences stay private.

@@ -4,13 +4,10 @@ market = "Kingston, Ontario"
 retailer = "Shoppers Drug Mart"
 timezone = "America/Toronto"
 sources = [
+  "https://www.shoppersdrugmart.ca/en/stores/607-shoppers-drug-mart-downtown-kingston/",
   "https://www.shoppersdrugmart.ca/flyer",
-  "https://www.shoppersdrugmart.ca/store-locator/store/607",
   "https://flyers.smartcanucks.ca/shoppers-drug-mart-canada",
-  "https://www.weeklyflyer.com/shoppers-drug-mart",
-  "https://www.canadiansavers.ca/flyers/shoppers-drug-mart-flyer-next-week/",
-  "https://ca-flyers.com/stores/kingston/shoppers-drug-mart/1011-princess-st",
-  "https://flipp.com/en-ca/kingston-on"
+  "https://www.weeklyflyer.com/shoppers-drug-mart"
 ]
 # The official store URL is a public Kingston reference, not a guarantee of citywide stock.
 # Collectors must select Ontario/Kingston and verify each offer's actual applicability.

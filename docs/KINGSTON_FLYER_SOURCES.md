@@ -1,36 +1,30 @@
-# Kingston flyer source registry (stable discovery and validation)
+# Deterministic Kingston flyer-source playbook
 
-This file is the FIRST source lookup for every scheduled run. Do not repeatedly search the open web to rediscover flyer sites. Source URLs are discovery entrypoints, NOT proof of current edition, individual price, or local stock. Keep original page evidence and publication timestamps in each retailer's private checkpoint and public assessment evidence as appropriate. Recheck a URL only if it changes, fails, or contradicts another source.
+Last source review: **2026-11-14**. Machine-readable, stable retailer-specific endpoints and actual store anchors: [`config/kingston_flyer_sources.json`](../config/kingston_flyer_sources.json). These are vetted **entrypoints**, not assurances that a particular edition or item price is current, readable or valid at every Kingston store.
 
-## Evidence hierarchy
+## Mandatory workflow on every run
 
-1. Official store-specific retailer flyer and Kingston store locator (primary). Verify selected store and dates.
-2. Official retailer Ontario flyer where applicability to the Kingston location is verified.
-3. Complete original-page archives (secondary, for page-by-page inventory and independent omission pass); reject mismatched regional editions.
-4. Kingston-filtered indexes and comparison sites (tertiary discovery/cross-check). They can be stale or list nonlocal flyers; never treat their listings as local proof.
+1. Read `config/profiles.toml`, then load **this source catalog** once, and use it for every enabled retailer. Do not start with a new broad web search.
+2. Resolve retailer and Kingston store from `store_anchors`. Use the source list **in order**: local official flyer/store selector first, then direct page-bearing Ontario archive(s), then a Kingston archive. Store URLs verify the location, not every advertised product.
+3. Read the in-date **original retailer advertisement pages/grid** from the first working source that matches the retailer, exact Ontario/Kingston market, channel, and printed validity. Cross-check with a distinct family or local selector to establish applicability. Do not require official pages to be accessible when a reliable archive provides equivalent ad evidence.
+4. If one entrypoint is 403, JS spinner, stale, or mismatched, **immediately advance** to the next fixed entrypoint; do not repeatedly search for the same domain. A once-per-run revisit is acceptable only for a specific unresolved detail. If one source supports some pages and another fills gaps, preserve their page-level provenance.
+5. Record each attempt in the **private** task checkpoint: retailer, date/edition, URL, working/blocked/stale/mismatched, actual inspected page cursor, source identity, and exact next unit. Resume that cursor on the next run. Do not reset because the weekly URL changed; find the new edition by following the same landing page.
+6. Broad search is an **exception**, not default: allow it only if the catalog's working links fail, the edition is missing/unreadable, a local market conflict needs resolution, or a previously identified source has moved. Search a narrowly scoped exact edition/market query, verify it, and update this catalog only if it is a **better stable entrypoint**. Never save ephemeral dated CDN image URLs as long-term catalog roots.
+7. After verifying source eligibility, inventory **all** flyer pages and departments, then perform the distinct source-first omission pass and existing value, quality, publication and Gmail checks. Do not claim completeness just because a summary grid loads. No first-baseline notification, missing-market guesses or fabricated hashes.
 
-Never promote an aggregator's regular-price claim to a verified historical baseline. Do not confuse ecommerce/pickup prices, coupon/member prices, or delivery service listings with in-store cash flyer prices. Check local variation and current flyer dates before claiming a deal. Retain evidence for each offer, including page/section, unit, limits, pack and applicable store. If official pages are inaccessible, mark store applicability unverified and do not fabricate validation.
+## Verified details and recurring pitfalls
 
-## Fixed entrypoints by enabled retailer
+- Metro Barrie Street #241 has a store page showing flyer dates. Its generic flyer page can default to an unrelated store, so **never** interpret the default selected store as Kingston.
+- Food Basics official pages may yield 403; the Princess/Barrack/Gardiners/Hwy-15 stores are Kingston locations, but a current archive needs printed Ontario-market applicability. Flyerbox's local Food Basics listing was observed stale.
+- Walmart #3043's official store page links the flyer. WeeklyFlyer has a legible **Ontario weekly edition** distinct from early-Black-Friday online and longer holiday catalogues.
+- Loblaws Kingston is **Loblaws (ON)**; `Loblaws City Market`, No Frills and Real Canadian Superstore are different editions. Flyerbox's dated banner does not override printed ad dates.
+- Shoppers' flyer is dynamically rendered; SmartCanucks identifies the current **Ontario** issue. Saturday-start promotions often differ from grocery Thursday-start cycles.
+- Rexall SmartCanucks slug is **`rexall--canada`** (two hyphens). Its store #1529 and official postal-code locator are the local anchors. Do not use the invalid single-hyphen source as a success proof.
+- Staples has two Kingston stores: #23 and #133. Verify store-specific promotions; official flyers, Deals Centre and Clearance Centre have distinct coverage.
+- Costco #533 Kingston is a **regular warehouse**. The official coupons/savings listing is readable but **SAVE $** is a discount, not a cash checkout price; follow the existing warehouse-price and discount-only reporting policy.
+- Flipp requires choosing a location and can error in noninteractive retrieval; it is an optional exception fallback, **not a higher-priority default**. General Kingston aggregator landings may list nonlocal chains and cached past flyers. Never use their city title alone as local validation.
+- The catalog is public and includes only store locations and flyer URLs. Personal account data, preferences, recipients, and Gmail records remain private.
 
-| Retailer | Official primary and local identity | Secondary original flyer / discovery | Local verification requirement |
-|---|---|---|---|
-| Walmart | https://www.walmart.ca/en/store/3043-kingston-on (Kingston Supercentre #3043, 1130 Midland Ave), https://www.walmart.ca/en/flyer ; https://www.walmart.ca/en/cp/grocery/online-grocery-shopping-pickup-kingston/6000205501774 | https://flyers.smartcanucks.ca/walmart-canada ; https://flipp.com/en-ca/kingston-on | Select store #3043, confirm flyer edition, distinguish weekly flyer from Rollback, online-only, Marketplace and separate events. |
-| Food Basics | https://www.foodbasics.ca/flyer ; https://www.foodbasics.ca/en/find-a-grocery/100949 ; https://www.foodbasics.ca/find-a-grocery (4 Kingston locations) | https://flyers.smartcanucks.ca/food-basics-canada ; https://www.flyerbox.ca/deals/kingston/food-basics/ | Confirm chosen Kingston store's flyer dates, full page edition and local item terms. |
-| Metro | https://www.metro.ca/en/flyer ; https://www.metro.ca/en/find-a-grocery (Kingston stores: 310 Barrie St, 775 Bayridge Dr, 460 Gardiners Rd) | https://www.canadiansavers.ca/flyers/metro-flyer/ ; https://flyers.smartcanucks.ca/metro-canada | Select a Kingston store and reject mismatched Toronto or other regional editions. |
-| Loblaws | https://www.loblaws.ca/flyer (Kingston: 1048 Midland Ave and 1100 Princess St) | https://flyers.smartcanucks.ca/loblaws-canada ; https://www.flyerbox.ca/deals/kingston/loblaws/ | Select actual Kingston store; distinguish Loblaws from other Loblaw banners. |
-| Shoppers Drug Mart | https://www.shoppersdrugmart.ca/en/flyer ; https://www.shoppersdrugmart.ca/en/store-locator | https://flyers.smartcanucks.ca/shoppers-drug-mart-canada | Confirm Kingston store and exact weekly/weekend date, PC Optimum/coupon/member conditions. |
-| Rexall | https://www.rexall.ca/flyer/ ; https://www.rexall.ca/storelocator | https://flyers.smartcanucks.ca/rexall-canada | Verify Kingston store, offer dates and Be Well/member terms. |
-| Staples | https://www.staples.ca/pages/flyer ; https://www.staples.ca/pages/store-locator | https://flyers.smartcanucks.ca/staples-canada | Verify Kingston store #23 and flyer versus Deals/Clearance/online-only. |
-| Costco | https://www.costco.ca/o/-/coupons ; https://www.costco.ca/warehouse-locations | https://flipp.com/en-ca/kingston-on | Kingston regular warehouse #533, Ontario eligibility. SAVE $ is a discount, NOT a verified checkout price; separately validate shelf price. |
+## Configuration integration
 
-## Reusable regional cross-checks (never primary)
-
-- https://www.flyerbox.ca/deals/kingston/grocery/ — Kingston-indexed, but may include banners without Kingston locations or future/other-region editions.
-- https://shoppedout.ca/cities/kingston — Kingston chain comparison; explicitly warns flyer prices can change.
-- https://dealdish.ca/deals/ontario/kingston — local store mapping and price comparisons; displayed cached week may lag, and Ontario-store counts are not item-level Kingston confirmation.
-- https://flipp.com/en-ca/kingston-on — geo-filtered discovery; validate retailer and edition.
-
-## Run order and fallback
-
-Read this registry and each profile's existing config. Reuse pinned verified store identities. Fetch official store-specific edition and original pages. If official access is blocked, try the profile's named secondary archive in order; compare exact dates, region, cover and offer text. Record a source-health outcome and the last successfully verified edition per source. Do NOT reset to arbitrary search on every run. Open-ended web discovery is allowed only if all registered sources fail, edition is absent or inconsistent, or a source needs replacement; update this registry only after verifying the replacement. Source discovery does not count as full page inventory, independent omission review, deal quality or email authorization.
+Each retailer's existing `sources` list contains its curated source list for compatibility with the current single-profile CLI. The **catalog's ordered sources and explicit store anchors control the connected scheduled task**; older miscellaneous URLs in documents are discovery references only. The catalog does **not** install a scraper, auto-select a store in an inaccessible JS widget, or imply live stock.
