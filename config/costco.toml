@@ -5,7 +5,8 @@ timezone = "America/Toronto"
 sources = [
   "https://www.costco.ca/w/-/on/kingston/533",
   "https://www.costco.ca/o/-/coupons",
-  "https://www.costco.ca/f/-/in-the-warehouse"
+  "https://www.costco.ca/f/-/in-the-warehouse",
+  "https://flyers.smartcanucks.ca/costco-canada"
 ]
 # Select Ontario regular-warehouse savings. Online/Same-Day/Business Centre are distinct.
 # Coupon savings amounts are NOT checkout prices; see docs/COSTCO.md before snapshots.

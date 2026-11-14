@@ -3,7 +3,7 @@ import json
 import pathlib
 import tomllib
 import unittest
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urlsplit
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 FILES = {
@@ -43,6 +43,8 @@ class KingstonFlyerCatalogTests(unittest.TestCase):
                 profile = tomllib.loads(path.read_text())
                 for url in links + [x["url"] for x in row["store_anchors"]]:
                     self.assertIn(url, profile["sources"])
+                # Production config rejects single-host sources; cover all registry entries.
+                self.assertGreaterEqual(len({urlsplit(url).hostname for url in profile["sources"]}), 2)
         rexall = indexed["rexall"]["sources"]
         self.assertIn("https://flyers.smartcanucks.ca/rexall--canada", [x["url"] for x in rexall])
         self.assertNotIn("https://flyers.smartcanucks.ca/rexall-canada", [x["url"] for x in rexall])

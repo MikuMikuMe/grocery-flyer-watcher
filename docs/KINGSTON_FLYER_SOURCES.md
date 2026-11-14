@@ -21,7 +21,7 @@ Last source review: **2026-11-14**. Machine-readable, stable retailer-specific e
 - Shoppers' flyer is dynamically rendered; SmartCanucks identifies the current **Ontario** issue. Saturday-start promotions often differ from grocery Thursday-start cycles.
 - Rexall SmartCanucks slug is **`rexall--canada`** (two hyphens). Its store #1529 and official postal-code locator are the local anchors. Do not use the invalid single-hyphen source as a success proof.
 - Staples has two Kingston stores: #23 and #133. Verify store-specific promotions; official flyers, Deals Centre and Clearance Centre have distinct coverage.
-- Costco #533 Kingston is a **regular warehouse**. The official coupons/savings listing is readable but **SAVE $** is a discount, not a cash checkout price; follow the existing warehouse-price and discount-only reporting policy.
+- Costco #533 Kingston is a **regular warehouse**. The official coupons/savings listing is readable but **SAVE $** is a discount, not a cash checkout price; follow the existing warehouse-price and discount-only reporting policy. SmartCanucks separately indexes the Ontario regular-warehouse offer sheet, Quebec and Business Centre; use the Ontario edition as a backup host, not as checkout-price evidence.
 - Flipp requires choosing a location and can error in noninteractive retrieval; it is an optional exception fallback, **not a higher-priority default**. General Kingston aggregator landings may list nonlocal chains and cached past flyers. Never use their city title alone as local validation.
 - The catalog is public and includes only store locations and flyer URLs. Personal account data, preferences, recipients, and Gmail records remain private.
 

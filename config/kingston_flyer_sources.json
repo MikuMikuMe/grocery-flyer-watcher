@@ -267,6 +267,11 @@
           "role": "official_store_anchor",
           "url": "https://www.costco.ca/w/-/on/kingston/533",
           "caution": "Store identity/hours only, not proof of item-level regular warehouse price."
+        },
+        {
+          "role": "ontario_original_flyer_archive",
+          "url": "https://flyers.smartcanucks.ca/costco-canada",
+          "caution": "Select Costco (West, ON, Atlantic Canada) regular warehouse edition, never QC or Business Centre; savings amounts are not checkout prices. Review actual pages."
         }
       ]
     }
