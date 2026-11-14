@@ -9,7 +9,8 @@ sources = [
   "https://www.staples.ca/a/content/flyers",
   "https://www.staples.ca/collections/staples-deals-centre",
   "https://www.staples.ca/collections/staples-clearance-centre-7922",
-  "https://flyers.smartcanucks.ca/staples-canada"
+  "https://flyers.smartcanucks.ca/staples-canada",
+  "https://www.flyers-on-line.com/staples"
 ]
 # Monitor all categories: there is no category allowlist or exclusion by department.
 # Deals Centre and Clearance Centre are monitored offer sources, not just flyer references.

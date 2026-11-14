@@ -4,6 +4,8 @@ market = "Kingston, Ontario"
 retailer = "Rexall"
 timezone = "America/Toronto"
 sources = [
+  "https://www.rexall.ca/storelocator/store/1529",
+  "https://www.rexall.ca/eflyer",
   "https://www.rexall.ca/storelocator/store/1529/",
   "https://www.rexall.ca/eflyer/",
   "https://flyers.smartcanucks.ca/rexall--canada",

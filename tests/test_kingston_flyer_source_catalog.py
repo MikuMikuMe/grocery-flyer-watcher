@@ -48,6 +48,12 @@ class KingstonFlyerCatalogTests(unittest.TestCase):
         rexall = indexed["rexall"]["sources"]
         self.assertIn("https://flyers.smartcanucks.ca/rexall--canada", [x["url"] for x in rexall])
         self.assertNotIn("https://flyers.smartcanucks.ca/rexall-canada", [x["url"] for x in rexall])
+        # Preserve original production source aliases used by historical snapshots/tests.
+        rexall_profile = tomllib.loads((ROOT / FILES["rexall"]).read_text())
+        self.assertIn("https://www.rexall.ca/eflyer", rexall_profile["sources"])
+        self.assertIn("https://www.rexall.ca/storelocator/store/1529", rexall_profile["sources"])
+        staples_profile = tomllib.loads((ROOT / FILES["staples"]).read_text())
+        self.assertIn("https://www.flyers-on-line.com/staples", staples_profile["sources"])
 
 if __name__ == "__main__":
     unittest.main()
