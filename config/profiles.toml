@@ -49,3 +49,10 @@ config = "config/costco.toml"
 baseline = "data/costco/latest.json"
 report_dir = "reports/costco"
 policy = "docs/COSTCO.md"
+
+[[profiles]]
+id = "loblaws"
+config = "config/loblaws.toml"
+baseline = "data/loblaws/latest.json"
+report_dir = "reports/loblaws"
+policy = "docs/LOBLAWS.md"

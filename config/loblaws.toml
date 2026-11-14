@@ -1,0 +1,17 @@
+# Public Kingston-area grocery flyer source configuration.
+market = "Kingston, Ontario"
+retailer = "Loblaws"
+timezone = "America/Toronto"
+sources = [
+  "https://www.loblaws.ca/flyer",
+  "https://flyers.smartcanucks.ca/loblaws-canada",
+  "https://www.canadiansavers.ca/flyers/loblaws-flyer/",
+  "https://www.flyerbox.ca/deals/kingston/loblaws/",
+  "https://ca-flyers.com/loblaws-flyers/loblaws-flyer"
+]
+# Discover the Kingston edition and exact store eligibility before selecting deals.
+collector = []
+state_file = "../private/loblaws-state.json"
+output_dir = "../public"
+publication = "local"
+notification = "none"
