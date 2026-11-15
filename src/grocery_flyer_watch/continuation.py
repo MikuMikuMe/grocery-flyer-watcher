@@ -168,7 +168,10 @@ def embed(prompt: str, state: dict) -> str:
     require((BEGIN in prompt) == (END in prompt), "unterminated_private_checkpoint")
     clean = prompt.split(BEGIN, 1)[0] + prompt.split(END, 1)[1] if BEGIN in prompt else prompt
     payload = json.dumps(state, indent=2, ensure_ascii=True, sort_keys=True)
-    return clean.rstrip() + BEGIN + payload + END
+    candidate = clean.rstrip() + BEGIN + payload + END
+    # Verify the *whole* embedded payload, not merely matching start/end markers.
+    require(extract(candidate) == state, "checkpoint_embed_roundtrip_failed")
+    return candidate
 
 
 def extract(prompt: str) -> dict:
@@ -180,6 +183,18 @@ def extract(prompt: str) -> dict:
     except (ValueError, TypeError):
         raise CheckpointError("invalid_private_checkpoint_json") from None
     return validate(state)
+
+
+def verify_saved_prompt(saved_prompt: str, expected_state: dict) -> dict:
+    """After a native task update, reread and compare the *entire* persisted state.
+
+    The caller must separately verify that schedule and enabled state did not change.
+    This does not authenticate source claims or authorize publication or Gmail.
+    """
+    validate(expected_state)
+    actual = extract(saved_prompt)
+    require(actual == expected_state, "checkpoint_saved_state_mismatch")
+    return actual
 
 
 def update(state: dict, profile_id: str, *, last_completed: str, next_stage: str,

@@ -119,7 +119,7 @@ an observed authorization error. For connected startup diagnosis use runtime_pre
 
 ## Isolation, privacy and compatibility
 
-- Preserve all seven retailer/source scopes, source-specific histories and independent execution.
+- Preserve all eight retailer/source scopes, source-specific histories and independent execution.
   Check Staples flyers plus BOTH Deals/Clearance collections across all categories and accessible
   pagination; do not infer changes from newly encountered old listings or source movement.
 - No contacts, credentials, personal locations/postal codes, preference associations, receipts,

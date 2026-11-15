@@ -2,7 +2,7 @@
 
 This protocol applies to the existing connected Grocery Flyer Watcher only.
 It does not add a scheduler, database, VM, mail provider or test email, and it
-preserves the current six-hour cadence and enabled/paused state.
+preserves the current three-hour cadence and enabled/paused state.
 
 ## Durable state boundaries
 
@@ -59,7 +59,7 @@ empty search, determine whether an individual recipient's delivery is handled.
    automatically retried merely because a later Sent search is empty.
    Another recipient/retailer can still continue independently.
 7. If the run ends incomplete, preserve the stage/cursor and exact next safe
-   action in PRIVATE task context. The NEXT normal six-hour run recovers it
+   action in PRIVATE task context. The NEXT normal three-hour run recovers it
    before broad new research. Do not send a status/error email, invent new
    promotion identity, reset baselines, reopen handled editions or publish
    delivery state. Report actual incomplete work truthfully.
@@ -70,7 +70,7 @@ This is automatic resume on the SAME task's next scheduled execution, not an
 instant, guaranteed back-to-back cloud run. The native run_now action does not
 establish a non-overlapping 'queue after my current run ends' guarantee; do not
 self-trigger a concurrent sender, create a second scheduler or silently
-change the six-hour check cadence. Faster safe reruns require a separately
+change the three-hour check cadence. Faster safe reruns require a separately
 verified same-task serialization capability.
 
 ## Optional executable helper
@@ -101,3 +101,22 @@ after embedding writeahead.json, before invoking Gmail. Generated local files
 and successful tests are not durable persistence, publication or transport.
 Set FLYER_DIAGNOSTICS=1 on actual production Python commands and keep all
 diagnostics and native connector outcomes private.
+
+## Reliable persisted-checkpoint verification
+
+A marker pair, an API success response, and text equality without schema checking are
+**not** sufficient evidence that a saved checkpoint can be resumed. Before any native
+update, run `continuation.validate(state)` (all canonical stage names, bounded fields,
+valid JSON and size). Serialize using `continuation.embed(old_prompt, state)`, never a
+manual partial JSON/string insertion. Immediately after native update, fetch the whole
+saved prompt and call `continuation.verify_saved_prompt(saved_prompt, state)`; also
+compare the task schedule/enabled state to its pre-update values. If validation or
+readback fails, state is **not durable**; no subsequent send is allowed. Report the
+checkpoint error privately and repair from verified prior source state, preserving any
+recipient uncertainty and completed page references. Never dump raw task JSON to chat.
+
+For progress that doesn't yet complete a formal stage, use the canonical previous
+`last_completed` and next stage, while keeping truthful page/group details in the
+bounded `source_cursor.completed_units`. Do not invent a stage like
+`weekly-original-page-first-visual-inspection` that the validator cannot accept.
+See [RUN_PROGRESS_RECOVERY.md](RUN_PROGRESS_RECOVERY.md) for fallback and rotation.

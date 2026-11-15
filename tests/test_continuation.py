@@ -26,6 +26,32 @@ class ContinuationTests(unittest.TestCase):
         self.assertEqual(c.embed(prompt, self.data).count(c.BEGIN), 1)
         self.assertEqual(c.embed(prompt, self.data).count(c.END), 1)
 
+    def test_saved_checkpoint_requires_exact_schema_and_content_match(self):
+        before = "Original scheduled task instructions, no mail without authorization."
+        valid = c.embed(before, self.data)
+        self.assertEqual(c.verify_saved_prompt(valid, self.data), self.data)
+        updated = copy.deepcopy(self.data)
+        updated["sequence"] += 1
+        with self.assertRaisesRegex(c.CheckpointError, "checkpoint_saved_state_mismatch"):
+            c.verify_saved_prompt(valid, updated)
+
+    def test_json_injected_into_reason_is_not_a_valid_checkpoint(self):
+        prompt = c.embed("Safe source rules.", self.data)
+        nested = json.dumps(self.data, indent=2)
+        corrupted = prompt.replace('"reason": ""', '"reason": "Food item ' + nested + '...')
+        with self.assertRaisesRegex(c.CheckpointError, "invalid_private_checkpoint_json"):
+            c.extract(corrupted)
+
+    def test_freeform_stage_labels_and_oversized_progress_are_rejected(self):
+        damaged = copy.deepcopy(self.data)
+        damaged["profiles"][0]["last_completed"] = "all-pages-first-read-not-yet-inventoried"
+        with self.assertRaises(c.CheckpointError):
+            c.validate(damaged)
+        damaged = copy.deepcopy(self.data)
+        damaged["profiles"][0]["reason"] = "Repeated source navigation " * 15
+        with self.assertRaises(c.CheckpointError):
+            c.validate(damaged)
+
     def test_publication_before_send_write_ahead_blocks_automatic_retry(self):
         p = self.data["profiles"][1]
         p["publication"] = {"commit": "a" * 40, "directory": "reports/reviewed/rexall/hash",
