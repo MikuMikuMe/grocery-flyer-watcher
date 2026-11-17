@@ -28,3 +28,9 @@ Last source review: **2026-11-14**. Machine-readable, stable retailer-specific e
 ## Configuration integration
 
 Each retailer's existing `sources` list contains its curated source list for compatibility with the current single-profile CLI. The **catalog's ordered sources and explicit store anchors control the connected scheduled task**; older miscellaneous URLs in documents are discovery references only. The catalog does **not** install a scraper, auto-select a store in an inaccessible JS widget, or imply live stock.
+
+## Ontario-to-Kingston applicability decision (2026-11-17)
+
+For an Ontario-wide **in-store** flyer from the same retailer/banner, with an established Kingston store anchor, **presume the Ontario edition applies to Kingston** unless the printed ad, store selector, retailer policy or credible conflicting local evidence says otherwise. Record the scope, store anchor, printed dates and any exclusion. This is an applicability presumption, **not** proof of stock, item size, cash price, or a separate online-only offer. Do not require an item-by-item Kingston store-page confirmation when the printed Ontario flyer has no exclusion.
+
+When the edition is explicitly regional (Toronto-only, GTA, selected stores), conflicting, or ambiguous, perform a **targeted** web lookup combining retailer, Kingston, flyer dates and disputed product/region; use an independent source when available. Exclude unresolved conflicting items, rather than blocking every uncontroversial Ontario offer. Continue to distinguish banners, online-only offers, member conditions and Costco savings from cash prices.
