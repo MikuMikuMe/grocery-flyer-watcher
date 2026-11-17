@@ -324,6 +324,175 @@ def plan(state: dict, *, now: datetime | None = None) -> dict:
 
 
 
+
+# Research helpers are advisory only: they never approve a review or a send.
+def _catalog_source(url: str | None, sources: list[dict]) -> dict | None:
+    """Accept a dated URL only under an exact fixed-source host/path boundary."""
+    from urllib.parse import urlsplit
+    if not isinstance(url, str) or not url.startswith("https://"):
+        return None
+    target = urlsplit(url)
+    for source in sources:
+        base = source.get("url")
+        if not isinstance(base, str) or not base.startswith("https://"):
+            continue
+        anchor = urlsplit(base)
+        prefix, path = anchor.path.rstrip("/"), target.path.rstrip("/")
+        if (target.scheme == anchor.scheme and target.netloc == anchor.netloc and
+                (path == prefix or path.startswith(prefix + "/"))):
+            return source
+    return None
+
+
+def source_failover(state: dict, catalog: dict, profile_id: str, *,
+                    failed_url: str, attempts: int,
+                    attempted_urls: list[str] | None = None,
+                    reviewed_original_url: str | None = None,
+                    missing_units: list[str] | None = None) -> dict:
+    """Prefer real previously read original ads, then the next fixed source.
+
+    Previous visual reads are NOT structured inventory, market proof, omission
+    review or quality authorization. The caller must resolve logical pages.
+    """
+    validate(state)
+    require(type(attempts) is int and 1 <= attempts <= 2, "source_failover_attempt_limit")
+    require(isinstance(failed_url, str) and failed_url.startswith("https://") and
+            text_field(failed_url, 1000), "source_failover_url")
+    attempted, missing = list(attempted_urls or []), list(missing_units or [])
+    require(len(attempted) <= 30 and all(text_field(x, 1000) for x in attempted) and
+            len(missing) <= 100 and len(missing) == len(set(missing)) and
+            all(text_field(x, 90) and x for x in missing), "source_failover_arguments")
+    require(isinstance(catalog, dict) and isinstance(catalog.get("retailers"), list),
+            "source_catalog_invalid")
+    profile = [x for x in state["profiles"] if x["id"] == profile_id]
+    retailer = [x for x in catalog["retailers"]
+                if isinstance(x, dict) and x.get("id") == profile_id]
+    require(len(profile) == len(retailer) == 1, "source_failover_unknown_profile")
+    sources = retailer[0].get("sources")
+    require(isinstance(sources, list) and bool(sources) and
+            all(isinstance(x, dict) for x in sources), "source_catalog_invalid")
+    original = _catalog_source(reviewed_original_url, sources)
+    cursor = profile[0]["source_cursor"]
+    has_visual_read = any("original-image-first-read" in unit or
+                          ("original-page-" in unit and "first-read" in unit)
+                          for unit in cursor["completed_units"])
+    if (original and "original" in str(original.get("role", "")) and
+            has_visual_read and missing):
+        return {"action": "extract_missing_inventory_from_original_scans",
+                "source_url": reviewed_original_url, "unresolved_units": missing,
+                "coverage_complete": False, "quality_authorized": False,
+                "note": "Reconcile logical pages with the real original ad; past visual reads are not an item inventory."}
+    for source in sources:
+        role, url = source.get("role"), source.get("url")
+        if not isinstance(role, str) or not isinstance(url, str):
+            continue
+        if not ("original" in role or "flyer" in role or "warehouse_savings" in role):
+            continue
+        if any(_catalog_source(u, [source]) for u in [failed_url, *attempted]):
+            continue
+        return {"action": "switch_to_next_fixed_source", "source_url": url,
+                "unresolved_units": missing, "coverage_complete": False,
+                "quality_authorized": False,
+                "note": "Inspect matching actual ad pages; fallback does not make missing units reviewed."}
+    return {"action": "source_blocked_rotate_retailer", "source_url": None,
+            "unresolved_units": missing, "coverage_complete": False,
+            "quality_authorized": False,
+            "note": "Preserve exact failed source/units and rotate to a verified viable second retailer."}
+
+
+def coverage_decision(proof: dict) -> dict:
+    """Count logical ad units once across mirrors and require distinct omission reads.
+
+    Consistency-only planning: actual source facts, partial exception and quality
+    still need verification by the existing unchanged production gate.
+    """
+    keys = {"expected_unit_ids", "inventory_reads", "omission_reads",
+            "blocked_unit_ids", "edition_verified", "market_verified",
+            "allow_partial", "partial_note"}
+    require(isinstance(proof, dict) and set(proof) == keys, "research_coverage_schema")
+    expected, first, second = (proof[k] for k in (
+        "expected_unit_ids", "inventory_reads", "omission_reads"))
+    blocked = proof["blocked_unit_ids"]
+    require(isinstance(expected, list) and 0 < len(expected) <= 250 and
+            all(isinstance(x, str) and bool(x) and text_field(x, 90) for x in expected) and
+            len(expected) == len(set(expected)), "research_coverage_units")
+    require(isinstance(first, dict) and isinstance(second, dict) and
+            isinstance(blocked, list) and
+            all(isinstance(x, str) for x in blocked), "research_coverage_reads")
+    universe = set(expected)
+    require(set(first) <= universe and set(second) <= set(first) and
+            set(blocked) <= universe and len(blocked) == len(set(blocked)) and
+            not (set(blocked) & set(first)) and
+            all(isinstance(x, str) and bool(x) and text_field(x, 500)
+                for x in [*first.values(), *second.values()]) and
+            all(first[k] != v for k, v in second.items()), "research_coverage_reads")
+    require(all(type(proof[k]) is bool for k in (
+        "edition_verified", "market_verified", "allow_partial")) and
+        text_field(proof["partial_note"], 500), "research_coverage_scope")
+    missing = sorted(universe - set(first) - set(blocked))
+    omission_pending = sorted(set(first) - set(second))
+    if not proof["edition_verified"] or not proof["market_verified"]:
+        action = "resolve_market_and_edition"
+    elif missing:
+        action = "inventory_missing_units_from_original_or_alternate"
+    elif blocked and (not proof["allow_partial"] or not proof["partial_note"].strip()):
+        action = "blocked_units_require_fallback_or_rotation"
+    elif omission_pending:
+        action = "finish_distinct_omission_pass"
+    elif not first:
+        action = "no_inspected_units_rotate"
+    else:
+        action = ("prepare_disclosed_partial_bundle_for_quality" if blocked
+                  else "prepare_baseline_value_and_quality")
+    ready = action in {"prepare_disclosed_partial_bundle_for_quality",
+                       "prepare_baseline_value_and_quality"}
+    return {"action": action, "source_units": len(expected),
+            "inventory_units": len(first), "omission_units": len(second),
+            "missing_units": missing, "blocked_units": sorted(blocked),
+            "omission_pending": omission_pending,
+            "ready_for_baseline_value": ready,
+            "coverage_complete": ready and not blocked,
+            "quality_authorized": False}
+
+
+def rotate_retailer(state: dict, primary: str, viable_profiles: list[str]) -> dict:
+    """Select one second retailer using CURRENT verified source viability."""
+    validate(state)
+    by_id = {p["id"]: p for p in state["profiles"]}
+    require(primary in by_id and isinstance(viable_profiles, list) and
+            len(viable_profiles) <= 25 and
+            len(viable_profiles) == len(set(viable_profiles)) and
+            all(x in by_id for x in viable_profiles), "research_rotation_arguments")
+    choices = [by_id[x] for x in viable_profiles if x != primary and
+               by_id[x]["status"] != "done" and
+               by_id[x]["publication"] is None and
+               "uncertain" not in by_id[x]["recipients"].values()]
+    choices.sort(key=lambda p: (p["observed_at"] or "0000", p["id"]))
+    if not choices:
+        return {"action": "no_verified_viable_secondary", "primary": primary,
+                "secondary": None, "deep_retailer_cap": 2,
+                "quality_authorized": False}
+    return {"action": "switch_to_second_retailer", "primary": primary,
+            "secondary": choices[0]["id"], "deep_retailer_cap": 2,
+            "quality_authorized": False,
+            "note": "Keep the blocked primary cursor; work on the secondary independently."}
+
+
+def outcome_metrics(state: dict) -> dict:
+    """Do not count checkpoint sequence increments as completed assessments."""
+    validate(state)
+    published = [p for p in state["profiles"] if p["publication"] is not None]
+    delivered = [p for p in published if p["status"] == "done" and
+                 p["recipients"] and all(v == "accepted_verified_in_sent"
+                                           for v in p["recipients"].values())]
+    return {"status": "checkpoint_claims_require_external_verification",
+            "checkpoint_sequence_is_not_completion": True,
+            "publication_claims": len(published),
+            "completed_qualified_delivery_claims": len(delivered),
+            "unfinished_profiles": sum(p["status"] != "done" for p in state["profiles"]),
+            "quality_authorized": False}
+
+
 def private_save(path: Path, content: str) -> None:
     """Create a 0600 checkpoint file outside any Git checkout, never overwrite."""
     dest = path.absolute()
@@ -344,7 +513,7 @@ def main(argv: list[str] | None = None) -> int:
     seed = cmds.add_parser("seed")
     seed.add_argument("--registry", required=True, type=Path)
     seed.add_argument("--out", required=True, type=Path)
-    for name in ("validate", "plan", "before-send", "sent-verified", "preacceptance-failed"):
+    for name in ("validate", "plan", "outcomes", "before-send", "sent-verified", "preacceptance-failed"):
         c = cmds.add_parser(name)
         c.add_argument("checkpoint", type=Path)
         if name in ("before-send", "sent-verified", "preacceptance-failed"):
@@ -352,6 +521,21 @@ def main(argv: list[str] | None = None) -> int:
             c.add_argument("--recipient-slot", required=True)
             c.add_argument("--provider-evidence-ref", required=True)
             c.add_argument("--out", required=True, type=Path)
+    sf = cmds.add_parser("source-failover")
+    sf.add_argument("checkpoint", type=Path)
+    sf.add_argument("--catalog", required=True, type=Path)
+    sf.add_argument("--profile", required=True)
+    sf.add_argument("--failed-url", required=True)
+    sf.add_argument("--attempts", required=True, type=int)
+    sf.add_argument("--attempted-url", action="append", default=[])
+    sf.add_argument("--reviewed-original-url")
+    sf.add_argument("--missing-unit", action="append", default=[])
+    cv = cmds.add_parser("coverage")
+    cv.add_argument("proof", type=Path)
+    rt = cmds.add_parser("rotate")
+    rt.add_argument("checkpoint", type=Path)
+    rt.add_argument("--primary", required=True)
+    rt.add_argument("--viable-profile", action="append", default=[])
     ex = cmds.add_parser("extract")
     ex.add_argument("--prompt", required=True, type=Path)
     ex.add_argument("--out", required=True, type=Path)
@@ -371,6 +555,8 @@ def main(argv: list[str] | None = None) -> int:
             state = json.loads(args.checkpoint.read_text(encoding="utf-8"))
             private_save(args.out, embed(args.prompt.read_text(encoding="utf-8"), state))
             result = {"status": "private_prompt_updated_locally_not_saved_to_task"}
+        elif args.command == "coverage":
+            result = coverage_decision(json.loads(args.proof.read_text(encoding="utf-8")))
         else:
             state = validate(json.loads(args.checkpoint.read_text(encoding="utf-8")))
             if args.command in {"before-send", "sent-verified", "preacceptance-failed"}:
@@ -384,6 +570,17 @@ def main(argv: list[str] | None = None) -> int:
                 private_save(args.out, json.dumps(result, indent=2) + "\n")
             elif args.command == "plan":
                 result = plan(state)
+            elif args.command == "outcomes":
+                result = outcome_metrics(state)
+            elif args.command == "source-failover":
+                result = source_failover(
+                    state, json.loads(args.catalog.read_text(encoding="utf-8")),
+                    args.profile, failed_url=args.failed_url, attempts=args.attempts,
+                    attempted_urls=args.attempted_url,
+                    reviewed_original_url=args.reviewed_original_url,
+                    missing_units=args.missing_unit)
+            elif args.command == "rotate":
+                result = rotate_retailer(state, args.primary, args.viable_profile)
             else:
                 result = {"status": "checkpoint_valid_not_delivery_authorization"}
         print(json.dumps(result))
