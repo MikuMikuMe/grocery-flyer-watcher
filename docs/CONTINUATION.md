@@ -2,7 +2,7 @@
 
 This protocol applies to the existing connected Grocery Flyer Watcher only.
 It does not add a scheduler, database, VM, mail provider or test email, and it
-preserves the current three-hour cadence and enabled/paused state.
+preserves the current configured cadence and enabled/paused state.
 
 ## Durable state boundaries
 
@@ -59,7 +59,7 @@ empty search, determine whether an individual recipient's delivery is handled.
    automatically retried merely because a later Sent search is empty.
    Another recipient/retailer can still continue independently.
 7. If the run ends incomplete, preserve the stage/cursor and exact next safe
-   action in PRIVATE task context. The NEXT normal three-hour run recovers it
+   action in PRIVATE task context. The NEXT normal scheduled run recovers it
    before broad new research. Do not send a status/error email, invent new
    promotion identity, reset baselines, reopen handled editions or publish
    delivery state. Report actual incomplete work truthfully.
@@ -70,14 +70,14 @@ This is automatic resume on the SAME task's next scheduled execution, not an
 instant, guaranteed back-to-back cloud run. The native run_now action does not
 establish a non-overlapping 'queue after my current run ends' guarantee; do not
 self-trigger a concurrent sender, create a second scheduler or silently
-change the three-hour check cadence. Faster safe reruns require a separately
+change the configured checking cadence. Faster safe reruns require a separately
 verified same-task serialization capability.
 
 ## Optional executable helper
 
 The optional src/grocery_flyer_watch/continuation.py module supports seed,
 validate, plan, extract, embed, before-send, sent-verified and
-preacceptance-failed operations. It needs only standard-library Python.
+preacceptance-failed operations, plus source-failover, coverage, rotate and outcomes. It needs only standard-library Python.
 Use temporary PRIVATE paths outside every public checkout. It never sends
 email, updates a task, mutates GitHub or authorizes delivery by itself.
 
@@ -120,3 +120,5 @@ For progress that doesn't yet complete a formal stage, use the canonical previou
 bounded `source_cursor.completed_units`. Do not invent a stage like
 `weekly-original-page-first-visual-inspection` that the validator cannot accept.
 See [RUN_PROGRESS_RECOVERY.md](RUN_PROGRESS_RECOVERY.md) for fallback and rotation.
+
+Research recovery commands and their private evidence contract are documented in [RUN_PROGRESS_RECOVERY.md](RUN_PROGRESS_RECOVERY.md). These decisions must be invoked on actual stalled source work. They cannot themselves authorize a quality bundle or a send.
