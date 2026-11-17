@@ -1,7 +1,7 @@
 # Progress-first source research and failover
 
 This applies to the existing Kingston Grocery Flyer Watcher. Preserve the single native task,
-its actual **three-hour** cadence, enabled state, private delivery context and the full
+its currently configured cadence (hourly after the user's explicit change), enabled state, private delivery context and the full
 quality/publication/Gmail safeguards. Do not add an agent, scheduler, collector service,
 notification transport or database. This is a *runbook*, not proof that a source or offer was
 inspected.
@@ -78,3 +78,50 @@ remains recipient-specific `uncertain`, never safe to retry by assumption.
 **Measurable per-run exit.** Every deep-research run must produce at least one of: (a) a completed, evidenced inventory/omission stage with a new stage cursor; (b) a real baseline/value decision; (c) an executed quality check/build with actual output; (d) verified create-only publication; (e) verified per-recipient provider outcome; or (f) a precise blocker plus a DIFFERENT safe next action/retailer. Merely reading 2-3 more previously covered pages or finding a flyer landing is not sufficient. Report `research_incomplete` until the assessment finishes. Never label a platform completed status as retailer completion.
 
 **Applicability.** Apply the Ontario-to-Kingston presumption in `docs/KINGSTON_FLYER_SOURCES.md`; search narrowly for genuine regional exceptions instead of repeatedly blocking generic Ontario editions. Do not relax price, pack, source, baseline, quality, immutable publication, privacy or Gmail gates.
+
+
+## Executable failover, coverage and retailer rotation (2026-11-17)
+
+The optional, pinned continuation helper now has **four research decisions** in addition to checkpoint validation. They operate on real private observations; none invents a scraper, source read, market proof, inventory, publication, email authorization or a Gmail send. Use the current repository module and keep input JSON/diagnostics outside the public checkout.
+
+**1. Page/grid blocked: choose real alternate evidence, not another navigation pass.**
+After an inaccessible original/grid page (do not retry the same failing reader more than twice), run:
+
+    PYTHONPATH=src python -m grocery_flyer_watch.continuation source-failover /private/checkpoint.json \
+      --catalog config/kingston_flyer_sources.json --profile walmart \
+      --failed-url ACTUAL_GRID_PAGE_URL --attempts 1 \
+      --reviewed-original-url ACTUAL_FIXED_CATALOG_ORIGINAL_FLYER_URL \
+      --missing-unit grid-page-3 --missing-unit grid-page-4 --missing-unit grid-page-5
+
+Use the **actual** failed URL and review URL from tool/source history; these placeholders are not evidence. When a matching registered original ad was already visually read, the helper proposes extracting the missing *item groups* from those originals. It does **not** label the grid or its unseen pages reviewed. Reconcile a grid's pagination against actual *logical* flyer pages, check editions, extract item names/packs/prices/terms and preserve distinct source-read references. If original scans were not reviewed, it chooses the next unattempted registered flyer source. When none is safe, record exact gaps and rotate to another independently viable retailer.
+
+**2. Decide when logical source coverage is sufficient.**
+The private coverage proof (never commit it) must contain exactly these fields:
+
+    {
+      "expected_unit_ids": ["logical-page-1", "logical-page-2"],
+      "inventory_reads": {"logical-page-1": "ACTUAL_FIRST_READ_REF", "logical-page-2": "ACTUAL_FIRST_READ_REF_2"},
+      "omission_reads": {"logical-page-1": "ACTUAL_DISTINCT_REVISIT_REF", "logical-page-2": "ACTUAL_DISTINCT_REVISIT_REF_2"},
+      "blocked_unit_ids": [],
+      "edition_verified": true, "market_verified": true,
+      "allow_partial": false, "partial_note": ""
+    }
+
+    PYTHONPATH=src python -m grocery_flyer_watch.continuation coverage /private/coverage-proof.json
+
+Only include truly inspected logical units in the read maps. Values must be distinct actual first/second read references, not invented labels from this example. Do **not** include broken mirrors as separate missing logical units when the same full original page was actually inventoried and revisited elsewhere. If the helper returns prepare_baseline_value_and_quality, proceed to the real matching baseline, value assessment and unchanged review/check/build; no more redundant flyer pagination is needed. If omissions remain, finish them. If actual logical pages are inaccessible, use a matching alternate; the optional partial exception still requires the precise policy disclosure and must pass the **same** executable quality gate.
+
+**3. Rotate after a confirmed source blocker.**
+Use results of the current genuine eight-profile eligibility/source triage, not every historical checkpoint link, as the viable IDs:
+
+    PYTHONPATH=src python -m grocery_flyer_watch.continuation rotate /private/checkpoint.json \
+      --primary walmart --viable-profile ACTUALLY_VIABLE_OTHER_RETAILER_ID
+
+The helper chooses the oldest unfinished eligible secondary and explicitly excludes handled or recipient-uncertain publication states. Maximum **two** deep-researched retailers in one run. Keep the primary incomplete and retain its cursor; do not erase page observations. If no source is actually viable, report the precise blocker instead of pretending to finish.
+
+**4. Measure outcomes, not checkpoint sequence.**
+
+    PYTHONPATH=src python -m grocery_flyer_watch.continuation outcomes /private/checkpoint.json
+
+The output separates checkpoint-claimed publication/delivery completions from unfinished profiles. These are only *claims until checked* against the immutable pinned GitHub assessment and each recipient's authentic Sent evidence. A higher sequence, more extracted products, green runtime preflight or platform completed status does **not** equal a finished retailer assessment. Do not change recipient safety, source proof validity, selected terms, deduplication or actual send rules.
+
