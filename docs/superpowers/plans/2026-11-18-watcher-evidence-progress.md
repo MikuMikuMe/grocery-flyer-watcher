@@ -27,29 +27,33 @@
 
 **Files:** Create `tests/test_advertised_facts.py`, `src/grocery_flyer_watch/advertised_facts.py`.
 
-**Interface:** `validate_snapshot(snapshot)` and `build(snapshot) -> {path,sha256,public_document}`, with `main` CLI taking a JSON input and printing canonical JSON. No network or Git actions.
+**Interface:** `validate_snapshot(snapshot, *, expected_market, expected_retailer_id)` and `build(snapshot, *, expected_market, expected_retailer_id) -> {path,sha256,content,...}`, with `main` CLI taking a JSON input and printing canonical JSON. No network or Git actions.
 
-- [ ] Write failing unittest fixture for accurate dated Ontario product facts, deterministic stable content/path, and rejection of private fields, noncash savings, bad quotes, unclean links, wrong packs.
-- [ ] Run CI red to verify the expected missing-module failure.
-- [ ] Implement minimal pure validator and stable renderer, no data mutation or I/O beyond reading CLI argument.
-- [ ] Run CI green and inspect public serialization for privacy and delivery separation.
+- [x] Write failing unittest fixture for accurate dated Ontario product facts, deterministic stable content/path, and rejection of private fields, noncash savings, bad quotes, unclean links, wrong packs.
+- [x] Run CI red to verify the expected missing-module failure.
+- [x] Implement minimal pure validator and stable renderer, no data mutation or I/O beyond reading CLI argument.
+- [x] Run CI green and inspect public serialization for privacy and delivery separation.
 
 ### Task 2: Stage-based run ticket
 
 **Files:** Create `tests/test_work_ticket.py`, `src/grocery_flyer_watch/work_ticket.py`.
 
-**Interface:** `choose(state, availability, *, previous_primary, previous_made_progress, now) -> dict`; `availability` is explicit caller-verified status for up to eight profiles; no actual eligibility inferred.
+**Interface:** `choose(state, availability, *, previous_primary, previous_substantive, now) -> dict`; `availability` is explicit caller-verified status for up to eight profiles; no actual eligibility inferred.
 
-- [ ] Write failing tests for pending publication > source research, proven near expiry, blocked retailer rotation, no-progress consecutive run, six-hour freshness without cursor reset, and unsafe/unknown eligibility exclusion.
-- [ ] Run red tests before creating implementation.
-- [ ] Implement deterministic bounded priority and fail-closed schema checking; return no action when no safe current source is proven.
-- [ ] Run green full suite and verify no Gmail output or unsafe state mutations.
+- [x] Write failing tests for pending publication > source research, proven near expiry, blocked retailer rotation, no-progress consecutive run, six-hour freshness without cursor reset, and unsafe/unknown eligibility exclusion.
+- [x] Run red tests before creating implementation.
+- [x] Implement deterministic bounded priority and fail-closed schema checking; return no action when no safe current source is proven.
+- [x] Run green full suite and verify no Gmail output or unsafe state mutations.
 
 ### Task 3: Integrate without changing scheduler
 
 **Files:** Modify `docs/RUN_PROGRESS_RECOVERY.md`, `docs/CONTINUATION.md`, existing task prompt *outside the checkpoint marker only*.
 
-- [ ] Document evidence-to-ledger-to-assessment workflow and legitimate partial/blocked states.
-- [ ] Update this ONE automation's instructions to prioritize an actual source-fact chunk and baseline/value or quality over repeat library-document reads, using current main SHA to detect changed docs.
-- [ ] Verify entire current checkpoint parse+schema, task prompt round-trip and identical schedule/enabled; do not modify recipient states or send mail.
-- [ ] Confirm CI on Python 3.11/3.12/3.13 and merge only when passing. Report unsolved live source limitations candidly.
+- [x] Document evidence-to-ledger-to-assessment workflow and legitimate partial/blocked states.
+- [x] Update this ONE automation's instructions to prioritize an actual source-fact chunk and baseline/value or quality over repeat library-document reads, using current main SHA to detect changed docs.
+- [x] Verify entire current checkpoint parse+schema, task prompt round-trip and identical schedule/enabled; do not modify recipient states or send mail.
+- [x] Confirm CI on Python 3.11/3.12/3.13 and merge only when passing. Report unsolved live source limitations candidly.
+
+## Execution verification
+
+Implementation and safety regression tests completed, including deliberate failing-test runs before production module changes. Full repository CI passed on Python 3.11, 3.12 and 3.13 after merging. The single existing native task instruction update was reread with its entire private checkpoint and schedule/enabled settings preserved. No live flyer collector or end-to-end delivery was claimed; actual source ingestion and qualified alert completion require a future genuinely verified native execution.
