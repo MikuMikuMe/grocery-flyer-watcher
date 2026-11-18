@@ -122,3 +122,7 @@ bounded `source_cursor.completed_units`. Do not invent a stage like
 See [RUN_PROGRESS_RECOVERY.md](RUN_PROGRESS_RECOVERY.md) for fallback and rotation.
 
 Research recovery commands and their private evidence contract are documented in [RUN_PROGRESS_RECOVERY.md](RUN_PROGRESS_RECOVERY.md). These decisions must be invoked on actual stalled source work. They cannot themselves authorize a quality bundle or a send.
+
+## Reusable advertising facts (2026-11-18)
+
+The validated native checkpoint preserves stage/cursor/recipient uncertainty but is intentionally bounded; it cannot carry the entire source item pool. For actual reviewed products, use [ADVERTISED_FACTS.md](ADVERTISED_FACTS.md): validate only PUBLIC advertising facts, manually privacy review the output, create-only commit content-addressed verified chunks, and pin verified pointers in the PRIVATE cursor. The executable private work-ticket prioritizes unfinished review/quality gates and rotates after real no-progress. Neither helper creates a live collector, source proof, source-wide coverage flag, authorization ticket or email. Stage publication and write-ahead Gmail rules remain unchanged. A six-hour refresh changes source evidence freshness, not already-completed logical page inventory.
