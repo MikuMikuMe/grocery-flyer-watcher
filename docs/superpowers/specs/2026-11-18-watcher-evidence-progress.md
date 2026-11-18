@@ -1,7 +1,7 @@
 # Watcher evidence-progress design — 2026-11-18
 
 ## Observed failure
-The existing native hourly task has a validated private checkpoint (sequence 32) but no end-to-end retailer completion. All enabled profiles have empty live collector argv. The public `continuation.plan` only recommends research; the checkpoint keeps short page markers, not reusable item facts. Runs can therefore repeat source/prerequisite review without creating usable production input. The preceding invalid 112-character cursor was independently corrected and is not the remaining bottleneck.
+The existing native hourly task has incomplete retailer workflows despite valid private continuation machinery. All enabled profiles have empty live collector argv. The public continuation planner only recommends research, while the bounded task checkpoint holds concise stage/page markers rather than full reusable source-native item facts. Runs may therefore repeat prerequisites without creating an executable assessment input. Detailed operational checkpoint observations remain PRIVATE.
 
 ## Required outcome
 Within the **same native hourly task**, turn actual human/agent-inspected flyer products into compact, durable **public-only advertised facts**, and choose a single executable next action (and an independent second viable retailer only on blocker). Count a run successful only with actual completed quality stages or verified publication/delivery; a checkpoint increment alone is insufficient. Keep all source/market/edition/price and quality, immutable GitHub, privacy, recipient-specific Sent and write-ahead authorization requirements unchanged.
