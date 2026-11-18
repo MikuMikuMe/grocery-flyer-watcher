@@ -67,9 +67,11 @@ def _valid_sources(state: dict, availability: dict, today: date) -> list[tuple[d
         check((start is None) == (end is None), "ticket_edition_dates")
         if start is not None:
             a, b = _date(start), _date(end)
-            check(a <= b and (b - a).days <= 70, "ticket_edition_dates")
+            check(a <= b and (b - a).days <= 70 and
+                  not entry["undated_collection"], "ticket_edition_dates")
         else:
-            check(entry["undated_collection"], "ticket_undated_needs_collection")
+            check(entry["undated_collection"] and ident == "staples",
+                  "ticket_undated_only_staples_collections")
             b = date.max
         ref = entry["evidence_ref"]
         check(ref is None or continuation.text_field(ref, 500) and bool(ref),
@@ -78,7 +80,7 @@ def _valid_sources(state: dict, availability: dict, today: date) -> list[tuple[d
               "ticket_source_evidence_required")
         if (entry["verified_market_edition"] and entry["source_readable"] and
                 not by_id[ident]["status"] == "done" and
-                (start is None or _date(start) <= today <= b)):
+                today <= b and (start is None or _date(start) <= today + timedelta(days=14))):
             viable.append((by_id[ident], b))
     return viable
 
