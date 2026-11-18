@@ -35,7 +35,7 @@ class AdvertisedFactsTests(unittest.TestCase):
                     "price_cad": "3.98",
                     "pricing": "package",
                     "source_url": "https://www.weeklyflyer.com/walmart/ontario-weekly",
-                    "source_quote": "Coca-Cola bottles 6 x 710 mL $3.98",
+                    "source_quote": "Coca-Cola bottles 6 x 710 mL $3.98 Selected flavours",
                     "channel": "in_store",
                     "terms": ["Selected flavours"],
                 },
@@ -43,8 +43,8 @@ class AdvertisedFactsTests(unittest.TestCase):
         }
 
     def test_build_is_deterministic_and_only_public_advertising_facts(self):
-        a = facts.build(self.sample())
-        b = facts.build(copy.deepcopy(self.sample()))
+        a = facts.build(self.sample(), expected_market="Kingston, Ontario", expected_retailer_id="walmart")
+        b = facts.build(copy.deepcopy(self.sample()), expected_market="Kingston, Ontario", expected_retailer_id="walmart")
         self.assertEqual(a, b)
         self.assertEqual(a["format"], "verified-public-advertising-snapshot-v1")
         self.assertTrue(a["path"].startswith(
@@ -72,7 +72,7 @@ class AdvertisedFactsTests(unittest.TestCase):
             variation(d)
             with self.subTest(input=variation):
                 with self.assertRaises(facts.FactsError):
-                    facts.build(d)
+                    facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
 
     def test_cash_not_derived_from_savings_amount(self):
         d = self.sample()
@@ -123,12 +123,23 @@ class AdvertisedFactsTests(unittest.TestCase):
         with self.assertRaises(facts.FactsError):
             facts.build(d)
 
+    def test_unsupported_terms_without_a_quote_are_rejected(self):
+        d = self.sample()
+        d["offers"][0]["terms"] = ["Members only"]
+        with self.assertRaises(facts.FactsError):
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
+
+    def test_wrong_profile_rejected(self):
+        d = self.sample()
+        with self.assertRaises(facts.FactsError):
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="loblaws")
+
     def test_build_cannot_send_or_write_anything(self):
         d = self.sample()
         self.assertNotIn("gmail", vars(facts))
         self.assertNotIn("send", vars(facts))
         self.assertNotIn("publish", vars(facts))
-        self.assertIsNone(facts.validate_snapshot(d))
+        self.assertIsNone(facts.validate_snapshot(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart"))
 
 
 if __name__ == "__main__":
