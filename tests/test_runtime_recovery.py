@@ -58,6 +58,14 @@ class RecoveryTests(unittest.TestCase):
             blobs[rel]=bootstrap.blob_id(raw)
         self.manifest={'repository_id':1,'commit':'a'*40,'git_blobs':blobs}
 
+    def test_optional_research_modules_can_be_pinned_from_real_repo(self):
+        self.assertIn("src/grocery_flyer_watch/advertised_facts.py",
+                      bootstrap.OPTIONAL_MODULES)
+        self.assertIn("src/grocery_flyer_watch/work_ticket.py",
+                      bootstrap.OPTIONAL_MODULES)
+        self.assertIn("src/grocery_flyer_watch/continuation.py",
+                      bootstrap.OPTIONAL_MODULES)
+
     def test_missing_runtime_repairs_from_verified_cache(self):
         dest=self.root/'runtime'
         self.assertEqual(bootstrap.prepare(dest,self.manifest,self.cache)['restored_modules'],len(bootstrap.MODULES))

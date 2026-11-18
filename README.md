@@ -183,3 +183,7 @@ Opt-in `FLYER_DIAGNOSTICS=1` adds private structured stage/error logs across the
 without changing validation or retry policy. See [diagnostics and failure interpretation](docs/DIAGNOSTICS.md).
 Logs never prove provider delivery and must not be published. Offline regression tests cover
 safe logging, interruptions, pipeline failures and existing no-duplicate delivery behavior.
+
+### Evidence-first recovery for the native ChatGPT task
+
+The connected task can use the optional offline [advertising-fact ledger and work-ticket](docs/ADVERTISED_FACTS.md) to preserve actual factual product observations between hourly runs and to choose a finite next action. These modules do not scrape live sources or authorize publication/Gmail; the existing market, full-flyer, change/value, quality and separate-recipient safeguards still apply. They add no scheduler or sender.
