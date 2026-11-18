@@ -108,6 +108,25 @@ class WorkTicketTests(unittest.TestCase):
         self.assertEqual(result["action"], "no_verified_viable_source")
         self.assertIsNone(result["primary"])
 
+
+    def test_only_staples_undated_collections_are_eligible(self):
+        self.availability["walmart"] = {
+            "verified_market_edition": True, "source_readable": True,
+            "edition_start": None, "edition_end": None,
+            "undated_collection": True, "evidence_ref": "source-read",
+        }
+        with self.assertRaises(w.TicketError):
+            w.choose(self.state, self.availability, now=self.now)
+
+    def test_preview_edition_may_be_researched_but_not_authorized(self):
+        self.availability["walmart"] = self.record("2026-11-19", "2026-11-25")
+        self.availability["metro"]["source_readable"] = False
+        self.availability["costco"]["source_readable"] = False
+        result = w.choose(self.state, self.availability, now=self.now)
+        self.assertEqual(result["primary"], "walmart")
+        self.assertEqual(result["action"], "resume_source_inventory")
+        self.assertFalse(result["gmail_authorized"])
+
     def test_input_validation_fails_closed(self):
         del self.availability["costco"]
         with self.assertRaises(w.TicketError):
