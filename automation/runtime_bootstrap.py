@@ -23,7 +23,9 @@ MODULES = frozenset('src/grocery_flyer_watch/' + name + '.py' for name in (
     'quality_gate', 'reviewed_delivery', 'diagnostics'))
 OPTIONAL_MODULES = frozenset({'src/grocery_flyer_watch/repository_delivery.py',
                               'src/grocery_flyer_watch/runtime_preflight.py',
-                              'src/grocery_flyer_watch/continuation.py'})
+                              'src/grocery_flyer_watch/continuation.py',
+                              'src/grocery_flyer_watch/advertised_facts.py',
+                              'src/grocery_flyer_watch/work_ticket.py'})
 
 MAX_CONNECTOR_BUNDLE_BYTES = 8 * 1024 * 1024
 
