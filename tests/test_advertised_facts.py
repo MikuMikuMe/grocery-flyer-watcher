@@ -78,7 +78,7 @@ class AdvertisedFactsTests(unittest.TestCase):
         d = self.sample()
         d["offers"][0]["source_quote"] = "Silver Elephant jasmine rice 7 kg SAVE $14.98"
         with self.assertRaises(facts.FactsError):
-            facts.build(d)
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
 
     def test_exact_name_pack_cash_and_quote_are_mandatory(self):
         variants = [
@@ -95,33 +95,33 @@ class AdvertisedFactsTests(unittest.TestCase):
             d["offers"][0][field] = val
             with self.subTest(field=field, val=val):
                 with self.assertRaises(facts.FactsError):
-                    facts.build(d)
+                    facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
 
     def test_reject_other_market_or_unknown_channel(self):
         d = self.sample()
         d["market"] = "Toronto, Ontario"
         with self.assertRaises(facts.FactsError):
-            facts.build(d)
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
         d = self.sample()
         d["offers"][0]["channel"] = "shipping_only"
         with self.assertRaises(facts.FactsError):
-            facts.build(d)
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
 
     def test_reject_invalid_edition_or_empty_offers(self):
         d = self.sample()
         d["edition"]["ends_on"] = "2026-11-11"
         with self.assertRaises(facts.FactsError):
-            facts.build(d)
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
         d = self.sample()
         d["offers"] = []
         with self.assertRaises(facts.FactsError):
-            facts.build(d)
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
 
     def test_duplicate_offers_are_rejected(self):
         d = self.sample()
         d["offers"].append(copy.deepcopy(d["offers"][0]))
         with self.assertRaises(facts.FactsError):
-            facts.build(d)
+            facts.build(d, expected_market="Kingston, Ontario", expected_retailer_id="walmart")
 
     def test_unsupported_terms_without_a_quote_are_rejected(self):
         d = self.sample()
