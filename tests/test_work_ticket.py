@@ -109,6 +109,47 @@ class WorkTicketTests(unittest.TestCase):
         self.assertIsNone(result["primary"])
 
 
+    def test_unknown_dated_retailer_does_not_block_verified_retailer(self):
+        # Full-registry triage may have unreadable/undiscovered current editions.
+        self.state["profiles"].append(c.blank(["rexall"])["profiles"][0])
+        self.availability["rexall"] = {
+            "verified_market_edition": False, "source_readable": False,
+            "edition_start": None, "edition_end": None,
+            "undated_collection": False, "evidence_ref": None,
+        }
+        result = w.choose(self.state, self.availability, now=self.now)
+        self.assertEqual(result["primary"], "walmart")
+        self.assertEqual(result["next_deliverable"], "source_verified_public_facts_chunk")
+
+    def test_all_unknown_sources_are_not_eligible(self):
+        for ident in self.availability:
+            self.availability[ident] = {
+                "verified_market_edition": False, "source_readable": False,
+                "edition_start": None, "edition_end": None,
+                "undated_collection": False, "evidence_ref": None,
+            }
+        result = w.choose(self.state, self.availability, now=self.now)
+        self.assertEqual(result["action"], "no_verified_viable_source")
+        self.assertIsNone(result["primary"])
+
+    def test_unknown_dates_cannot_claim_verified_market_edition(self):
+        self.availability["metro"] = {
+            "verified_market_edition": True, "source_readable": True,
+            "edition_start": None, "edition_end": None,
+            "undated_collection": False, "evidence_ref": "actual-read",
+        }
+        with self.assertRaises(w.TicketError):
+            w.choose(self.state, self.availability, now=self.now)
+
+    def test_readable_source_without_verified_edition_remains_candidate_only(self):
+        self.availability["metro"] = {
+            "verified_market_edition": False, "source_readable": True,
+            "edition_start": None, "edition_end": None,
+            "undated_collection": False, "evidence_ref": "actual-page-read",
+        }
+        result = w.choose(self.state, self.availability, now=self.now)
+        self.assertEqual(result["primary"], "walmart")
+
     def test_only_staples_undated_collections_are_eligible(self):
         self.availability["walmart"] = {
             "verified_market_edition": True, "source_readable": True,

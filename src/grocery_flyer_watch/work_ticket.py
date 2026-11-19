@@ -69,10 +69,17 @@ def _valid_sources(state: dict, availability: dict, today: date) -> list[tuple[d
             a, b = _date(start), _date(end)
             check(a <= b and (b - a).days <= 70 and
                   not entry["undated_collection"], "ticket_edition_dates")
-        else:
-            check(entry["undated_collection"] and ident == "staples",
+        elif entry["undated_collection"]:
+            check(ident == "staples",
                   "ticket_undated_only_staples_collections")
             b = date.max
+        else:
+            # Most retailers will not have a confirmed edition during quick triage.
+            # Unknown dates are not evidence of a current offer, but must not
+            # invalidate a real, verified source from another retailer.
+            check(not entry["verified_market_edition"],
+                  "ticket_verified_edition_missing_dates")
+            continue
         ref = entry["evidence_ref"]
         check(ref is None or continuation.text_field(ref, 500) and bool(ref),
               "ticket_source_evidence")

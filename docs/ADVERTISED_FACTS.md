@@ -33,6 +33,12 @@ Then invoke:
 
 Pass --previous-primary walmart --previous-no-progress only after verifying from the latest native run that Walmart produced no substantive factual/evaluative stage. The ticket chooses an exact action and deliverable or a precise blocker; with previous confirmed no-progress it rotates to a second independently viable retailer. It cannot invent readable sources or eligibility and never grants quality/publication/email authority. No more than two deep retailers in one run. Refresh of six-hour-old evidence is scoped to selected facts and does not erase cursors.
 
+## Unknown edition dates are an expected triage outcome
+
+For every enabled profile, include an availability record even if the current printed edition cannot be established. Use `edition_start: null`, `edition_end: null`, `undated_collection: false`, `verified_market_edition: false` and `source_readable: false` unless an actual item-bearing page was read (then provide the true `evidence_ref`). Unknown dates are **not a blocker for the other seven profiles**, but that retailer cannot be selected as a viable dated source. Claiming `verified_market_edition: true` without printed dates fails closed. Only an actual undated Staples collection may set `undated_collection: true`.
+
+After an explicitly documented no-progress run, pass the prior primary to the ticket and honor a verified independent secondary. Do not ask the planner to choose among invented readable sources. The next run's primary deliverable must be **source-verified facts persisted create-only, a real baseline/value result, distinct omission review, executable quality result or downstream pinned proof**, not a new visit to the same index page.
+
 ## Efficient run contract
 
 Every run checks CURRENT task instructions, private checkpoint, canonical main SHA, current source catalog and changed retailer source/edition. On a verified unchanged main SHA, reuse the previous privately recorded policy reading rather than refetching 20 unchanged docs; re-read the exact changed policies on SHA change or specific ambiguity. This does not waive source freshness, baseline history, immutable assessment lookup, Gmail Sent reconciliation or delivery gates. Do not let static documentation consume the execution before any actual source facts are inspected.
