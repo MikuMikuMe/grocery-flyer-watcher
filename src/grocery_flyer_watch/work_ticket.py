@@ -63,6 +63,13 @@ def _valid_sources(state: dict, availability: dict, today: date) -> list[tuple[d
         check(all(type(entry[x]) is bool for x in (
             "verified_market_edition", "source_readable", "undated_collection")),
             "ticket_availability_flags")
+        # Validate every source reference before a branch can skip an
+        # unverified edition: unknown dates do not excuse invented read proof.
+        ref = entry["evidence_ref"]
+        check(ref is None or continuation.text_field(ref, 500) and bool(ref),
+              "ticket_source_evidence")
+        check(not entry["source_readable"] or bool(ref),
+              "ticket_source_evidence_required")
         start, end = entry["edition_start"], entry["edition_end"]
         check((start is None) == (end is None), "ticket_edition_dates")
         if start is not None:
@@ -80,11 +87,6 @@ def _valid_sources(state: dict, availability: dict, today: date) -> list[tuple[d
             check(not entry["verified_market_edition"],
                   "ticket_verified_edition_missing_dates")
             continue
-        ref = entry["evidence_ref"]
-        check(ref is None or continuation.text_field(ref, 500) and bool(ref),
-              "ticket_source_evidence")
-        check(not entry["source_readable"] or bool(ref),
-              "ticket_source_evidence_required")
         if (entry["verified_market_edition"] and entry["source_readable"] and
                 not by_id[ident]["status"] == "done" and
                 today <= b and (start is None or _date(start) <= today + timedelta(days=14))):
@@ -141,7 +143,39 @@ def choose(state: dict, availability: dict, *,
                 "last_completed": p["last_completed"], "cursor": p["source_cursor"]["next_unit"],
                 "refresh_selected_source_evidence": False}
 
+    def source_verification_only(exclude: str) -> dict | None:
+        # A failed deep read should not force another hour on the same flyer
+        # when the other retailers were not yet verified. Propose a different
+        # retailer's SOURCE-ONLY triage, never claim it is a viable offer.
+        candidates = [p for p in state["profiles"]
+                      if p["id"] != exclude and p["status"] != "done"
+                      and p["publication"] is None
+                      and not (availability[p["id"]]["verified_market_edition"]
+                               and availability[p["id"]]["source_readable"])]
+        if not candidates:
+            return None
+        p = min(candidates, key=lambda x: (
+            x["last_completed"] != "not_started",
+            x["observed_at"] is not None, x["observed_at"] or "", x["id"]))
+        return {**base, "primary": p["id"], "rotated_from": exclude,
+                "action": "verify_secondary_source_only",
+                "next_deliverable": "actual_current_flyer_proof_or_precise_source_blocker",
+                "source_verification_only": True,
+                "verified_secondary": False,
+                "last_completed": p["last_completed"],
+                "cursor": p["source_cursor"]["next_unit"],
+                "refresh_selected_source_evidence": False}
+
     if not viable:
+        if previous_primary is not None and previous_substantive is False:
+            probe = source_verification_only(previous_primary)
+            if probe is not None:
+                return probe
+            return {**base, "primary": None, "rotated_from": previous_primary,
+                    "action": "no_verified_viable_secondary",
+                    "next_deliverable": "specific_source_blocker",
+                    "last_completed": None, "cursor": None,
+                    "refresh_selected_source_evidence": False}
         return {**base, "primary": None, "rotated_from": None,
                 "action": "no_verified_viable_source",
                 "next_deliverable": "specific_source_blocker",
@@ -165,6 +199,9 @@ def choose(state: dict, availability: dict, *,
     if previous_primary is not None and previous_substantive is False:
         alternatives = [item for item in ordered if item[0]["id"] != previous_primary]
         if not alternatives:
+            probe = source_verification_only(previous_primary)
+            if probe is not None:
+                return probe
             return {**base, "primary": None, "rotated_from": previous_primary,
                     "action": "no_verified_viable_secondary",
                     "next_deliverable": "precise_blocker_and_different_safe_source_action",

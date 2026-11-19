@@ -49,6 +49,65 @@ class WorkTicketTests(unittest.TestCase):
         self.availability["costco"]["source_readable"] = False
         result = w.choose(self.state, self.availability, now=self.now,
                           previous_primary="walmart", previous_substantive=False)
+        self.assertEqual(result["action"], "verify_secondary_source_only")
+        self.assertEqual(result["primary"], "costco")
+        self.assertEqual(result["rotated_from"], "walmart")
+        self.assertTrue(result["source_verification_only"])
+        self.assertFalse(result["verified_secondary"])
+        self.assertFalse(result["gmail_authorized"])
+
+    def test_no_viable_retailers_after_stall_routes_to_safe_source_only_probe(self):
+        for ident in self.availability:
+            self.availability[ident] = {
+                "verified_market_edition": False, "source_readable": False,
+                "edition_start": None, "edition_end": None,
+                "undated_collection": False, "evidence_ref": None}
+        result = w.choose(self.state, self.availability, now=self.now,
+                          previous_primary="walmart", previous_substantive=False)
+        self.assertEqual(result["action"], "verify_secondary_source_only")
+        self.assertEqual(result["primary"], "costco")
+        self.assertFalse(result["verified_secondary"])
+        self.assertFalse(result["publication_authorized"])
+        self.assertFalse(result["gmail_authorized"])
+
+    def test_probe_favors_unstarted_retailer_without_inventing_viability(self):
+        p = self.state["profiles"][1]
+        p["last_completed"] = "not_started"
+        p["observed_at"] = None
+        self.availability["metro"]["verified_market_edition"] = False
+        self.availability["costco"]["source_readable"] = False
+        result = w.choose(self.state, self.availability, now=self.now,
+                          previous_primary="walmart", previous_substantive=False)
+        self.assertEqual(result["primary"], "metro")
+        self.assertEqual(result["action"], "verify_secondary_source_only")
+        self.assertFalse(result["verified_secondary"])
+
+    def test_source_only_probe_never_overrides_uncertain_recipient(self):
+        p = self.state["profiles"][1]
+        p["recipients"] = {"slot-a": "uncertain"}
+        for ident in self.availability:
+            self.availability[ident]["source_readable"] = False
+        result = w.choose(self.state, self.availability, now=self.now,
+                          previous_primary="walmart", previous_substantive=False)
+        self.assertEqual(result["action"], "reconcile_sent_uncertainty")
+        self.assertEqual(result["primary"], "metro")
+
+    def test_unknown_dates_still_require_real_read_reference(self):
+        self.availability["metro"] = {
+            "verified_market_edition": False, "source_readable": True,
+            "edition_start": None, "edition_end": None,
+            "undated_collection": False, "evidence_ref": None}
+        with self.assertRaises(w.TicketError) as error:
+            w.choose(self.state, self.availability, now=self.now)
+        self.assertEqual(str(error.exception), "ticket_source_evidence_required")
+
+    def test_no_secondary_only_when_registry_has_no_other_profile(self):
+        state = c.blank(["walmart"])
+        state["profiles"][0]["last_completed"] = "triage"
+        state["profiles"][0]["next_stage"] = "source_inventory"
+        availability = {"walmart": self.record("2026-11-12", "2026-11-18")}
+        result = w.choose(state, availability, now=self.now,
+                          previous_primary="walmart", previous_substantive=False)
         self.assertEqual(result["action"], "no_verified_viable_secondary")
         self.assertIsNone(result["primary"])
 
