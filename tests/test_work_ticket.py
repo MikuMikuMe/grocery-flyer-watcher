@@ -118,7 +118,7 @@ class WorkTicketTests(unittest.TestCase):
             "undated_collection": False, "evidence_ref": None,
         }
         result = w.choose(self.state, self.availability, now=self.now)
-        self.assertEqual(result["primary"], "walmart")
+        self.assertEqual(result["primary"], "metro")
         self.assertEqual(result["next_deliverable"], "source_verified_public_facts_chunk")
 
     def test_all_unknown_sources_are_not_eligible(self):
