@@ -29,3 +29,14 @@ jobs:
         run: python -m metro_flyer_watch validate data/latest.json
       - name: Render historical report
         run: grocery-flyer-watch report data/latest.json
+      - name: Package pinned public runtime
+        if: matrix.python == '3.11'
+        run: git archive --format=zip --output=runtime-code.zip HEAD src/grocery_flyer_watch automation/runtime_bootstrap.py
+      - name: Upload public runtime cache
+        if: matrix.python == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-${{ github.sha }}
+          path: runtime-code.zip
+          if-no-files-found: error
+          retention-days: 30
