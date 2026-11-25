@@ -1,5 +1,6 @@
 """Offline journal controller. Never retrieves sources, publishes, or sends mail."""
 import argparse
+from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
@@ -71,6 +72,55 @@ def render(s):
     return ('# Private operation journal\n\nNative checkpoint remains authoritative. Never interpret intent as evidence.\n\n```json\n' + json.dumps(s, indent=2, sort_keys=True, ensure_ascii=True, allow_nan=False) + '\n```\n').encode()
 
 
+def timestamp(value):
+    require(isinstance(value, str), 'missing native timestamp')
+    t = datetime.fromisoformat(value.replace('Z', '+00:00'))
+    require(t.tzinfo is not None, 'native timestamp must include offset')
+    return t
+
+
+def recover_empty(s, event, n):
+    require(s['status'] == 'RUN_STARTED' and s.get('operation') is None and s.get('result') is None, 'only empty run may be recovered')
+    require(event['checkpoint_sequence'] == s['checkpoint_sequence'], 'checkpoint changed')
+    for key in ('verified_checkpoint', 'verified_no_unresolved_delivery', 'verified_no_other_writer'):
+        require(event.get(key) is True, 'missing ' + key)
+    last = event.get('latest_run')
+    require(isinstance(last, dict) and last.get('recorded_status') in {'completed', 'failed', 'no_update'}, 'terminal native evidence required')
+    require(isinstance(last.get('id'), str) and last['id'].strip(), 'missing native invocation ID')
+    ended = timestamp(last.get('completed_at'))
+    scheduled = timestamp(last.get('scheduled_for'))
+    old_id, old_schedule = s.get('native_run_id'), s.get('scheduled_for')
+    observed = s.get('observed_started_at')
+    same = bool(old_id) and last['id'] == old_id
+    if same:
+        require(old_schedule is None or scheduled == timestamp(old_schedule), 'native schedule mismatch')
+        require(observed is None or ended >= timestamp(observed), 'terminal evidence precedes observed start')
+    elif old_id and old_schedule:
+        require(scheduled > timestamp(old_schedule) and ended >= timestamp(old_schedule), 'native evidence does not establish supersession')
+    else:
+        require(observed is not None, 'missing abandoned invocation observation')
+        started = timestamp(last.get('started_at'))
+        require(ended >= started > timestamp(observed), 'native evidence does not establish supersession')
+    n.update(status='RUN_FINISHED', operation=None, result=None,
+             recovery=dict(run_key=s['run_key'], native_run_id=old_id, scheduled_for=old_schedule, basis='terminal' if same else 'superseded', evidence_run_id=last['id'], historical_outcome='unknown'),
+             next_action='Resume canonical planner; no retailer advancement inferred.')
+    if event['action'] == 'recover_start':
+        key = event.get('run_key')
+        require(isinstance(key, str) and key.strip() and key not in {s['run_key'], last['id']}, 'new invocation key required')
+        native = event.get('native_run_id')
+        new_time = event.get('scheduled_for')
+        new_observed = event.get('observed_started_at')
+        if native is not None:
+            require(isinstance(native, str) and native.strip() and native not in {last['id'], old_id}, 'new native invocation required')
+        if new_time is not None:
+            require(timestamp(new_time) > scheduled, 'new invocation must follow terminal evidence')
+        if new_observed is not None:
+            require(timestamp(new_observed) >= ended, 'new observation precedes terminal evidence')
+        require((native is not None and new_time is not None) or new_observed is not None, 'new invocation needs observed start when native identity/schedule unavailable')
+        n.update(status='RUN_STARTED', run_key=key, native_run_id=native, scheduled_for=new_time, observed_started_at=new_observed)
+    return validate(n)
+
+
 def transition(s, event):
     validate(s)
     require(event.get('expected_revision') == s['revision'], 'stale revision')
@@ -79,11 +129,15 @@ def transition(s, event):
     n = dict(s, revision=s['revision'] + 1)
     seq = event.get('checkpoint_sequence')
     require(type(seq) is int and seq >= s['checkpoint_sequence'], 'checkpoint regression')
+    if action in {'recover_abandoned', 'recover_start'}:
+        return recover_empty(s, event, n)
     if action == 'start':
         require(status in {'IDLE', 'RUN_FINISHED'}, 'unfinished run')
         key = event.get('run_key')
         require(isinstance(key, str) and key.strip() and key != s.get('run_key'), 'invalid run key')
-        n.update(status='RUN_STARTED', run_key=key, native_run_id=event.get('native_run_id'), scheduled_for=event.get('scheduled_for'), checkpoint_sequence=seq, operation=None, result=None)
+        if event.get('observed_started_at') is not None:
+            timestamp(event['observed_started_at'])
+        n.update(status='RUN_STARTED', run_key=key, native_run_id=event.get('native_run_id'), scheduled_for=event.get('scheduled_for'), checkpoint_sequence=seq, operation=None, result=None, observed_started_at=event.get('observed_started_at'))
     elif action == 'pending':
         require(status in {'RUN_STARTED', 'COMMITTED'}, 'unresolved operation')
         require(seq == s['checkpoint_sequence'], 'checkpoint changed before intent')
@@ -155,12 +209,49 @@ def append_entry(raw, key, body):
     return raw + (b'\n' if raw.endswith(b'\n') else b'\n\n') + entry
 
 
+def recovery_bundle(s, event, history):
+    action = event.get('action')
+    require(action in {'start', 'recover_abandoned', 'recover_start'}, 'startup/recovery action required')
+    if action == 'start':
+        require(event.get('verified_checkpoint') is True and event.get('verified_no_other_writer') is True, 'verified checkpoint and single writer required')
+        require(event.get('checkpoint_sequence') == s['checkpoint_sequence'], 'checkpoint changed')
+        native, schedule, observed = (event.get(k) for k in ('native_run_id', 'scheduled_for', 'observed_started_at'))
+        require((isinstance(native, str) and native.strip() and schedule is not None) or observed is not None, 'new invocation needs observed start when native identity/schedule unavailable')
+        if schedule is not None:
+            timestamp(schedule)
+    n = transition(s, event)
+    old = n['recovery'] if action != 'start' else None
+    recovery_lines = ''
+    if old:
+        body = (f"## Recovered empty invocation — {old['run_key']}\n"
+                f"- Native invocation: {old['native_run_id']}\n"
+                f"- Scheduled: {old['scheduled_for']}\n"
+                f"- Checkpoint sequence: {n['checkpoint_sequence']} (unchanged)\n"
+                "- Empty RUN_STARTED closed using verified terminal or later native evidence. Historical workflow outcome unknown; no research progress inferred.")
+        history = append_entry(history, old['run_key'] + ':RECOVERED_EMPTY', body)
+        recovery_lines = (f"- Recovered run: {old['run_key']}\n"
+                          f"- Terminal evidence invocation: {old['evidence_run_id']} ({old['basis']})\n")
+    if n['status'] == 'RUN_STARTED':
+        history = append_entry(history, n['run_key'] + ':START',
+                               f"## Invocation START — {n['run_key']}\n- Checkpoint sequence: {n['checkpoint_sequence']}\n- Initialized; no retailer progress yet.")
+    handoff = ("# Grocery Flyer Watcher — latest handoff\n\n"
+               f"- Journal status: {n['status']}\n- Journal revision: {n['revision']}\n"
+               f"- Run key: {n['run_key']}\n" + recovery_lines +
+               f"- Native checkpoint: {n['checkpoint_sequence']} (unchanged)\n"
+               "- No pending operation or result; no retailer progress inferred.\n"
+               "- Next: execute the canonical planner and persist a real bounded operation.\n").encode()
+    return render(n), history, handoff
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('command', choices=['inspect', 'transition', 'append', 'verify'])
+    p.add_argument('command', choices=['inspect', 'transition', 'append', 'verify', 'recover'])
     p.add_argument('input', type=Path)
     p.add_argument('--request', type=Path)
     p.add_argument('--output', type=Path)
+    p.add_argument('--history', type=Path)
+    p.add_argument('--history-output', type=Path)
+    p.add_argument('--handoff-output', type=Path)
     a = p.parse_args()
     try:
         raw = a.input.read_bytes()
@@ -172,6 +263,16 @@ def main():
             request = json.loads(a.request.read_bytes())
             if a.command == 'inspect':
                 out = inspect(parse(raw), **request)
+            elif a.command == 'recover':
+                paths = (a.output, a.history_output, a.handoff_output)
+                require(a.history is not None and all(paths), 'recovery paths required')
+                require(len({x.resolve() for x in (*paths, a.input, a.history, a.request)}) == 6, 'recovery paths must be distinct')
+                require(not any(x.exists() for x in paths), 'recovery output already exists')
+                bundle = recovery_bundle(parse(raw), request, a.history.read_bytes())
+                for path, data in zip(paths, bundle):
+                    with path.open('xb') as stream:
+                        stream.write(data)
+                out = {'status': parse(bundle[0])['status'], 'revision': parse(bundle[0])['revision'], 'sha256': [digest(x) for x in bundle], 'delivery_authorized': False}
             else:
                 new = render(transition(parse(raw), request)) if a.command == 'transition' else append_entry(raw, **request)
                 require(a.output is not None, 'output required')
