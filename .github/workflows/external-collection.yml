@@ -1,0 +1,49 @@
+name: External flyer collection pilot
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 * * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'src/grocery_flyer_watch/external_collect.py'
+      - 'tests/test_external_collect.py'
+      - '.github/workflows/external-collection.yml'
+permissions:
+  contents: write
+concurrency:
+  group: external-flyer-collection
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline regression tests
+        run: PYTHONPATH=src python -m unittest discover -s tests -p test_external_collect.py -v
+      - name: Acquire source and candidate data
+        id: acquisition
+        continue-on-error: true
+        run: PYTHONPATH=src python -m grocery_flyer_watch.external_collect
+      - name: Persist only immutable public collection records
+        if: always() && steps.acquisition.outcome != 'skipped'
+        run: |
+          set -eu
+          # Only explicitly approved data paths are written; no private/runtime state.
+          for dir in data/external-source-evidence/food-basics data/external-candidates/food-basics; do
+            if [ -d "$dir" ]; then git add -- "$dir"; fi
+          done
+          if git diff --cached --quiet; then exit 0; fi
+          git diff --cached --name-status | python -c 'import re,sys; rows=sys.stdin.read().splitlines(); assert rows and all(re.fullmatch(r"A\tdata/external-(?:source-evidence|candidates)/food-basics/\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}/[a-f0-9]{64}\.json", x) for x in rows), "unexpected staged path or mutation"'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Collect public flyer candidate evidence (Food Basics pilot)'
+          # Never force push. Retry on the next scheduled run if HEAD moved.
+          git push origin HEAD:main
+      - name: Report incomplete collection honestly
+        if: always() && steps.acquisition.outcome != 'success'
+        run: exit 1
