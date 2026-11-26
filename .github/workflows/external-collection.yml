@@ -34,11 +34,11 @@ jobs:
         run: |
           set -eu
           # Only explicitly approved data paths are written; no private/runtime state.
-          for dir in data/external-source-evidence/food-basics data/external-candidates/food-basics; do
+          for dir in data/external-source-evidence/food-basics data/external-candidates/food-basics data/external-review/food-basics; do
             if [ -d "$dir" ]; then git add -- "$dir"; fi
           done
           if git diff --cached --quiet; then exit 0; fi
-          git diff --cached --name-status | python -c 'import re,sys; rows=sys.stdin.read().splitlines(); assert rows and all(re.fullmatch(r"A\tdata/external-(?:source-evidence|candidates)/food-basics/\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}/[a-f0-9]{64}\.json", x) for x in rows), "unexpected staged path or mutation"'
+          git diff --cached --name-status | python -c 'import re,sys; rows=sys.stdin.read().splitlines(); assert rows and all(re.fullmatch(r"A\tdata/external-(?:source-evidence|candidates|review)/food-basics/\d{4}-\d{2}-\d{2}_\d{4}-\d{2}-\d{2}/[a-f0-9]{64}\.json", x) for x in rows), "unexpected staged path or mutation"'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'Collect public flyer candidate evidence (Food Basics pilot)'

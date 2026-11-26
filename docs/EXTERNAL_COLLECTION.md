@@ -25,10 +25,17 @@ Source evidence and candidates use separate content-addressed create-only files:
 `data/external-source-evidence/food-basics/<start>_<end>/<sha256>.json` and
 `data/external-candidates/food-basics/<start>_<end>/<sha256>.json`. If syndicated extraction
 fails after the original page fetch, retain the source evidence and mark the job incomplete.
-Empty/failed retrieval never resets historical data. The same bytes produce the same file;
+Empty/failed retrieval never resets historical data. The same bytes or identical extracted fields and page hash (even if volatile HTML hashes change) reuse the same file;
 conflicts fail rather than overwrite. No force pushes. Retry on a later hour if main moves.
 The GitHub Actions logs provide actual collection outcomes. A passing synthetic fixture test
 is not proof of live source access. Check actual commit and file before claiming a live batch.
+
+The immutable `data/external-review/food-basics/<start>_<end>/<sha256>.json`
+packet references the candidate file and reports conservative comparison against a single
+prior same-source edition. Match exact name, description, brand and explicit unit only;
+exclude ambiguous or conditional prices, missing package sizes, conflicting duplicates and
+multiple prior candidate versions. A first baseline produces no price-drop claims. These
+are candidate comparisons, not verified savings or notification eligibility.
 
 ## Handoff and migration gates
 

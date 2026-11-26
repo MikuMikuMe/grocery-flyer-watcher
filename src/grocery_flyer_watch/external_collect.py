@@ -328,19 +328,111 @@ def collect(today, get=fetch, evidence=None):
             'grid':{'url':GRID,'sha256':digest(raw),'scope':'featured_only_region_unverified'},'offers':offers,
             'market_verified':False,'coverage_complete':False,'quality_authorized':False,'publication_authorized':False,'gmail_authorized':False}
 
+def canonical(batch):
+    return (json.dumps(batch,ensure_ascii=False,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
+
+
+def load_record(path):
+    raw=path.read_bytes()
+    if digest(raw) != path.stem:
+        raise CollectorError('immutable_digest_mismatch')
+    return json.loads(raw)
+
+
+def stable_content(batch):
+    # Ignore volatile HTML response hashes ONLY for semantic deduplication;
+    # preserve the exact first observed hashed evidence bytes on disk. An image,
+    # source URL, date, product or terms change creates a new immutable record.
+    out=json.loads(canonical(batch))
+    for k in ('archive','syndicated','grid'):
+        if k in out:
+            out[k].pop('sha256',None)
+    return out
+
+
 def persist(batch, root):
-    raw = (json.dumps(batch,ensure_ascii=False,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
+    raw = canonical(batch)
     e = batch['edition']
-    kind = {'external-candidate-batch-v1':'external-candidates', 'external-source-evidence-v1':'external-source-evidence'}[batch['format']]
-    path = root/'data'/kind/PILOT/(e['starts_on']+'_'+e['ends_on'])/(digest(raw)+'.json')
-    path.parent.mkdir(parents=True,exist_ok=True)
+    kind = {'external-candidate-batch-v1':'external-candidates', 'external-source-evidence-v1':'external-source-evidence','external-review-packet-v1':'external-review'}[batch['format']]
+    directory = root/'data'/kind/PILOT/(e['starts_on']+'_'+e['ends_on'])
+    path = directory/(digest(raw)+'.json')
+    directory.mkdir(parents=True,exist_ok=True)
     if path.exists():
         if path.read_bytes()!=raw:
             raise CollectorError('immutable_conflict')
         return path, False
+    if kind != 'external-review':
+        for previous in sorted(directory.glob('*.json')):
+            if stable_content(load_record(previous)) == stable_content(batch):
+                return previous, False
     with path.open('xb') as f:
         f.write(raw)
     return path, True
+
+
+def comparable_key(row):
+    # A candidate-level comparison, not a verified price drop. Exclude offers
+    # with ambiguous units, missing each-pack size or visibly conditional terms.
+    display=row.get('price_text') or ''
+    m=re.fullmatch(r'\$?(\d+\.\d{2})\s*(each|/\s*(?:lb|kg))',display,re.I)
+    if not m or not row.get('description') or not row.get('name') or price(row.get('price_field_cad')) is None:
+        return None
+    if price(m.group(1)) != price(row.get('price_field_cad')):
+        return None
+    unit=re.sub(r'\s+','',m.group(2)).lower()
+    desc=row['description']
+    if unit=='each' and not re.search(r'\b\d+(?:\.\d+)?\s*(?:g|kg|ml|l|lb|pack|ct)\b',desc,re.I):
+        return None
+    if re.search(r'\b(?:or|member|loyalty|points|when|limit)\b',row['name']+' '+desc,re.I) or any(row.get(k) for k in ('pre_price_text','post_price_text','sale_story')):
+        return None
+    return (row['name'].casefold(),desc.casefold(),(row.get('brand') or '').casefold(),unit)
+
+
+def unique_comparables(rows):
+    result={}; conflicts=set()
+    for row in rows:
+        key=comparable_key(row)
+        if key is None:
+            continue
+        amount=Decimal(row['price_field_cad'])
+        if key in result and result[key]!=amount:
+            conflicts.add(key)
+        result[key]=amount
+    return {k:v for k,v in result.items() if k not in conflicts}
+
+
+def source_identity(batch):
+    return (batch.get('grid') or batch.get('syndicated') or {}).get('url','').split('?')[0].rsplit('/flipp/flyers/',1)[0]
+
+
+def build_packet(root, candidate_path):
+    current=load_record(candidate_path)
+    if current.get('format')!='external-candidate-batch-v1' or current.get('retailer_id')!=PILOT:
+        raise CollectorError('wrong_candidate_record')
+    starts=current['edition']['starts_on']
+    previous=[]
+    for p in sorted((root/'data'/'external-candidates'/PILOT).glob('*/*.json')):
+        b=load_record(p)
+        if b['edition']['ends_on']<starts and b.get('format')==current['format'] and source_identity(b)==source_identity(current):
+            previous.append((b['edition']['ends_on'],p,b))
+    recent=[]
+    if previous:
+        recent=[(p,b) for end,p,b in previous if end==max(x[0] for x in previous)]
+    now=unique_comparables(current['offers'])
+    changes=[]; matched=0; baseline=None; status='initial_candidate_baseline'
+    if len(recent)==1:
+        p,b=recent[0]; baseline=str(p.relative_to(root)); old=unique_comparables(b['offers']); status='candidate_comparison_only'
+        for key in sorted(now.keys() & old.keys()):
+            matched+=1
+            if now[key]!=old[key]:
+                changes.append({'name':key[0],'description':key[1],'unit':key[3],'previous_price_cad':format(old[key],'.2f'),'current_price_cad':format(now[key],'.2f')})
+    elif recent:
+        status='ambiguous_previous_candidate_edition'
+    return {'format':'external-review-packet-v1','retailer_id':PILOT,'edition':current['edition'],
+            'candidate_path':str(candidate_path.relative_to(root)),'candidate_sha256':candidate_path.stem,
+            'candidate_rows':len(current['offers']),'comparable_rows':len(now),'prior_candidate_path':baseline,
+            'comparison_status':status,'matched_rows':matched,'candidate_price_changes':changes,
+            'market_verified':False,'coverage_complete':False,'quality_authorized':False,'publication_authorized':False,'gmail_authorized':False}
 
 
 def main():
@@ -354,7 +446,10 @@ def main():
         print(json.dumps({'status':'source_evidence_ready','path':str(ep),'new':en,'coverage_complete':False,'gmail_authorized':False}),flush=True)
         batch=collect(today,evidence=evidence)
         path,new=persist(batch,a.root)
-        print(json.dumps({'status':'candidate_ready','path':str(path),'new':new,'offers':len(batch['offers']),'gmail_authorized':False}))
+        print(json.dumps({'status':'candidate_ready','path':str(path),'new':new,'offers':len(batch['offers']),'gmail_authorized':False}),flush=True)
+        packet=build_packet(a.root,path)
+        pp,pn=persist(packet,a.root)
+        print(json.dumps({'status':'review_packet_ready','path':str(pp),'new':pn,'comparison_status':packet['comparison_status'],'matched_rows':packet['matched_rows'],'gmail_authorized':False}),flush=True)
     except (CollectorError, OSError, ValueError, TypeError) as exc:
         # No source body, URL query from arbitrary data, or secret in logs.
         print(json.dumps({'status':'blocked','code':f'HTTP_{exc.code}' if isinstance(exc,urllib.error.HTTPError) else str(exc) if isinstance(exc,CollectorError) else type(exc).__name__,'gmail_authorized':False}))

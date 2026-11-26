@@ -67,3 +67,34 @@ class FallbackTests(unittest.TestCase):
             return fixture(url)
         b=c.collect(TODAY,get)
         self.assertIn('grid',b); self.assertFalse(b['market_verified']); self.assertFalse(b['gmail_authorized'])
+
+class HandoffTests(unittest.TestCase):
+    def test_volatile_html_hashes_do_not_create_duplicates(self):
+        b=c.collect(TODAY,fixture)
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); p,_=c.persist(b,root)
+            b['archive']['sha256']='a'*64; b['syndicated']['sha256']='b'*64
+            self.assertEqual(c.persist(b,root),(p,False))
+            b['archive']['page_one_sha256']='c'*64
+            self.assertTrue(c.persist(b,root)[1])
+    def test_packet_initial_and_conservative_comparison(self):
+        b=c.collect(TODAY,fixture)
+        b['offers'][0]['price_text']='$2.99 each'
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); p,_=c.persist(b,root)
+            packet=c.build_packet(root,p)
+            self.assertEqual(packet['comparison_status'],'initial_candidate_baseline')
+            self.assertFalse(packet['gmail_authorized'])
+            b['edition']={'starts_on':'2026-12-03','ends_on':'2026-12-09'}
+            b['offers'][0].update(price_field_cad='2.49',price_text='$2.49 each')
+            p,_=c.persist(b,root)
+            packet=c.build_packet(root,p)
+            self.assertEqual(packet['matched_rows'],1)
+            self.assertEqual(packet['candidate_price_changes'][0]['previous_price_cad'],'2.99')
+            self.assertFalse(packet['market_verified'])
+            self.assertTrue(c.persist(packet,root)[1])
+    def test_no_comparison_on_missing_pack_or_conditional(self):
+        r={'name':'Example item','description':'product','price_field_cad':'2.99','price_text':'$2.99 each'}
+        self.assertIsNone(c.comparable_key(r))
+        r['description']='300 g member price';self.assertIsNone(c.comparable_key(r))
+        r['description']='300 g';r['price_field_cad']='3.99';self.assertIsNone(c.comparable_key(r))
