@@ -1,0 +1,21 @@
+{
+  "candidate_path": "data/external-candidates/food-basics/2026-11-26_2026-12-02/4c31fc043e7de44c030aa7942ee4f37413d4b693ff2152d3fae6219ecda02937.json",
+  "candidate_price_changes": [],
+  "candidate_rows": 19,
+  "candidate_sha256": "4c31fc043e7de44c030aa7942ee4f37413d4b693ff2152d3fae6219ecda02937",
+  "comparable_rows": 10,
+  "comparison_status": "initial_candidate_baseline",
+  "coverage_complete": false,
+  "edition": {
+    "ends_on": "2026-12-02",
+    "starts_on": "2026-11-26"
+  },
+  "format": "external-review-packet-v1",
+  "gmail_authorized": false,
+  "market_verified": false,
+  "matched_rows": 0,
+  "prior_candidate_path": null,
+  "publication_authorized": false,
+  "quality_authorized": false,
+  "retailer_id": "food-basics"
+}
