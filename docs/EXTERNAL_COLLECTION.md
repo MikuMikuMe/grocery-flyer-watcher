@@ -12,6 +12,9 @@ one matching Food Basics edition for the public Kingston store region K7L (not a
 postal address). The endpoint is an unofficial web endpoint and may fail; do not bypass access
 controls or assume service stability. Exact date/merchant match required, ambiguous editions
 fail closed. Archive dates are metadata, not proof of a printed date or exact market variant.
+If the syndicated endpoint fails, try the fixed WeeklyFlyer featured grid once; require the
+visible date range to match the archive and accept only isolated explicit price strings.
+This is partial and regional scope is unverified; exclude ambiguous multi-price blocks.
 Candidate fields are source-provided numeric price and associated product/terms text, never
 interpreted as unconditional cash prices, verified packs, or complete coverage. All candidates
 are explicitly non-authorizing and require independent original ad verification. Do not turn

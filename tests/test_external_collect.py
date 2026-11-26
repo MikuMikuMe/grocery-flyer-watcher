@@ -37,7 +37,7 @@ class CollectorTest(unittest.TestCase):
             if url==c.FLIPP+'/flipp/flyers'+c.QUERY:
                 return json.dumps({'flyers':[LIST['flyers'][0],dict(LIST['flyers'][0],id=13)]}).encode()
             return fixture(url)
-        with self.assertRaisesRegex(c.CollectorError,'ambiguous'): c.collect(TODAY,get)
+        with self.assertRaisesRegex(c.CollectorError,'ambiguous'): c.collect_syndicated(TODAY,get)
     def test_no_valid_rows(self):
         for value in ('SAVE $3','2/$5',float('inf'),True):
             self.assertIsNone(c.price(value))
@@ -51,3 +51,19 @@ class CollectorTest(unittest.TestCase):
         with self.assertRaises(c.CollectorError): c.fetch('https://example.invalid/')
     def test_timestamp_timezone(self):
         self.assertEqual(c.datepart('2026-12-03T04:59:59Z'),'2026-12-02')
+
+class FallbackTests(unittest.TestCase):
+    GRID=b'<h2>Top 20 Food Basics Meat, Produce &amp; Grocery Specials (Nov 26 - Dec 2)</h2><h3>Example oranges</h3><p>3 lb</p><span>$2.99 each</span><h3>Example bananas</h3><p>2/$5</p><h3>Example apples</h3><p>$1.99/lb</p><p>Avg. $2.99/lb</p><h2>Other flyers</h2><h3>Other</h3><p>$5.99 each</p>'
+    def test_grid(self):
+        rows=c.grid_candidates(self.GRID,'2026-11-26','2026-12-02')
+        self.assertEqual([(x['name'],x['price_text']) for x in rows],[('Example oranges','$2.99 each')])
+    def test_grid_stale(self):
+        with self.assertRaises(c.CollectorError): c.grid_candidates(self.GRID,'2026-11-19','2026-11-25')
+    def test_fixed_fallback(self):
+        def get(url):
+            if url==c.FLIPP+'/flipp/flyers'+c.QUERY:
+                raise c.CollectorError('blocked')
+            if url==c.GRID: return self.GRID
+            return fixture(url)
+        b=c.collect(TODAY,get)
+        self.assertIn('grid',b); self.assertFalse(b['market_verified']); self.assertFalse(b['gmail_authorized'])

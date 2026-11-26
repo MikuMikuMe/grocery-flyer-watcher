@@ -15,6 +15,7 @@ from zoneinfo import ZoneInfo
 
 ARCHIVE = 'https://flyers.smartcanucks.ca'
 FLIPP = 'https://backflipp.wishabi.com'
+GRID = 'https://www.weeklyflyer.com/food-basics'
 MARKET = 'Kingston, Ontario, Canada'
 # Public store-region lookup, not a personal address or postal code.
 QUERY = '?locale=en-ca&postal_code=K7L'
@@ -38,7 +39,7 @@ def digest(raw):
 
 def fetch(url):
     p = urllib.parse.urlsplit(url)
-    if p.scheme != 'https' or p.netloc not in {'flyers.smartcanucks.ca', 'backflipp.wishabi.com'} or p.fragment:
+    if p.scheme != 'https' or p.netloc not in {'flyers.smartcanucks.ca', 'backflipp.wishabi.com', 'www.weeklyflyer.com'} or p.fragment:
         raise CollectorError('source_not_allowlisted')
     req = urllib.request.Request(url, headers={'User-Agent': 'GroceryFlyerWatcher/1.0 public flyer research', 'Accept': 'application/json,text/html,image/jpeg'})
     with urllib.request.build_opener(NoRedirect()).open(req, timeout=15) as response:
@@ -193,7 +194,7 @@ def acquire_archive(today, get=fetch):
             'market_verified':False,'coverage_complete':False,'gmail_authorized':False}
 
 
-def collect(today, get=fetch, evidence=None):
+def collect_syndicated(today, get=fetch, evidence=None):
     evidence = evidence if evidence is not None else acquire_archive(today, get)
     starts, ends = evidence['edition']['starts_on'], evidence['edition']['ends_on']
     listing_url = FLIPP+'/flipp/flyers'+QUERY
@@ -221,6 +222,111 @@ def collect(today, get=fetch, evidence=None):
             'syndicated':{'url':source_url,'sha256':digest(source),'flyer_id':matches[0]},'offers':offers,
             'market_verified':False,'coverage_complete':False,'quality_authorized':False,'publication_authorized':False,'gmail_authorized':False}
 
+
+
+class FeaturedGrid(HTMLParser):
+    """Collect the visible featured h2/h3 sections, not hidden scripts or nav."""
+    def __init__(self, raw):
+        super().__init__(convert_charrefs=True)
+        self.heading = None
+        self.parts = []
+        self.title = ''
+        self.active = False
+        self.current = None
+        self.rows = []
+        self.hidden = 0
+        self.feed(raw.decode('utf-8', errors='replace'))
+        self.close_row()
+
+    def close_row(self):
+        if self.current:
+            self.rows.append(self.current)
+        self.current = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ('script', 'style'):
+            self.hidden += 1
+        if self.hidden:
+            return
+        if tag in ('h2', 'h3'):
+            self.heading = tag
+            self.parts = []
+
+    def handle_endtag(self, tag):
+        if tag in ('script', 'style') and self.hidden:
+            self.hidden -= 1
+            return
+        if self.hidden:
+            return
+        if tag == self.heading:
+            value = ' '.join(' '.join(self.parts).split())
+            if tag == 'h2':
+                self.close_row()
+                self.active = bool(re.match(r'Top 20 Food Basics .+\(', value, re.I))
+                if self.active:
+                    self.title = value
+            elif self.active:
+                self.close_row()
+                self.current = {'name':value, 'text':[]}
+            self.heading = None
+
+    def handle_data(self, value):
+        if self.hidden:
+            return
+        if self.heading:
+            self.parts.append(value)
+        elif self.current:
+            self.current['text'].append(value)
+
+
+def grid_candidates(raw, starts, ends):
+    parser = FeaturedGrid(raw)
+    # Validate exact visible weekly heading dates against independently fetched archive.
+    def short(d):
+        dt = date.fromisoformat(d)
+        return dt.strftime('%b') + ' ' + str(dt.day)
+    if not re.search(r'\(' + re.escape(short(starts)) + r'\s*[-–—]\s*' + re.escape(short(ends)) + r'\)', parser.title):
+        raise CollectorError('grid_edition_mismatch')
+    rows = {}
+    for r in parser.rows:
+        name = safe_text(r['name'])
+        if not name:
+            continue
+        # DOM text order: first displayed standalone absolute price after its own h3.
+        # Do not interpret multibuys, discounts, member terms, competing values or
+        # post-price text; ambiguous records are excluded, not repaired.
+        text = ' '.join(' '.join(r['text']).split())
+        hits = list(re.finditer(r'(?<![\w/$])\$([0-9]+\.[0-9]{2})\s*(each|/\s*(?:lb|kg))\b', text, re.I))
+        if len(hits) != 1 or not price(hits[0].group(1)) or re.search(r'\b(?:member|loyalty|points|when you buy|with card)\b',text,re.I):
+            continue
+        h=hits[0]
+        description=safe_text(text[:h.start()].strip(),240)
+        # Keep the source's printed price string (not a unit-price calculation).
+        row={'name':name,'price_field_cad':price(h.group(1)),'price_text':h.group(0),
+             'description':description,'valid_from':None,'valid_to':None}
+        key=hashlib.sha256(json.dumps(row,sort_keys=True).encode()).hexdigest()
+        rows[key]=row
+    if not rows or len(rows)>20:
+        raise CollectorError('grid_empty_or_unexpected_count')
+    return [rows[k] for k in sorted(rows)]
+
+
+def collect(today, get=fetch, evidence=None):
+    evidence = evidence if evidence is not None else acquire_archive(today, get)
+    try:
+        return collect_syndicated(today,get,evidence)
+    except (CollectorError, OSError, ValueError, TypeError) as exc:
+        # Do not repeatedly retry the same source; one fixed fallback. HTTP code
+        # only, no response body, credentials, or arbitrary URL logging.
+        code = f'HTTP_{exc.code}' if isinstance(exc,urllib.error.HTTPError) else str(exc) if isinstance(exc,CollectorError) else type(exc).__name__
+        print(json.dumps({'status':'syndicated_blocked','code':code,'fallback':'weeklyflyer_featured_grid'}),flush=True)
+    raw=get(GRID)
+    starts,ends=evidence['edition']['starts_on'],evidence['edition']['ends_on']
+    offers=grid_candidates(raw,starts,ends)
+    return {'format':'external-candidate-batch-v1','retailer_id':PILOT,'market_lookup':MARKET,
+            'edition':evidence['edition'],'archive':evidence['archive'],
+            'grid':{'url':GRID,'sha256':digest(raw),'scope':'featured_only_region_unverified'},'offers':offers,
+            'market_verified':False,'coverage_complete':False,'quality_authorized':False,'publication_authorized':False,'gmail_authorized':False}
 
 def persist(batch, root):
     raw = (json.dumps(batch,ensure_ascii=False,sort_keys=True,indent=2,allow_nan=False)+'\n').encode()
@@ -251,7 +357,7 @@ def main():
         print(json.dumps({'status':'candidate_ready','path':str(path),'new':new,'offers':len(batch['offers']),'gmail_authorized':False}))
     except (CollectorError, OSError, ValueError, TypeError) as exc:
         # No source body, URL query from arbitrary data, or secret in logs.
-        print(json.dumps({'status':'blocked','code':str(exc) if isinstance(exc,CollectorError) else type(exc).__name__,'gmail_authorized':False}))
+        print(json.dumps({'status':'blocked','code':f'HTTP_{exc.code}' if isinstance(exc,urllib.error.HTTPError) else str(exc) if isinstance(exc,CollectorError) else type(exc).__name__,'gmail_authorized':False}))
         return 2
     return 0
 
