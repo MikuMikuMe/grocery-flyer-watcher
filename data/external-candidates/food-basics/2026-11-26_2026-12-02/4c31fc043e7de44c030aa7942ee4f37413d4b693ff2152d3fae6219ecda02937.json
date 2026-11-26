@@ -1,0 +1,179 @@
+{
+  "archive": {
+    "page_one_sha256": "11a404fd52ce6520580749b958085e1d146ba280e4b7a22b4e9ba6524447196b",
+    "page_one_url": "https://flyers.smartcanucks.ca/uploads/pages/306534/food-basics-flyer-november-26-to-december-22-1.jpg",
+    "sha256": "7c44c7c04a2d503496944345c9fe7310a5d8562b6225b199d4ace9d596124872",
+    "url": "https://flyers.smartcanucks.ca/canada/food-basics-flyer-november-26-to-december-22"
+  },
+  "coverage_complete": false,
+  "edition": {
+    "ends_on": "2026-12-02",
+    "starts_on": "2026-11-26"
+  },
+  "format": "external-candidate-batch-v1",
+  "gmail_authorized": false,
+  "grid": {
+    "scope": "featured_only_region_unverified",
+    "sha256": "fe991e61c1fd487072b1ea5ad67d37349436eca3b84586775174b46e6f82caff",
+    "url": "https://www.weeklyflyer.com/food-basics"
+  },
+  "market_lookup": "Kingston, Ontario, Canada",
+  "market_verified": false,
+  "offers": [
+    {
+      "description": null,
+      "name": "RASPBERRIES PRODUCT OF U.S.A. OR MEXICO, NO.1 GRADE 170 G BLACKBERRIES PRODUCT OF MEXICO, NO. 1 GRADE 150 - 170 G",
+      "price_field_cad": "2.99",
+      "price_text": "$2.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF U.S.A. 340 G",
+      "name": "GREEN BEANS",
+      "price_field_cad": "3.88",
+      "price_text": "$3.88 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "6 X 295 ML SELECTED VARIETIES",
+      "name": "OCEAN SPRAY CRANBERRY COCKTAIL",
+      "price_field_cad": "5.49",
+      "price_text": "$5.49 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF MEXICO, 5 PACK PRODUCT OF MEXICO, 1 LB",
+      "name": "AVOCADOS, LIMES",
+      "price_field_cad": "3.99",
+      "price_text": "$3.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUIT DE L'ONTARIO, CANADA FANCY GRADE, 3 LB",
+      "name": "POMMES GALA, McIntosh, RED DELICIOUS, CORTLAND OU AMBROSIA",
+      "price_field_cad": "4.99",
+      "price_text": "$4.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "540 ML VARIÉTÉS SÉLECTIONNÉES | 540 ML SELECTED VARIETIES",
+      "name": "ANANAS SELECTION | SELECTION PINEAPPLE",
+      "price_field_cad": "1.99",
+      "price_text": "$1.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "4.39/KG SELECTED VARIETIES",
+      "name": "FRESH CHICKEN LEGS FAMILY PACK",
+      "price_field_cad": "1.99",
+      "price_text": "$1.99 /LB",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF ONTARIO CANADA EXTRA FANCY GRADE 4.39/KG",
+      "name": "RED DELICIOUS APPLES",
+      "price_field_cad": "1.99",
+      "price_text": "$1.99 /LB",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF SOUTH AFRICA OR MOROCCO, 2 LB, PRODUCT OF U.S.A. OR MEXICO | PRODUIT DE L'AFRIQUE DU SUD OU DU MAROC, 2 LB, PRODUIT DES É.-U. OU DU MEXIQUE",
+      "name": "CLÉMENTINES, MELONS MIEL | CLEMENTINES, HONEYDEW MELONS",
+      "price_field_cad": "4.99",
+      "price_text": "$4.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": null,
+      "name": "SEEDLESS NAVEL ORANGES PRODUCT OF SOUTH AFRICA 3 LB LEMONS PRODUCT OF U.S.A. OR SOUTH AFRICA 2 LB",
+      "price_field_cad": "2.99",
+      "price_text": "$2.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "RASPBERRIES PRODUCT OF U.S.A. OR MEXICO, NO.1 GRADE 170 G BLACKBERRIES PRODUCT OF MEXICO, NO. 1 GRADE 150 - 170 G FRAMBOISES PRODUIT DES É.-U. OU DU MEXIQUE, CAT. NO 1, 170 G MÛRES PRODUIT DU MEXIQUE, CAT. NO 1, 150 - 170 G",
+      "name": "FRAMBOISES,MÛRES | RASPBERRIES, BLACKBERRIES",
+      "price_field_cad": "2.99",
+      "price_text": "$2.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF CANADA NO.1 GRADE 5 LB PRODUCT OF ONTARIO, CANADA NO. 1 GRADE 2 LB",
+      "name": "RUSSET PEI POTATOES OR GOURMET MINI YELLOW POTATOES, CARROTS OR YELLOW ONIONS",
+      "price_field_cad": "0.99",
+      "price_text": "$0.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF U.S.A. | PRODUIT DES É.-U. 3.28/KG | 3,28/KG",
+      "name": "SWEET POTATOES | PATATES DOUCES",
+      "price_field_cad": "1.49",
+      "price_text": "$1.49 /LB",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF MEXICO | PRODUIT DU MEXIQUE 5 PACK / 1 LB | EMB. DE 5 / 1 LB",
+      "name": "AVOCADOS OR LIMES | AVOCATS OU LIMES",
+      "price_field_cad": "3.99",
+      "price_text": "$3.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF SPAIN 6.59/KG",
+      "name": "STEM-LEAF CLEMENTINES",
+      "price_field_cad": "2.99",
+      "price_text": "$2.99 /LB",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF CANADA OR MEXICO PKG OF 4",
+      "name": "SWEET ASSORTED PEPPERS",
+      "price_field_cad": "4.99",
+      "price_text": "$4.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF ONTARIO, CANADA FANCY GRADE | PRODUIT DE L'ONTARIO, CANADA DE FANTAISIE 3 LB",
+      "name": "GALA, McINTOSH, RED DELICIOUS, CORTLAND OR AMBROSIA APPLES | POMMES GALA, McINTOSH, DÉLICIEUSE ROUGES, CORTLAND OU AMBROSIA",
+      "price_field_cad": "4.99",
+      "price_text": "$4.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF ONTARIO 5 LB PRODUIT DE L'ONTARIO 5 LB",
+      "name": "BEETS | BETTERAVES",
+      "price_field_cad": "3.99",
+      "price_text": "$3.99 each",
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "description": "PRODUCT OF SOUTH AFRICA 3 LB PRODUCT OF U.S.A. OR SOUTH AFRICA 2 LB",
+      "name": "SEEDLESS NAVEL ORANGES , LEMONS",
+      "price_field_cad": "2.99",
+      "price_text": "$2.99 each",
+      "valid_from": null,
+      "valid_to": null
+    }
+  ],
+  "publication_authorized": false,
+  "quality_authorized": false,
+  "retailer_id": "food-basics"
+}

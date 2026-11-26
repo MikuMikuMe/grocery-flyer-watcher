@@ -1,0 +1,17 @@
+{
+  "archive": {
+    "page_one_sha256": "11a404fd52ce6520580749b958085e1d146ba280e4b7a22b4e9ba6524447196b",
+    "page_one_url": "https://flyers.smartcanucks.ca/uploads/pages/306534/food-basics-flyer-november-26-to-december-22-1.jpg",
+    "sha256": "7c44c7c04a2d503496944345c9fe7310a5d8562b6225b199d4ace9d596124872",
+    "url": "https://flyers.smartcanucks.ca/canada/food-basics-flyer-november-26-to-december-22"
+  },
+  "coverage_complete": false,
+  "edition": {
+    "ends_on": "2026-12-02",
+    "starts_on": "2026-11-26"
+  },
+  "format": "external-source-evidence-v1",
+  "gmail_authorized": false,
+  "market_verified": false,
+  "retailer_id": "food-basics"
+}
